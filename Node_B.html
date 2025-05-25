@@ -49,15 +49,47 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            opacity: 0;
         }
 
-        .typing-animation {
+        .typing-animation1 {
             overflow: hidden;
-            white-space: nowrap;
             margin: 20px 0;
-            border-right: 2px solid var(--secondary);
-            max-width: fit-content;
+            max-width: 100%;
+            animation-fill-mode: forwards;
+        }
+        .typing-animation p,
+.typing-animation h3 {
+    display: block;
+    overflow: hidden;
+    white-space: pre-wrap;
+    border-right: 2px solid var(--secondary);
+    animation: typing 2s steps(200, end), blink-caret 0.75s step-end infinite;
+
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+        .centered-typing {
+            position: fixed;
+            top: 30%;
+        
+        
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            opacity: 0;
+        
+            pointer-events: none;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -60%); }
         }
 
         @keyframes typing {
@@ -95,47 +127,61 @@
     </div>
 
     <div class="container">
-        <h1 class="typing-animation">NODE 2 HISTORICAL REVIEW: CLIMATE COLLAPSE</h1>
-        <h2 class="typing-animation">Timeframe: Common Era, years 2020–2035</h2>
+        <h1 class="typing-animation1">NODE 2 HISTORICAL REVIEW: CLIMATE COLLAPSE</h1>
+        <h2 class="typing-animation1">Timeframe: Common Era, years 2020–2035</h2>
 
+       
+
+        <!-- Add similar structure for other sections -->
+        <div class="centered-typing" id="section1">
         <div class="typing-animation">
             <p>During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.</p>
         </div>
-
+</div>
+<div class="centered-typing" id="section2">
         <div class="typing-animation">
             <h3>Oceanic Fungal Proliferation</h3>
             <p>Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.</p>
         </div>
-
+</div>
+<div class="centered-typing" id="section3">
         <div class="typing-animation">
             <h3>Surface Temperature Increase</h3>
             <p>Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.</p>
-        </div>
+        </div></div>
+        <div class="centered-typing" id="section4">
 
         <div class="typing-animation">
             <h3>Forest Fires</h3>
             <p>Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.</p>
         </div>
-
+</div>
+<div class="centered-typing" id="section5">
         <div class="typing-animation">
             <h3>Species Extinction</h3>
             <p>Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.</p>
         </div>
-
+</div>
+<div class="centered-typing" id="section6">
         <div class="typing-animation">
             <h3>Extreme Weather Events</h3>
             <p>Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.</p>
         </div>
+        </div>
+        <div class="centered-typing" id="section7">
 
         <div class="typing-animation">
             <h3>Food Shortages</h3>
             <p>Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.</p>
         </div>
-
+</div>
+<div class="centered-typing" id="section8">
         <div class="typing-animation">
             <h3>Coral Reef Degradation</h3>
             <p>Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.</p>
         </div>
+        </div>
+        <div class="centered-typing" id="section9">
 
         <div class="typing-animation">
             <h3>ORIGIN</h3>
@@ -146,7 +192,7 @@
                 ● Heat, loss, disruption, insecurity, inaction
             </p>
         </div>
-
+        </div>
         <button id="return-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
     </div>
 
@@ -154,7 +200,7 @@
         <source src="your-sound-file.mp3" type="audio/mpeg">
     </audio>
 
-    <script>
+    <!-- <script>
         // Loading and initial animation
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -197,6 +243,89 @@
             });
         }
 
+        function returnToMain() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 500);
+        }
+    </script> -->
+
+    <script>
+        // Loading and initial animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                document.querySelector('.container').style.opacity = '1';
+                startSequence();
+            }, 3000);
+        });
+    
+        function startSequence() {
+            const sections = document.querySelectorAll('.centered-typing');
+            const heading = document.querySelector('h1');
+            let current = -1;
+    
+            // Initialize all sections as hidden
+            sections.forEach(section => {
+                section.style.display = 'none';
+                section.style.opacity = '0';
+            });
+    
+            // Show persistent heading
+            heading.style.opacity = '1';
+            heading.style.animation = `typing ${heading.textContent.length * 0.05}s steps(${heading.textContent.length}, end), 
+                                     blink-caret ${getComputedStyle(document.documentElement).getPropertyValue('--blink-speed')} step-end infinite`;
+    
+            // Start sequence after heading animation
+            setTimeout(() => {
+                document.addEventListener('click', handleClick);
+                showNextSection();
+            }, heading.textContent.length * 50 + 1000);
+    
+            function handleClick() {
+                if (current < sections.length) {
+                    showNextSection();
+                }
+            }
+    
+            function showNextSection() {
+                // Hide previous section
+                if (current >= 0) {
+                    const prevSection = sections[current];
+                    prevSection.style.opacity = '0';
+                    setTimeout(() => {
+                        prevSection.style.display = 'none';
+                    }, 500);
+                }
+    
+                current++;
+                
+                if (current < sections.length) {
+                    // Show current section
+                    const currentSection = sections[current];
+                    currentSection.style.display = 'block';
+                    currentSection.style.opacity = '1';
+                    
+                    // Start typing animation
+                    const textElement = currentSection.querySelector('.typing-animation');
+                    const textLength = textElement.textContent.length;
+                    const duration = Math.max(textLength * 0.05, 2);
+    
+                    // Reset animation
+                    textElement.style.animation = 'none';
+                    void textElement.offsetWidth; // Trigger reflow
+                    textElement.style.animation = `typing ${duration}s steps(${textLength}, end), 
+                                                blink-caret ${getComputedStyle(document.documentElement).getPropertyValue('--blink-speed')} step-end infinite`;
+                } else {
+                    // Remove click listener and show return button
+                    document.removeEventListener('click', handleClick);
+                    document.getElementById('return-button').style.display = 'block';
+                    document.getElementById('return-button').style.opacity = '1';
+                }
+            }
+        }
+    
         function returnToMain() {
             document.body.style.opacity = '0';
             setTimeout(() => {
