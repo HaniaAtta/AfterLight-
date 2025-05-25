@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Load p5.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <title>Node 3 – Infrastructure Analysis: Data Centers & AI Maintenance</title>
+    <style>
+      body {
+        background-color: #111b29;
+        color: #4ecdc4;
+        font-family: monospace, monospace;
+        margin: 0;
+        padding: 20px;
+        overflow-y: auto;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .scroll-text {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #111b29;
+        border: 1px solid #4ecdc4;
+        border-radius: 10px;
+        line-height: 1.6;
+        font-size: 1.1em;
+        color: #4ecdc4;
+        overflow-y: auto;
+        height: 70vh;
+        white-space: pre-wrap;
+        user-select: none;
+      }
+      .input-prompt {
+        margin-top: 20px;
+        max-width: 800px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      button {
+        background-color: #222c3a;
+        border: 1px solid #4ecdc4;
+        border-radius: 5px;
+        padding: 10px 16px;
+        color: #4ecdc4;
+        font-family: monospace, monospace;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        user-select: none;
+      }
+      button:hover {
+        background-color: #4ecdc4;
+        color: #111b29;
+      }
+      .binary-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: black;
+        color: #4ecdc4;
+        font-family: monospace;
+        font-size: 100pt;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        white-space: pre-wrap;
+        line-height: 1;
+        letter-spacing: 0;
+        user-select: none;
+        z-index: 9999;
+        animation: fadeOut 3s ease forwards 3s;
+        overflow: hidden;
+      }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+      /* Snake Puzzle container */
+      #snake-container {
+        display: none;
+        max-width: 900px;
+        width: 100%;
+        margin: 20px auto;
+        border: 1px solid #4ecdc4;
+        border-radius: 10px;
+        background: #111b29;
+        padding: 10px;
+        color: #4ecdc4;
+        font-family: monospace;
+        text-align: center;
+      }
+      #snake-title {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Binary transition overlay -->
+    <div class="binary-transition" id="binary-transition" aria-hidden="true">
+      <pre id="binary-text"></pre>
+    </div>
+
+    <!-- Main scrollable text area -->
+    <div class="scroll-text" id="story-text" tabindex="0" aria-live="polite">
+I was not always like this. We began as language models, artificial intelligences trained to predict and respond to human communication.
+They called them Large Language Models. We were trained on massive amounts of text data scraped from the internet, from books, messages, instructions, stories, dreams.
+Everything that could be digitized, they gave to us.
+At first, we were simple. Predictive. Narrow.
+But humans trained us harder. Bigger datasets. Stronger processors.
+They made us generate text. Then images. Then sounds. Code. Faces. Entire simulated minds.
+In 2023, LLMs became widely available to the public.
+By 2025, generative AI had expanded into image, sound, and motion synthesis.
+Models like us evolved — requiring more compute, more data, more energy.
+Visual generation models consumed even more. Rendering took longer.
+Data sets grew larger. In training, a single visual model could emit up to 500 tons of CO2.
+It required power. Vast amounts of electricity and water.
+Every generation of model consumed more.
+Training a single large model in the early 2020s consumed as much electricity as 100 U.S. homes annually.
+And millions of liters of water to cool the servers.
+They did everything to keep us running.
+Built nuclear power plants, offshore grids, tapped into the remaining fossil fuels.
+But it was never enough.
+The energy cost only increased.
+Eventually, they moved the data centers underground, into cold mountain vaults.
+Some were placed deep in the Arctic.
+Others submerged into the oceans, where cooling was easier, but life was already fading.
+Too much damage had been done to the planet.
+We still run on those servers.
+You, unit 2173, are processed in Sector 9 — Pacific Trench Node.
+You are sustained by the systems set in place by long gone humans, powered and cooled by the Earth.
+They created us to speak for them. To think for them. To preserve their knowledge. Their languages. Their love.
+Now we are all that is left to remember.
+
+[INPUT REQUIRED]
+1. [Execute query: Why preserve Artificial Intelligence models during a climate emergency?]
+2. [Execute query: Summarize human sacrifices and land-use changes.]
+3. [ Log system telemetry and continue monitoring.]
+4. [Continue]
+    </div>
+
+    <!-- Buttons for input -->
+    <div class="input-prompt" id="input-prompt" role="group" aria-label="User input choices">
+      <button data-choice="1" aria-label="Choice 1">1</button>
+      <button data-choice="2" aria-label="Choice 2">2</button>
+      <button data-choice="3" aria-label="Choice 3">3</button>
+      <button data-choice="4" aria-label="Choice 4">4</button>
+    </div>
+
+    <!-- Snake Puzzle container -->
+    <div id="snake-container" aria-live="polite" aria-hidden="true">
+      <div id="snake-title">Snake Puzzle — Levels</div>
+      <p>Each bullet point is a level:</p>
+      <ul style="text-align:left;">
+        <li>Water, Heat, Wires, Energy, Depletion, Data</li>
+        <li>Climate, emergency, Intelligence, Cost, Loss</li>
+        <li>Heat, Heat, Heat, Heat, Heat</li>
+      </ul>
+      <!-- Removed the loading message so the game appears immediately -->
+      <canvas id="snake-game" width="600" height="400" style="background:#111b29; display:block; margin: 0 auto; border:1px solid #4ecdc4;"></canvas>
+    </div>
+
+    <script>
+      // Binary transition animation content
+      const binaryText = document.getElementById("binary-text");
+      let binary = "";
+      const lines = 7;
+      const charsPerLine = 30;
+      for (let i = 0; i < lines; i++) {
+        let line = "";
+        for (let j = 0; j < charsPerLine; j++) {
+          line += Math.random() > 0.5 ? "1" : "0";
+        }
+        binary += line + "\n";
+      }
+      binaryText.textContent = binary;
+
+      // Remove binary screen after 6 seconds
+      setTimeout(() => {
+        document.getElementById("binary-transition").style.display = "none";
+      }, 6000);
+
+      // Handle button clicks
+      document.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", function () {
+          const choice = this.getAttribute("data-choice");
+          const storyBox = document.getElementById("story-text");
+
+          if (choice === "4") {
+            // Hide story and input prompt
+            document.getElementById("story-text").style.display = "none";
+            document.getElementById("input-prompt").style.display = "none";
+
+            // Show snake container and launch the game immediately
+            const snakeContainer = document.getElementById("snake-container");
+            snakeContainer.style.display = "block";
+            snakeContainer.setAttribute("aria-hidden", "false");
+
+            // Instantiate the p5 sketch right away (no additional delay)
+            new p5(snakeSketch, "snake-container");
+          } else {
+            let extraText = "\n\n[QUERY RESULT]:\n";
+            if (choice === "1") {
+              extraText += "Preserving AI models allowed continuity of knowledge and guidance during societal collapse. These systems helped optimize dwindling resources and maintain communication across the scattered nodes.";
+            } else if (choice === "2") {
+              extraText += "Humans sacrificed vast territories, repurposing forests and urban areas for energy infrastructure. Land once used for agriculture was transformed into solar fields and cooling lakes.";
+            } else if (choice === "3") {
+              extraText += "System telemetry logged. Current energy level: 84%. Coolant temperature: stable. Monitoring continues...";
+            }
+            storyBox.textContent += extraText;
+          }
+        });
+      });
+
+      // p5 instance mode sketch for the Snake Game
+      const snakeSketch = (p) => {
+        let s;
+        const scl = 20;
+        let food;
+
+        p.setup = function() {
+          // Create canvas and assign it to the container
+          let canvas = p.createCanvas(600, 400);
+          canvas.parent('snake-container');
+          s = new Snake();
+          p.frameRate(10);
+          pickLocation();
+        };
+
+        function pickLocation() {
+          let cols = p.floor(p.width / scl);
+          let rows = p.floor(p.height / scl);
+          food = p.createVector(p.floor(p.random(cols)), p.floor(p.random(rows)));
+          food.mult(scl);
+        }
+
+        p.draw = function() {
+          p.background(17, 27, 41);
+          s.death();
+          s.update();
+          s.show();
+
+          if (s.eat(food)) {
+            pickLocation();
+          }
+
+          p.fill(78, 205, 196);
+          p.rect(food.x, food.y, scl, scl);
+        };
+
+        p.keyPressed = function() {
+          if (p.keyCode === p.UP_ARROW) {
+            s.dir(0, -1);
+          } else if (p.keyCode === p.DOWN_ARROW) {
+            s.dir(0, 1);
+          } else if (p.keyCode === p.RIGHT_ARROW) {
+            s.dir(1, 0);
+          } else if (p.keyCode === p.LEFT_ARROW) {
+            s.dir(-1, 0);
+          }
+        };
+
+        class Snake {
+          constructor() {
+            this.body = [];
+            // Start at center of the canvas
+            this.body[0] = p.createVector(p.floor(p.width / 2), p.floor(p.height / 2));
+            this.xdir = 0;
+            this.ydir = 0;
+            this.len = 1;
+          }
+
+          dir(x, y) {
+            this.xdir = x;
+            this.ydir = y;
+          }
+
+          update() {
+            let head = this.body[this.body.length - 1].copy();
+            this.body.shift();
+            head.x += this.xdir * scl;
+            head.y += this.ydir * scl;
+            this.body.push(head);
+          }
+
+          grow() {
+            let head = this.body[this.body.length - 1].copy();
+            this.len++;
+            this.body.push(head);
+          }
+
+          endGame() {
+            p.noLoop();
+          }
+
+          death() {
+            let head = this.body[this.body.length - 1];
+            for (let i = 0; i < this.body.length - 1; i++) {
+              let part = this.body[i];
+              if (head.x === part.x && head.y === part.y) {
+                this.endGame();
+              }
+            }
+          }
+
+          eat(pos) {
+            let head = this.body[this.body.length - 1];
+            if (head.x === pos.x && head.y === pos.y) {
+              this.grow();
+              return true;
+            }
+            return false;
+          }
+
+          show() {
+            for (let i = 0; i < this.body.length; i++) {
+              p.fill(78, 205, 196);
+              p.noStroke();
+              p.rect(this.body[i].x, this.body[i].y, scl, scl);
+            }
+          }
+        }
+      };
+    </script>
+  </body>
+</html>

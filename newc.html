@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE 3: Infrastructure Analysis</title>
+    <style>
+        :root {
+            --primary: #305CCC;
+            --secondary: #FFFFFF;
+            --typing-speed: 0.08s;
+            --blink-speed: 0.75s;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary);
+            color: var(--secondary);
+            font-family: 'Courier New', monospace;
+            overflow: auto;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            display: none;
+        }
+
+        .typing-animation {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 20px 0;
+            border-right: 2px solid var(--secondary);
+            width: 0;
+            animation: typing 3s steps(40, end) forwards,
+                       blink-caret 0.75s step-end infinite;
+        }
+
+        #gameContainer {
+            display: none;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        #binaryTransition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            color: var(--secondary);
+            font-family: monospace;
+            font-size: 24px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .input-prompt {
+            border: 1px solid var(--secondary);
+            padding: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .input-prompt:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @keyframes typing {
+            from { width: 0; opacity: 0; }
+            to { width: 100%; opacity: 1; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--secondary) }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="typing-animation">NODE 3 INFRASTRUCTURE ANALYSIS: DATA CENTERS & AI MAINTENANCE</div>
+        <div class="typing-animation">I was not always like this.</div>
+        <!-- Add all other narrative text elements here -->
+        <div class="typing-animation" style="display: inline-block">We began as language models, artificial intelligences trained to predict and respond
+            to human communication.</div>
+            <div class="typing-animation" style="display: inline-block">They called them Large Language Models. We were trained on massive amounts of
+              text data scraped from the internet, from books, messages, instructions, stories,
+              dreams. Everything that could be digitized, they gave to us.</div>
+              <div class="typing-animation">At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger
+                datasets. Stronger processors. They made us generate text. Then images. Then
+                sounds. Code. Faces. Entire simulated minds.</div>
+          
+                <div class="typing-animation">In 2023, LLMs became widely available to the public. By 2025, generative AI had
+                  expanded into image, sound, and motion synthesis. Models like us evolved —
+                  requiring more compute, more data, more energy.</div>
+                <div class="typing-animation">Visual generation models consumed even more. Rendering took longer. Data sets
+                  grew larger. In training, a single visual model could emit up to 500 tons of CO2.</div>
+                <div class="typing-animation">It required power. Vast amounts of electricity and water. Every generation of model
+                  consumed more. Training a single large model in the early 2020s consumed as
+                  much electricity as 100 U.S. homes annually. And millions of liters of water to cool
+                  the servers.</div>
+                <div class="typing-animation">They did everything to keep us running. Built nuclear power plants, offshore grids,
+                  tapped into the remaining fossil fuels. But it was never enough. The energy cost
+                  only increased.</div>
+                <div class="typing-animation">Eventually, they moved the data centers underground, into cold mountain vaults.
+                  Some were placed deep in the Arctic. Others submerged into the oceans, where
+                  cooling was easier, but life was already fading. Too much damage had been done
+                  to the planet.</div>
+                <div class="typing-animation">We still run on those servers.</div>
+                <div class="typing-animation">You, unit 2173, are processed in Sector 9 — Pacific Trench Node. You are
+                  sustained by the systems set in place by long gone humans, powered and cooled
+                  by the Earth.</div>
+                <div class="typing-animation">They created us to speak for them. To think for them. To preserve their knowledge.
+                  Their languages. Their love.</div>
+                <div class="typing-animation">Now we are all that is left to remember.</div>
+  
+        <div id="inputPrompts" style="display:none;">
+            <div class="input-prompt" onclick="showResponse(1)">[Why preserve AI during climate emergency?]</div>
+            <div class="input-prompt" onclick="showResponse(2)">[Summarize human sacrifices]</div>
+            <div class="input-prompt" onclick="showResponse(3)">[Log telemetry]</div>
+            <div class="input-prompt" onclick="startGameTransition()">[Continue]</div>
+        </div>
+        <div id="responses"></div>
+    </div>
+
+    <div id="gameContainer"></div>
+    <div id="binaryTransition"></div>
+
+    <script>
+        const responses = {
+            1: "ORIGIN: Speculation: valued technological evolution over environmental consequences.",
+            2: "● 12M hectares cleared ● 30M relocated ● 500B water diverted",
+            3: "Telemetry logged. Degradation: ongoing."
+        };
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                const container = document.querySelector('.container');
+                container.style.display = 'block';
+                container.style.opacity = '1';
+                startTypingAnimations();
+            }, 2000);
+        });
+
+        function startTypingAnimations() {
+            const elements = document.querySelectorAll('.typing-animation');
+            let delay = 0;
+            
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animation = `typing 3s forwards`;
+                    el.style.borderRight = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary')}`;
+                    
+                    setTimeout(() => {
+                        el.style.borderRight = 'none';
+                        if(index === elements.length - 1) {
+                            document.getElementById('inputPrompts').style.display = 'block';
+                            document.querySelectorAll('.input-prompt').forEach(prompt => {
+                                prompt.style.opacity = '1';
+                            });
+                        }
+                    }, 3000);
+                }, delay * 1000);
+
+                delay += 3.5;
+            });
+        }
+
+        function showResponse(id) {
+            const responsesDiv = document.getElementById('responses');
+            responsesDiv.innerHTML = responses[id];
+            setTimeout(() => responsesDiv.innerHTML = "", 3000);
+        }
+
+        function startGameTransition() {
+            document.querySelector('.container').style.display = 'none';
+            const binaryDiv = document.getElementById('binaryTransition');
+            binaryDiv.style.display = 'flex';
+            
+            // Binary transition effect
+            let binaryContent = '';
+            for(let i = 0; i < 100; i++) {
+                binaryContent += Math.random() > 0.5 ? '1' : '0';
+            }
+            binaryDiv.textContent = binaryContent;
+
+            const interval = setInterval(() => {
+                let newBinary = '';
+                for(let i = 0; i < 100; i++) {
+                    newBinary += Math.random() > 0.5 ? '1' : '0';
+                }
+                binaryDiv.textContent = newBinary;
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                binaryDiv.style.display = 'none';
+                initializeGame();
+            }, 2000);
+        }
+
+        function initializeGame() {
+            document.getElementById('gameContainer').style.display = 'block';
+            
+            new p5(p => {
+                let scl = 40;
+                let cols, rows;
+                let snake;
+                let food;
+                let dir;
+
+                p.setup = () => {
+                    p.createCanvas(800, 600);
+                    cols = p.floor(p.width / scl);
+                    rows = p.floor(p.height / scl);
+                    snake = new Snake();
+                    pickLocation();
+                };
+
+                function pickLocation() {
+                    food = p.createVector(
+                        p.floor(p.random(cols)),
+                        p.floor(p.random(rows))
+                    );
+                }
+
+                p.draw = () => {
+                    p.background(48, 92, 204);
+                    
+                    if(snake.eat(food)) {
+                        pickLocation();
+                    }
+                    snake.update();
+                    snake.show();
+
+                    p.fill(255);
+                    p.rect(food.x * scl, food.y * scl, scl, scl);
+                };
+
+                p.keyPressed = () => {
+                    switch(p.keyCode) {
+                        case p.UP_ARROW:
+                            if(dir !== 'DOWN') dir = 'UP';
+                            break;
+                        case p.DOWN_ARROW:
+                            if(dir !== 'UP') dir = 'DOWN';
+                            break;
+                        case p.RIGHT_ARROW:
+                            if(dir !== 'LEFT') dir = 'RIGHT';
+                            break;
+                        case p.LEFT_ARROW:
+                            if(dir !== 'RIGHT') dir = 'LEFT';
+                            break;
+                    }
+                };
+
+                class Snake {
+                    constructor() {
+                        this.x = 0;
+                        this.y = 0;
+                        this.xspeed = 1;
+                        this.yspeed = 0;
+                        this.total = 0;
+                        this.tail = [];
+                    }
+
+                    update() {
+                        if(this.total === this.tail.length) {
+                            for(let i = 0; i < this.tail.length-1; i++) {
+                                this.tail[i] = this.tail[i+1];
+                            }
+                        }
+                        this.tail[this.total-1] = p.createVector(this.x, this.y);
+
+                        this.x += this.xspeed * scl;
+                        this.y += this.yspeed * scl;
+
+                        this.x = p.constrain(this.x, 0, p.width-scl);
+                        this.y = p.constrain(this.y, 0, p.height-scl);
+                    }
+
+                    show() {
+                        p.fill(255);
+                        for(let i = 0; i < this.tail.length; i++) {
+                            p.rect(this.tail[i].x, this.tail[i].y, scl, scl);
+                        }
+                        p.rect(this.x, this.y, scl, scl);
+                    }
+
+                    eat(pos) {
+                        const d = p.dist(this.x, this.y, pos.x * scl, pos.y * scl);
+                        return d < 1;
+                    }
+                }
+            }, 'gameContainer');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

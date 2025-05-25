@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shape Tile Painter</title>
+    <style>
+        canvas {
+            border: 1px solid #333;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            margin: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div class="controls">
+        <button onclick="toggleMode()">Toggle View</button>
+        <button onclick="clearCanvas()">Reset Shapes</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const tileSize = 40;
+        const gridSize = 12;
+        let showPatterns = true;
+
+        canvas.width = gridSize * tileSize;
+        canvas.height = gridSize * tileSize;
+
+        class Tile {
+            constructor() {
+                this.pattern = this.randomPattern();
+                this.active = true;
+            }
+
+            randomPattern() {
+                const patterns = [
+                    this.drawCircle,
+                    this.drawTriangle,
+                    this.drawSquare,
+                    this.drawDiamond
+                ];
+                return patterns[Math.floor(Math.random() * patterns.length)];
+            }
+
+            drawCircle(x, y) {
+                ctx.beginPath();
+                ctx.arc(x + tileSize/2, y + tileSize/2, tileSize/3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawTriangle(x, y) {
+                ctx.beginPath();
+                ctx.moveTo(x + tileSize/2, y + tileSize/4);
+                ctx.lineTo(x + tileSize/4, y + tileSize*3/4);
+                ctx.lineTo(x + tileSize*3/4, y + tileSize*3/4);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawSquare(x, y) {
+                ctx.fillRect(x + tileSize/4, y + tileSize/4, tileSize/2, tileSize/2);
+            }
+
+            drawDiamond(x, y) {
+                ctx.beginPath();
+                ctx.moveTo(x + tileSize/2, y);
+                ctx.lineTo(x + tileSize, y + tileSize/2);
+                ctx.lineTo(x + tileSize/2, y + tileSize);
+                ctx.lineTo(x, y + tileSize/2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        let grid = Array(gridSize).fill().map(() => 
+            Array(gridSize).fill().map(() => new Tile())
+        );
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            grid.forEach((row, y) => {
+                row.forEach((tile, x) => {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    
+                    if (showPatterns && tile.active) {
+                        ctx.fillStyle = '#0078d4';
+                        tile.pattern(x * tileSize, y * tileSize);
+                    }
+                    
+                    ctx.strokeStyle = '#cccccc';
+                    ctx.strokeRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                });
+            });
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / tileSize);
+            const y = Math.floor((e.clientY - rect.top) / tileSize);
+            
+            if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
+                grid[y][x].active = !grid[y][x].active;
+                draw();
+            }
+        });
+
+        function toggleMode() {
+            showPatterns = !showPatterns;
+            draw();
+        }
+
+        function clearCanvas() {
+            grid = grid.map(row => 
+                row.map(() => new Tile())
+            );
+            draw();
+        }
+
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>

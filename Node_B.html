@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE 2: Climate Collapse</title>
+    <style>
+        :root {
+            --primary: #305CCC;
+            --secondary: #FFFFFF;
+            --typing-speed: 0.1s;
+            --blink-speed: 0.75s;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary);
+            color: var(--secondary);
+            font-family: 'Courier New', monospace;
+            overflow: auto;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+        }
+
+        .typing-animation {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 20px 0;
+            border-right: 2px solid var(--secondary);
+            max-width: fit-content;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--secondary) }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <h1 class="typing-animation">NODE 2 HISTORICAL REVIEW: CLIMATE COLLAPSE</h1>
+        <h2 class="typing-animation">Timeframe: Common Era, years 2020–2035</h2>
+
+        <div class="typing-animation">
+            <p>During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Oceanic Fungal Proliferation</h3>
+            <p>Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Surface Temperature Increase</h3>
+            <p>Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Forest Fires</h3>
+            <p>Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Species Extinction</h3>
+            <p>Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Extreme Weather Events</h3>
+            <p>Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Food Shortages</h3>
+            <p>Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>Coral Reef Degradation</h3>
+            <p>Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.</p>
+        </div>
+
+        <div class="typing-animation">
+            <h3>ORIGIN</h3>
+            <p>These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.</p>
+            <p>
+                ● Humans, emission, waste, excess, evolution, capital<br>
+                ● Storm, drought, fire, extinction, floods, displacement<br>
+                ● Heat, loss, disruption, insecurity, inaction
+            </p>
+        </div>
+
+        <button id="return-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
+    </div>
+
+    <audio id="backgroundSound" controls hidden>
+        <source src="your-sound-file.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Loading and initial animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                document.querySelector('.container').style.opacity = '1';
+                startTypingAnimations();
+            }, 3000);
+        });
+
+        function startTypingAnimations() {
+            const elements = document.querySelectorAll('.typing-animation');
+            let delay = 0;
+            
+            elements.forEach((el, index) => {
+                const textLength = el.textContent.length;
+                const duration = Math.max(textLength * 0.05, 2); // Minimum 2 seconds per section
+                
+                setTimeout(() => {
+                    el.style.animation = `typing ${duration}s steps(${textLength}, end), 
+                                        blink-caret ${getComputedStyle(document.documentElement).getPropertyValue('--blink-speed')} step-end infinite`;
+                    el.style.whiteSpace = 'normal';
+                    
+                    // Remove cursor after animation
+                    setTimeout(() => {
+                        el.style.borderRight = 'none';
+                    }, duration * 1000);
+
+                    // Show return button after last animation
+                    if(index === elements.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById('return-button').style.display = 'block';
+                            setTimeout(() => {
+                                document.getElementById('return-button').style.opacity = '1';
+                            }, 100);
+                        }, duration * 1000);
+                    }
+                }, delay * 1000);
+
+                delay += duration + 1; // Add 1 second between sections
+            });
+        }
+
+        function returnToMain() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 500);
+        }
+    </script>
+</body>
+</html>

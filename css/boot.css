@@ -1,0 +1,43 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: monospace;
+    background: radial-gradient(circle at 85% 40%, rgba(0, 60, 255, 0.1), white); /* matches menu */
+    color: #1f45d4; /* matches menu text color */
+    overflow: hidden;
+  }
+  
+  .screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  #boot-screen h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: #1f45d4;
+    animation: flicker 1s infinite alternate;
+  }
+  
+  #boot-screen p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    color: #0033cc; /* darker blue to contrast */
+    animation: flicker 1.5s infinite alternate;
+  }
+  
+  @keyframes flicker {
+    0% {opacity: 1;}
+    50% {opacity: 0.5;}
+    100% {opacity: 1;}
+  }
+  
