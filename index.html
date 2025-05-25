@@ -3,20 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Booting</title>
-  <link rel="stylesheet" href="css/boot.css">
+  <title>AfterLight</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Roboto Mono', monospace;
+      background: radial-gradient(circle at 85% 40%, rgba(48, 92, 204, 0.15), #FFFFFF);
+      color: #305CCC;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+    }
+
+    #boot-screen h1 {
+      font-size: 4rem;
+      margin: 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      animation: 
+        glitch 1s infinite,
+        text-glow 2s ease-in-out infinite;
+      position: relative;
+    }
+
+    #boot-screen h2 {
+      font-size: 1.5rem;
+      margin-top: 30px;
+      font-weight: 700;
+      opacity: 0;
+      animation: 
+        typewriter 1.2s steps(25) 0.5s forwards,
+        cursor 0.8s infinite 1.7s,
+        text-pulse 1s infinite 2s;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    @keyframes glitch {
+      0% { 
+        transform: translate(2px, 1px);
+        text-shadow: 3px 3px rgba(48, 92, 204, 0.4);
+      }
+      25% { 
+        transform: translate(-3px, 2px);
+        text-shadow: -3px -2px rgba(48, 92, 204, 0.4);
+      }
+      50% { 
+        transform: translate(1px, -3px);
+        text-shadow: 2px -3px rgba(48, 92, 204, 0.4);
+      }
+      75% { 
+        transform: translate(-2px, -1px);
+        text-shadow: -2px 3px rgba(48, 92, 204, 0.4);
+      }
+      100% { 
+        transform: translate(0);
+        text-shadow: 3px 3px rgba(48, 92, 204, 0.4);
+      }
+    }
+
+    @keyframes text-glow {
+      0%, 100% { text-shadow: 0 0 20px rgba(48, 92, 204, 0.3); }
+      50% { text-shadow: 0 0 40px rgba(48, 92, 204, 0.5); }
+    }
+
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; opacity: 1; }
+    }
+
+    @keyframes cursor {
+      from, to { border-right: 3px solid transparent; }
+      50% { border-right: 3px solid #305CCC; }
+    }
+
+    @keyframes text-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .loading-dots {
+      margin-top: 40px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      background: #305CCC;
+      border-radius: 50%;
+      opacity: 0;
+      animation: dot-bounce 0.8s infinite alternate;
+      box-shadow: 0 2px 8px rgba(48, 92, 204, 0.3);
+    }
+
+    .dot:nth-child(1) { animation-delay: 0.2s; }
+    .dot:nth-child(2) { animation-delay: 0.4s; }
+    .dot:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes dot-bounce {
+      0% { 
+        opacity: 0; 
+        transform: translateY(10px) scale(0.8);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1.2);
+      }
+    }
+
+    /* Clean background pulse */
+    body::after {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, 
+        rgba(48, 92, 204, 0.08) 0%, 
+        transparent 60%);
+      animation: pulse 3s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 0.3; }
+      100% { transform: scale(1); opacity: 0.6; }
+    }
+  </style>
   <script>
     window.addEventListener('load', () => {
       setTimeout(() => {
-        window.location.href = "main.html";  // Navigate to menu page
-      }, 3000); // 3 seconds delay
+        window.location.href = "main.html";
+      }, 5000);
     });
   </script>
 </head>
 <body>
   <div id="boot-screen" class="screen active">
     <h1>BOOTING...</h1>
-    <p>Welcome to the AFTRELIGHT! </p>
+    <h2>Welcome to the AFTRELIGHT!</h2>
+    <div class="loading-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
   </div>
 </body>
 </html>
