@@ -475,7 +475,7 @@
 
 // updated
 
-let scl = 90;
+let scl = 70;
 let cols, rows;
 let snake;
 let foodWords = [];
@@ -485,20 +485,20 @@ let gameStarted = false;
 let collectedWords = [];
 
 function setup() {
-  createCanvas(1200, 880); // Extended width for word box
-  cols = floor((width - 200) / scl); // Allocate 200px for word box
+  let canvas = createCanvas(1200, 880);
+  canvas.parent('canvas-container');
+  cols = floor((width - 200) / scl);
   rows = floor(height / scl);
   snake = new Snake();
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 30; i++) { // Reduced particles for performance
     particles.push(new Particle());
   }
 
   textFont('monospace');
   textAlign(CENTER, CENTER);
-  frameRate(4);
+  frameRate(10); // Increased frame rate for smoother animation
 }
-
 function draw() {
   background(255);
 
@@ -520,10 +520,10 @@ function draw() {
     }
 
     if (snake.endGame()) {
+      showGameOver();
       gameStarted = false;
       snake = new Snake();
       foodWords = [];
-      collectedWords = [];
     }
   } else {
     fill(0, 90, 255);
@@ -657,11 +657,9 @@ class Snake {
     head.x += this.xdir;
     head.y += this.ydir;
   
-    // Wrap around horizontally
+    // Wrap around logic remains same
     if (head.x >= cols) head.x = 0;
     else if (head.x < 0) head.x = cols - 1;
-  
-    // Wrap around vertically
     if (head.y >= rows) head.y = 0;
     else if (head.y < 0) head.y = rows - 1;
   
@@ -677,6 +675,7 @@ class Snake {
   grow() {
     this.growthCounter += 1;
   }
+
 
   eatAny(foods) {
     let head = this.body[this.body.length - 1];
@@ -702,13 +701,36 @@ class Snake {
   
 
   show() {
-    for (let part of this.body) {
-      fill(0, 90, 255);
+    for (let i = 0; i < this.body.length; i++) {
+      let part = this.body[i];
+      // Sleeker snake with gradient effect
+      let alpha = map(i, 0, this.body.length, 200, 50);
+      let size = map(i, 0, this.body.length, scl*0.8, scl*0.6);
+      
+      fill(0, 90, 255, alpha);
       noStroke();
-      rect(part.x * scl, part.y * scl, scl, scl);
+      ellipse(
+        part.x * scl + scl/2,
+        part.y * scl + scl/2,
+        size,
+        size
+      );
     }
   }
-}  
+}
+
+
+function showGameOver() {
+  fill(0, 90, 255);
+  textSize(32);
+  text("GAME OVER - COLLECTED WORDS:", width/2, height/2 - 40);
+  textSize(24);
+  for(let i = 0; i < collectedWords.length; i++) {
+    text(collectedWords[i], width/2, height/2 + i * 30);
+  }
+  textSize(16);
+  text("Press any arrow key to restart", width/2, height - 50);
+}
 
 class Particle {
   constructor() {
