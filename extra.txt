@@ -887,3 +887,350 @@ node calibrate
     
 </body>
 </html> -->
+
+
+
+node background
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Collapse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #305CCC;
+            --secondary: #FFFFFF;
+            --typing-speed: 0.1s;
+            --blink-speed: 0.75s;
+        }
+
+       /* body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary);
+            color: var(--secondary);
+            font-family: 'Roboto Mono', monospace;
+            overflow: auto;
+        }*/
+        body {
+            background-color: #FFFFFF;
+            color: #305CCC;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: auto;
+            
+            background-image: url('images/background.svg');  /* fixed path */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+          }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+   
+        .typing-animation p,
+.typing-animation h3 {
+    display: block;
+    overflow: hidden;
+    white-space: pre-wrap;
+    border-right: 2px solid var(--secondary);
+    animation: typing 2s steps(200, end), blink-caret 0.75s step-end infinite;
+
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.centered-typing {
+    position: relative; /* Changed from fixed */
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+    opacity: 0;
+    display: none; /* Ensure it's hidden by default */
+    pointer-events: auto;
+}
+.centered-typing {
+    transition: opacity 0.5s ease-in-out;
+}
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -60%); }
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--secondary) }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #return-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+
+        <h1 id="main-heading"></h1>
+        <h2 id="sub-heading"></h2>
+
+        <div class="centered-typing" id="section1">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section2">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section3">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section4">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section5">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section6">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section7">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section8">
+            <div class="typing-animation"></div>
+        </div>
+        <div class="centered-typing" id="section9">
+            <div class="typing-animation"></div>
+        </div>
+
+        <button id="return-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
+    </div>
+
+    <audio id="backgroundSound" controls hidden>
+        <source src="your-sound-file.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <script>
+        // Loading and initial animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                document.querySelector('.container').style.opacity = '1';
+                startSequence();
+            }, 3000);
+        });
+        let currentActiveSection = null;
+
+        const TYPING_SPEED = 40; // Adjust typing speed (lower = faster)
+        const SECTIONS = [
+            { id: 'main-heading', text: 'Ponder' },
+            { id: 'sub-heading', text: 'Initializing historical sequence. Timeframe: Common Era, years 2020–2035.' },
+            {
+                id: 'section1',
+                html: `<p>During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.</p>`
+            },
+            {
+                id: 'section2',
+                html: `<p>Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.</p>`
+            },
+            {
+                id: 'section3',
+                html: `<p>Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.</p>`
+            },
+            {
+                id: 'section4',
+                html: `
+                      <p>Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.</p>`
+            },
+            {
+                id: 'section5',
+                html: `
+                      <p>Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.</p>`
+            },
+            {
+                id: 'section6',
+                html: `
+                      <p>Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.</p>`
+            },
+            {
+                id: 'section7',
+                html: `
+                      <p>Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.</p>`
+            },
+            {
+                id: 'section8',
+                html: `
+                      <p>Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.</p>`
+            },
+            {
+                id: 'section9',
+                html: `
+                      <p>These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.</p>
+                     `
+            }
+        ];
+
+        let currentSection = 0;
+        let cursorInterval;
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                startPresentation();
+            }, 3000);
+        });
+
+        async function startPresentation() {
+            // Animate main heading
+            await typeText(document.getElementById('main-heading'), SECTIONS[0].text);
+            // Animate sub heading
+            await typeText(document.getElementById('sub-heading'), SECTIONS[1].text);
+            
+            // Start section sequence
+            document.addEventListener('click', handleClick);
+            showNextSection();
+        }
+        async function showNextSection() {
+            if (currentSection >= SECTIONS.length - 2) {
+                document.removeEventListener('click', handleClick);
+                showReturnButton();
+                return;
+            }
+        
+            // Hide all centered-typing sections
+            document.querySelectorAll('.centered-typing').forEach(sec => {
+                sec.style.display = 'none';
+                sec.style.opacity = '0';
+            });
+        
+            const section = SECTIONS[currentSection + 2];
+            const element = document.getElementById(section.id);
+        
+            if (section.html) {
+                element.querySelector('.typing-animation').innerHTML = section.html;
+                element.style.display = 'block';
+                await animateSectionContent(element);
+            }
+        
+            currentSection++;
+        }
+        
+        
+
+        async function animateSectionContent(section) {
+            section.style.opacity = '1';
+            const elements = section.querySelectorAll('h3, p');
+            
+            for (const el of elements) {
+                const originalHTML = el.innerHTML;
+                el.innerHTML = '';
+                await typeText(el, originalHTML);
+            }
+        }
+
+        function typeText(element, text) {
+            return new Promise(resolve => {
+                let i = 0;
+                const cursor = document.createElement('span');
+                cursor.className = 'cursor';
+                element.appendChild(cursor);
+
+                function type() {
+                    if (i < text.length) {
+                        element.insertBefore(document.createTextNode(text[i]), cursor);
+                        i++;
+                        setTimeout(type, TYPING_SPEED);
+                    } else {
+                        element.removeChild(cursor);
+                        resolve();
+                    }
+                }
+
+                type();
+            });
+        }
+
+        function handleClick() {
+            showNextSection();
+        }
+
+        function showReturnButton() {
+            const button = document.getElementById('return-button');
+            button.style.display = 'block';
+            setTimeout(() => button.style.opacity = '1', 100);
+        }
+
+        function returnToMain() {
+            document.body.style.opacity = '0';
+            setTimeout(() => window.location.href = 'main.html', 500);
+        }
+    </script>
+</body>
+</html>
+
+
+
+

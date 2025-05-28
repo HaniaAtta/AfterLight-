@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Climate Collapse</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --primary: #305CCC;
@@ -13,15 +12,19 @@
             --typing-speed: 0.1s;
             --blink-speed: 0.75s;
         }
-
-       /* body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--primary);
-            color: var(--secondary);
-            font-family: 'Roboto Mono', monospace;
-            overflow: auto;
-        }*/
+        #main-heading {
+            font-size: 3rem;    /* Bigger font size */
+            font-weight: 900;   /* Bold font */
+            margin-bottom: 0.5rem; /* Optional spacing */
+          }
+          
+          #sub-heading {
+            font-size: 1.8rem;  /* Slightly smaller than main heading */
+            font-weight: 600;
+            margin-bottom: 1.5rem;   /* Semi-bold */
+              /* Optional: better contrast */
+          }
+          
         body {
             background-color: #FFFFFF;
             color: #305CCC;
@@ -38,6 +41,16 @@
             background-position: center;
             
           }
+
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+     
 
         .loading-screen {
             position: fixed;
@@ -61,61 +74,99 @@
             animation: spin 1s linear infinite;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .card-container {
+            display: flex;
+            justify-content: center;
+            min-height: 400px;
+            margin: 100px 0;
         }
 
-   
-        .typing-animation p,
-.typing-animation h3 {
-    display: block;
-    overflow: hidden;
-    white-space: pre-wrap;
-    border-right: 2px solid var(--secondary);
-    animation: typing 2s steps(200, end), blink-caret 0.75s step-end infinite;
-
-}
-
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-.centered-typing {
-    position: relative; /* Changed from fixed */
-    width: 100%;
-    max-width: 800px;
-    margin: 40px auto;
-    text-align: center;
-    opacity: 0;
-    display: none; /* Ensure it's hidden by default */
-    pointer-events: auto;
-}
-.centered-typing {
-    transition: opacity 0.5s ease-in-out;
-}
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -40%); }
-            20% { opacity: 1; transform: translate(-50%, -50%); }
-            80% { opacity: 1; transform: translate(-50%, -50%); }
-            100% { opacity: 0; transform: translate(-50%, -60%); }
+        .card {
+            border: 3px solid #a1b0e1;
+            border-radius: 8px;
+            padding: 30px;
+            width: 80%;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 12px #abc;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .card.active {
+            display: block;
+            opacity: 1;
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--secondary) }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .node-label {
+            background-color: #2b57ec;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #2b57ec;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .faded-bars {
+            margin: 15px 0;
+        }
+
+        .faded-bars .bar {
+            background-color: #cbdafc;
+            height: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+
+        .typing-animation {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .typing-animation p {
+            display: block;
+            overflow: hidden;
+            white-space: pre-wrap;
+            border-right: 2px solid #2b57ec;
+            animation: typing 2s steps(200, end), blink-caret 0.75s step-end infinite;
+        }
+
+        .arrows {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            font-size: 1.5rem;
+            color: #2b57ec;
+            user-select: none;
+        }
+
+        .arrow {
+            margin: 5px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .arrow:hover {
+            transform: scale(1.2);
         }
 
         #return-button {
@@ -123,13 +174,75 @@
             bottom: 20px;
             right: 20px;
             padding: 10px 20px;
-            background: var(--secondary);
-            color: var(--primary);
+            background: #2b57ec;
+            color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.5s;
             display: none;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        #return-button:hover {
+            background: #1a46d0;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-dot-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbdafc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .progress-dot-indicator.active {
+            background-color: #2b57ec;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #2b57ec; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 90%;
+                padding: 20px;
+            }
+            
+            .arrows {
+                right: 10px;
+                font-size: 1.3rem;
+            }
+            
+            .typing-animation {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -139,199 +252,315 @@
     </div>
 
     <div class="container">
-        <h1 id="main-heading"></h1>
-        <h2 id="sub-heading"></h2>
+        <div class="header">
+            <h1 id="main-heading"></h1>
+            <h2 id="sub-heading"></h2>
+          </div>
 
-        <div class="centered-typing" id="section1">
-            <div class="typing-animation"></div>
+        <div class="card-container">
+            <!-- Cards will be generated dynamically -->
         </div>
-        <div class="centered-typing" id="section2">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section3">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section4">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section5">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section6">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section7">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section8">
-            <div class="typing-animation"></div>
-        </div>
-        <div class="centered-typing" id="section9">
-            <div class="typing-animation"></div>
+        
+        <div class="progress-container">
+            <div class="progress-dots" id="progress-dots"></div>
         </div>
 
         <button id="return-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
     </div>
 
-    <audio id="backgroundSound" controls hidden>
-        <source src="your-sound-file.mp3" type="audio/mpeg">
-    </audio>
+    
 
-
-    <script>
-        // Loading and initial animation
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loading-screen').style.display = 'none';
-                document.querySelector('.container').style.opacity = '1';
-                startSequence();
-            }, 3000);
-        });
-        let currentActiveSection = null;
-
-        const TYPING_SPEED = 40; // Adjust typing speed (lower = faster)
-        const SECTIONS = [
-            { id: 'main-heading', text: 'Ponder' },
-            { id: 'sub-heading', text: 'Initializing historical sequence. Timeframe: Common Era, years 2020–2035.' },
-            {
-                id: 'section1',
-                html: `<p>During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.</p>`
-            },
-            {
-                id: 'section2',
-                html: `<p>Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.</p>`
-            },
-            {
-                id: 'section3',
-                html: `<p>Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.</p>`
-            },
-            {
-                id: 'section4',
-                html: `
-                      <p>Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.</p>`
-            },
-            {
-                id: 'section5',
-                html: `
-                      <p>Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.</p>`
-            },
-            {
-                id: 'section6',
-                html: `
-                      <p>Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.</p>`
-            },
-            {
-                id: 'section7',
-                html: `
-                      <p>Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.</p>`
-            },
-            {
-                id: 'section8',
-                html: `
-                      <p>Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.</p>`
-            },
-            {
-                id: 'section9',
-                html: `
-                      <p>These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.</p>
-                     `
-            }
-        ];
-
-        let currentSection = 0;
-        let cursorInterval;
-
+    <!-- <script>
+ 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
                 startPresentation();
-            }, 3000);
+            }, 2000);
         });
-
-        async function startPresentation() {
-            // Animate main heading
-            await typeText(document.getElementById('main-heading'), SECTIONS[0].text);
-            // Animate sub heading
-            await typeText(document.getElementById('sub-heading'), SECTIONS[1].text);
-            
-            // Start section sequence
-            document.addEventListener('click', handleClick);
-            showNextSection();
+        
+        let currentActiveSection = null;
+        
+        const CARDS = [
+            { nodeLabel: 'Step 1', content: `During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.` },
+            { nodeLabel: 'Step 2', content: `Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.` },
+            { nodeLabel: 'Step 3', content: `Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.` },
+            { nodeLabel: 'Step 4', content: `Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.` },
+            { nodeLabel: 'Step 5', content: `Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.` },
+            { nodeLabel: 'Step 6', content: `Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.` },
+            { nodeLabel: 'Step 7', content: `Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.` },
+            { nodeLabel: 'Step 8', content: `Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.` },
+            { nodeLabel: 'Step 9', content: `These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.` }
+        ];
+        
+        let currentCardIndex = 0;
+        const TYPING_SPEED = 30;
+        
+        function createCardElement(cardData, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${index}`;
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="node-label">${cardData.nodeLabel}</div>
+                    <div class="progress-dot"></div>
+                </div>
+                <div class="faded-bars">
+                    <div class="bar" style="width:70%"></div>
+                    <div class="bar" style="width:80%"></div>
+                    <div class="bar" style="width:60%"></div>
+                </div>
+                <div class="typing-animation" id="typing-${index}"></div>
+                <div class="arrows">
+                    <div class="arrow arrow-up">▲</div>
+                    <div class="arrow arrow-down">▼</div>
+                </div>
+            `;
+        
+            // Arrow event listeners
+            card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
+            card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
+        
+            return card;
         }
-        async function showNextSection() {
-            if (currentSection >= SECTIONS.length - 2) {
-                document.removeEventListener('click', handleClick);
-                showReturnButton();
+        
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+        
+            CARDS.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot-indicator';
+                if (index === currentCardIndex) {
+                    dot.classList.add('active');
+                }
+                dot.addEventListener('click', () => navigateToCard(index));
+                dotsContainer.appendChild(dot);
+            });
+        }
+        
+        function navigateToCard(index) {
+            if (index < 0 || index >= CARDS.length) return;
+        
+            // Hide previous card
+            if (currentCardIndex !== -1) {
+                document.getElementById(`card-${currentCardIndex}`).classList.remove('active');
+            }
+        
+            currentCardIndex = index;
+            const card = document.getElementById(`card-${currentCardIndex}`);
+            card.classList.add('active');
+        
+            createProgressDots();
+            triggerTypingAnimation(currentCardIndex);
+        
+            // Show or hide return button
+            const returnBtn = document.getElementById('return-button');
+            if (currentCardIndex > 0) {
+                returnBtn.style.display = 'block';
+                setTimeout(() => { returnBtn.style.opacity = '1'; }, 10);
+            } else {
+                returnBtn.style.opacity = '0';
+                setTimeout(() => { returnBtn.style.display = 'none'; }, 500);
+            }
+        }
+        
+        function triggerTypingAnimation(index) {
+            const typingEl = document.getElementById(`typing-${index}`);
+            const text = CARDS[index].content;
+            typingEl.textContent = ''; // Clear existing text
+            let i = 0;
+        
+            function type() {
+                if (i < text.length) {
+                    typingEl.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, TYPING_SPEED);
+                }
+            }
+        
+            type();
+        }
+        
+        function startPresentation() {
+            const container = document.querySelector('.card-container');
+        
+            // Create cards
+            CARDS.forEach((cardData, i) => {
+                const cardEl = createCardElement(cardData, i);
+                container.appendChild(cardEl);
+            });
+        
+            createProgressDots();
+            currentCardIndex = 0;
+            navigateToCard(0);
+        }
+        
+        function returnToMain() {
+            window.location.href = 'main.html';
+        }
+        
+    </script> -->
+
+    <script>
+        const TYPING_SPEED = 30;
+    
+        const SECTIONS = [
+            { id: 'main-heading', text: 'Ponder' },
+            { id: 'sub-heading', text: 'Initializing historical sequence. Timeframe: Common Era, years 2020–2035.' }
+        ];
+    
+        const CARDS = [
+            { nodeLabel: 'Step 1', content: `During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.` },
+            { nodeLabel: 'Step 2', content: `Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.` },
+            { nodeLabel: 'Step 3', content: `Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.` },
+            { nodeLabel: 'Step 4', content: `Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.` },
+            { nodeLabel: 'Step 5', content: `Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.` },
+            { nodeLabel: 'Step 6', content: `Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.` },
+            { nodeLabel: 'Step 7', content: `Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.` },
+            { nodeLabel: 'Step 8', content: `Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.` },
+            { nodeLabel: 'Step 9', content: `These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.` }
+        ];
+    
+        let currentCardIndex = 0;
+    
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                startPresentation();
+            }, 2000);
+        });
+    
+        // Type out heading sections one by one
+        function typeText(index = 0, callback) {
+            if (index >= SECTIONS.length) {
+                callback();
                 return;
             }
-        
-            // Hide all centered-typing sections
-            document.querySelectorAll('.centered-typing').forEach(sec => {
-                sec.style.display = 'none';
-                sec.style.opacity = '0';
-            });
-        
-            const section = SECTIONS[currentSection + 2];
-            const element = document.getElementById(section.id);
-        
-            if (section.html) {
-                element.querySelector('.typing-animation').innerHTML = section.html;
-                element.style.display = 'block';
-                await animateSectionContent(element);
-            }
-        
-            currentSection++;
-        }
-        
-        
-
-        async function animateSectionContent(section) {
-            section.style.opacity = '1';
-            const elements = section.querySelectorAll('h3, p');
-            
-            for (const el of elements) {
-                const originalHTML = el.innerHTML;
-                el.innerHTML = '';
-                await typeText(el, originalHTML);
-            }
-        }
-
-        function typeText(element, text) {
-            return new Promise(resolve => {
-                let i = 0;
-                const cursor = document.createElement('span');
-                cursor.className = 'cursor';
-                element.appendChild(cursor);
-
-                function type() {
-                    if (i < text.length) {
-                        element.insertBefore(document.createTextNode(text[i]), cursor);
-                        i++;
-                        setTimeout(type, TYPING_SPEED);
-                    } else {
-                        element.removeChild(cursor);
-                        resolve();
-                    }
+    
+            const { id, text } = SECTIONS[index];
+            const element = document.getElementById(id);
+            element.textContent = '';
+            let charIndex = 0;
+    
+            const interval = setInterval(() => {
+                element.textContent += text.charAt(charIndex);
+                charIndex++;
+                if (charIndex === text.length) {
+                    clearInterval(interval);
+                    setTimeout(() => typeText(index + 1, callback), 500); // Delay before next section
                 }
-
-                type();
+            }, TYPING_SPEED);
+        }
+    
+        // Create a card element with navigation arrows and progress dots
+        function createCardElement(cardData, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${index}`;
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="node-label">${cardData.nodeLabel}</div>
+                    <div class="progress-dot"></div>
+                </div>
+                <div class="faded-bars">
+                    <div class="bar" style="width:70%"></div>
+                    <div class="bar" style="width:80%"></div>
+                    <div class="bar" style="width:60%"></div>
+                </div>
+                <div class="typing-animation" id="typing-${index}"></div>
+                <div class="arrows">
+                    <div class="arrow arrow-up">▲</div>
+                    <div class="arrow arrow-down">▼</div>
+                </div>
+            `;
+    
+            card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
+            card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
+    
+            return card;
+        }
+    
+        // Create all cards and add to container
+        function createCards() {
+            const container = document.querySelector('.card-container');
+            container.innerHTML = ''; // Clear existing cards if any
+            CARDS.forEach((cardData, i) => {
+                const cardEl = createCardElement(cardData, i);
+                container.appendChild(cardEl);
             });
         }
-
-        function handleClick() {
-            showNextSection();
+    
+        // Create progress dots and highlight current
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            CARDS.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot-indicator';
+                if (index === currentCardIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => navigateToCard(index));
+                dotsContainer.appendChild(dot);
+            });
         }
-
-        function showReturnButton() {
-            const button = document.getElementById('return-button');
-            button.style.display = 'block';
-            setTimeout(() => button.style.opacity = '1', 100);
+    
+        // Navigate to specific card by index
+        function navigateToCard(index) {
+            if (index < 0 || index >= CARDS.length) return;
+    
+            // Hide previous active card
+            const prevCard = document.getElementById(`card-${currentCardIndex}`);
+            if (prevCard) prevCard.classList.remove('active');
+    
+            currentCardIndex = index;
+            const card = document.getElementById(`card-${currentCardIndex}`);
+            if (card) card.classList.add('active');
+    
+            createProgressDots();
+            triggerTypingAnimation(currentCardIndex);
+    
+            // Show or hide return button
+            const returnBtn = document.getElementById('return-button');
+            if (currentCardIndex > 0) {
+                returnBtn.style.display = 'block';
+                setTimeout(() => { returnBtn.style.opacity = '1'; }, 10);
+            } else {
+                returnBtn.style.opacity = '0';
+                setTimeout(() => { returnBtn.style.display = 'none'; }, 500);
+            }
         }
-
+    
+        // Typing animation for card content
+        function triggerTypingAnimation(index) {
+            const typingEl = document.getElementById(`typing-${index}`);
+            const text = CARDS[index].content;
+            typingEl.textContent = ''; // Clear previous text
+            let i = 0;
+    
+            function type() {
+                if (i < text.length) {
+                    typingEl.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, TYPING_SPEED);
+                }
+            }
+            type();
+        }
+    
+        // Start the whole presentation: type headings first, then show cards
+        function startPresentation() {
+            typeText(0, () => {
+                createCards();
+                createProgressDots();
+                navigateToCard(0);
+            });
+        }
+    
+        // Return to main page function
         function returnToMain() {
-            document.body.style.opacity = '0';
-            setTimeout(() => window.location.href = 'main.html', 500);
+            window.location.href = 'main.html';
         }
     </script>
+    
 </body>
 </html>
