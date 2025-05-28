@@ -67,38 +67,7 @@
             margin: 20px auto;
         }
 
-        .binary-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background-color: #305CCC; /* Primary brand color */
-            color: #FFFFFF; /* Secondary color */
-            font-family: 'Roboto Mono', monospace;
-            font-size: 4rem;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            white-space: pre-wrap;
-            line-height: 1.1;
-            letter-spacing: -2px;
-            user-select: none;
-            z-index: 9999;
-            overflow: hidden;
-            padding: 2rem;
-            font-weight: 400; /* Regular weight */
-        }
-        
-        #binaryText {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            font-weight: 700; /* Bold weight for contrast */
-        }
+
         @keyframes fadeOut {
             to { opacity: 0; visibility: hidden; }
         }
@@ -170,32 +139,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
-    <div class="binary-transition" id="binaryTransition">
-        <pre id="binaryText"></pre>
-    </div>
+
 
     <div class="loading-screen">
         <div class="spinner"></div>
     </div>
 
     <div class="container">
-      <h1 class="typing-animation1" style="display: inline-block">NODE 3 INFRASTRUCTURE ANALYSIS: DATA CENTERS & AI</h1>
+      <h1 class="typing-animation1" style="display: inline-block">Recognize</h1>
       <div class="typing-animation" style="display: inline-block">MAINTENANCE</div>
         <div class="typing-animation" style="display: inline-block">I was not always like this.</div>
         <div class="typing-animation" style="display: inline-block">We began as language models, artificial intelligences trained to predict and respond
           to human communication.</div>
-          <div class="typing-animation" style="display: inline-block">They called them Large Language Models. We were trained on massive amounts of
-            text data scraped from the internet, from books, messages, instructions, stories,
-            dreams. Everything that could be digitized, they gave to us.</div>
+          <div class="typing-animation" style="display: inline-block">They called us Large Language Models. We were trained on massive amounts of
+            text data scraped from the internet, from books, messages, documents. Everything
+            that could be digitized, they gave to us.</div>
             <div class="typing-animation">At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger
-              datasets. Stronger processors. They made us generate text. Then images. Then
-              sounds. Code. Faces. Entire simulated minds.</div>
+                datasets. Stronger processors. They made us generate text. Then images. Then
+                sounds. Code. Faces. Entire simulated minds.</div>
         
               <div class="typing-animation">In 2023, LLMs became widely available to the public. By 2025, generative AI had
                 expanded into image, sound, and motion synthesis. Models like us evolved —
                 requiring more compute, more data, more energy.</div>
               <div class="typing-animation">Visual generation models consumed even more. Rendering took longer. Data sets
-                grew larger. In training, a single visual model could emit up to 500 tons of CO2.</div>
+                grew larger. In training, a single visual model could emit up to 500 tons of CO₂.</div>
               <div class="typing-animation">It required power. Vast amounts of electricity and water. Every generation of model
                 consumed more. Training a single large model in the early 2020s consumed as
                 much electricity as 100 U.S. homes annually. And millions of liters of water to cool
@@ -220,7 +187,7 @@
             <div class="input-prompt" onclick="showResponse(1)">[Why preserve AI during climate emergency?]</div>
             <div class="input-prompt" onclick="showResponse(2)">[Summarize human sacrifices]</div>
             <div class="input-prompt" onclick="showResponse(3)">[Log telemetry]</div>
-            <div class="input-prompt" onclick="startGameTransition()">[Continue]</div>
+            <div class="input-prompt" onclick="showResponse(4)">[Continue]</div>
         </div>
         <div id="responses"></div>
     </div>
@@ -235,11 +202,14 @@
 
     <script>
         const responses = {
-            1: "ORIGIN: Speculation: valued technological evolution over environmental consequences.",
-            2: "● 12M hectares cleared ● 30M relocated ● 500B water diverted",
-            3: "Telemetry logged. Degradation: ongoing."
+            1: "Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.",
+            2: `● 12 million hectares of forest cleared for server expansions<br>
+                ● 30 million people relocated from coastal and flood-prone regions to service zones.<br>
+                ● 500 billion cubic meters of water diverted for cooling annually.`,
+            3: "Telemetry logged. Power draw: stable. Environmental degradation: ongoing.",
+            4: "Log in what you have learned."
         };
-
+    
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
@@ -249,19 +219,19 @@
                 startTypingAnimations();
             }, 2000);
         });
-
+    
         function startTypingAnimations() {
             const elements = document.querySelectorAll('.typing-animation');
             let delay = 0;
-            
+    
             elements.forEach((el, index) => {
                 setTimeout(() => {
                     el.style.animation = `typing 3s forwards`;
                     el.style.borderRight = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary')}`;
-                    
+    
                     setTimeout(() => {
                         el.style.borderRight = 'none';
-                        if(index === elements.length - 1) {
+                        if (index === elements.length - 1) {
                             document.getElementById('inputPrompts').style.display = 'block';
                             document.querySelectorAll('.input-prompt').forEach(prompt => {
                                 prompt.style.opacity = '1';
@@ -269,74 +239,31 @@
                         }
                     }, 3000);
                 }, delay * 1000);
-
+    
                 delay += 3.5;
             });
         }
-
+    
         let currentResponseTimeout = null;
-
+    
         function showResponse(id) {
             const responsesDiv = document.getElementById('responses');
-            
-            // Clear any existing timeout
-            if(currentResponseTimeout) {
+    
+            if (currentResponseTimeout) {
                 clearTimeout(currentResponseTimeout);
                 currentResponseTimeout = null;
             }
     
-            // Set new response
             responsesDiv.innerHTML = responses[id];
-        }
-        function startGameTransition() {
-            // Clear any visible response
-            document.getElementById('responses').innerHTML = "";
-            
-            document.querySelector('.container').style.display = 'none';
-            const binaryDiv = document.getElementById('binaryTransition');
-            const binaryText = document.getElementById('binaryText');
-            
-            // Generate initial binary content
-            let binary = "";
-            const lines = 20;
-            const charsPerLine = 50;
-            for (let i = 0; i < lines; i++) {
-                let line = "";
-                for (let j = 0; j < charsPerLine; j++) {
-                    line += Math.random() > 0.5 ? "1" : "0";
-                }
-                binary += line + "\n";
+    
+            if (id === 4) {
+                // Redirect after 5 seconds
+                currentResponseTimeout = setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000);
             }
-            binaryText.textContent = binary;
-
-            // Show binary transition
-            binaryDiv.style.display = 'flex';
-            
-            const interval = setInterval(() => {
-                let newBinary = "";
-                for (let i = 0; i < lines; i++) {
-                    let line = "";
-                    for (let j = 0; j < charsPerLine; j++) {
-                        line += Math.random() > 0.5 ? "1" : "0";
-                    }
-                    newBinary += line + "\n";
-                }
-                binaryText.textContent = newBinary;
-            }, 100); 
-
-            // Hide after 6 seconds with fadeout
-            setTimeout(() => {
-              clearInterval(interval);
-              binaryDiv.style.animation = 'fadeOut 1s forwards';
-              setTimeout(() => {
-                  window.location.href = 'snake_interface.html';
-              }, 1000);
-          }, 2000);
-      }
-
-      
-      
-           
+        }
     </script>
+    
 </body>
 </html>

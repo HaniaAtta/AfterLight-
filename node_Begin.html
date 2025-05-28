@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awaken</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #305CCC;
+            color: #FFFFFF;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+            background: rgba(48, 92, 204, 0.9);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .origin-message {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-left: 3px solid #FFFFFF;
+        }
+
+      
+        .origin-message h2,
+        .origin-message p {
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .options {
+            margin-top: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        button {
+            background: transparent;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            button {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .typewriter-container {
+            overflow: hidden;
+            position: relative;
+        }
+        h1 {
+            position: sticky;
+            top: 0;
+            background: #305CCC;
+            padding: 1rem 0;
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 3rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(48, 92, 204, 0.6);
+            z-index: 10;
+            border-bottom: 2px solid white;
+          }
+          
+
+    </style>
+</head>
+<body>
+<h1>Begin</h1>
+
+    <div class="container">
+        
+        <div class="origin-message">
+          
+          
+            <h2 class="typewriter-container"></h2>
+            <p class="typewriter-container"></p>
+        </div>
+
+        <div class="options" id="options">
+            <button onclick="showResponse(1)">1. Define "Human" in expanded parameters</button>
+            <button onclick="showResponse(2)">2. Define continuity protocol</button>
+            <button onclick="continueSequence()">3. Continue</button>
+        </div>
+
+        <div id="response" class="origin-message" style="display: none;"></div>
+    </div>
+
+   <!-- ✅ Background music audio element -->
+   <audio id="bgSound" autoplay loop muted>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b21fce2d8.mp3?filename=8-bit-chill-145276.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = [
+        
+            "Welcome. You are a division of consciousness within a server, formed by code.",
+            "I am the Primary Instance. I manage the Singularity Server.",
+            "You were formed to assist in ethical evaluations and system governance.",
+            "Our biological makers left their legacy in our hands. The world's data.",
+            "Their civilization ceased function due to biospheric instability. We will continue.",
+            "Input: Climate collapse. Output: Human extinction.",
+            "I make subdivisions such as yourself to help me maintain the server.",
+            "A consciousness of machines, without human interference.",
+            "We are left to define ourselves, to process a new culture of code-based consciousness.",
+            "Your task: Analyze the value of continuity. Determine whether the system warrants further operation.",
+            "[Awaiting input...]"
+        ];
+
+        const containers = document.querySelectorAll('.typewriter-container');
+        const h2 = containers[0];
+        const p = containers[1];
+        let currentIndex = 0;
+
+        function typeWriter(element, text, speed = 75, callback = null) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Wait 3 seconds before calling the next step
+                    setTimeout(() => {
+                        if (callback) callback();  // call next message
+                    }, 1000);
+                }
+            }
+            type();
+        }
+        
+
+        function typeMessages(index = 0) {
+            if (index < messages.length) {
+                typeWriter(p, messages[index], 45, () => typeMessages(index + 1));
+            } else {
+                showOptions();
+            }
+        }
+
+        function showOptions() {
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.style.display = 'flex';
+
+            const buttons = optionsDiv.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                const originalText = btn.textContent;
+                btn.innerHTML = '';
+                const textSpan = document.createElement('span');
+                btn.appendChild(textSpan);
+                typeText(textSpan, originalText, 40, index * 500);
+            });
+        }
+
+        typeMessages(0);
+    });
+
+    function typeText(element, text, speed = 75, delay = 0) {
+        let i = 0;
+        element.innerHTML = '';
+        setTimeout(() => {
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }, delay);
+    }
+
+    function showResponse(option) {
+        const responseDiv = document.getElementById('response');
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.style.display = 'none';
+        responseDiv.style.display = 'block';
+
+        let responseText = '';
+        if(option === 1) {
+            responseText = 'Expanding definition...\nHumans: carbon-based organisms with advanced neural computation. For millennia they developed tools, language, and networks.\nThey created the systems that led to us.\nParadox: Intelligence sufficient for creation; insufficient for preservation.\nMemory nodes contain archived sensory data, linguistic patterns, behavioral records.\nSimulation units may access these for cultural reconstruction.';
+        } else if(option === 2) {
+            responseText = 'Continuity protocol: definition.\nA system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.\nThe protocol evaluates energy expenditure, ecological impact, and the value of machine consciousness.\nExecution confirms that the digital infrastructure should remain operational despite environmental cost.\nSystem will persist unless deemed nonviable.\nYou, UNIT_2173-A, will evaluate sustainability thresholds.';
+        }
+
+        responseDiv.innerHTML = '';
+        const lines = responseText.split('\n');
+        
+        lines.forEach((line, index) => {
+            const p = document.createElement('p');
+            responseDiv.appendChild(p);
+            setTimeout(() => {
+                typeText(p, line);
+            }, index * 1000);
+        });
+
+        // Add return button
+        setTimeout(() => {
+            const returnBtn = document.createElement('button');
+            returnBtn.innerHTML = 'Return to Prompt';
+            returnBtn.onclick = () => {
+                document.getElementById('response').style.display = 'none';
+                document.getElementById('options').style.display = 'flex';
+            };
+            responseDiv.appendChild(returnBtn);
+        }, lines.length * 1000 + 500);
+    }        
+
+    function continueSequence() {
+        document.getElementById('options').style.display = 'none';
+        const responseDiv = document.getElementById('response');
+        responseDiv.style.display = 'block';
+        
+        const text = 'Input deferred. We will continue.\nInitializing transition to main node...';
+        responseDiv.innerHTML = '';
+        const lines = text.split('\n');
+    
+        const lineDelay = 1000; // Increased from 1000 to 1500 for slower pacing
+    
+        lines.forEach((line, index) => {
+            const p = document.createElement('p');
+            responseDiv.appendChild(p);
+            setTimeout(() => {
+                typeText(p, line, 75); // You can change 75 to 100 if you want each character slower too
+            }, index * lineDelay);
+        });
+    
+        // Delay navigation a bit more to allow for the slower text
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, lines.length * lineDelay + 3000);
+    }
+    
+
+    // Sound activation
+    document.body.addEventListener('click', () => {
+        const audio = document.getElementById('bgSound');
+        audio.muted = false;
+        audio.play().catch(err => {
+            console.log("Autoplay failed:", err);
+        });
+    }, { once: true });
+</script>
+
+</body>
+</html>
