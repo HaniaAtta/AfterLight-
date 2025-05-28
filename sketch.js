@@ -30,7 +30,7 @@ function setup() {
 
     textFont('monospace');
     textAlign(CENTER, CENTER);
-    frameRate(1);
+    frameRate(4);
 }
 
 function draw() {
@@ -122,25 +122,18 @@ function drawWords() {
     noStroke();
     textAlign(CENTER, CENTER);
 
+    let fixedSize = scl * 0.15; // Adjust this multiplier for size (e.g., 0.2 to 0.3)
+    textSize(fixedSize);
+    fill(0, 90, 255);
+
     for (let fw of foodWords) {
         let word = fw.label;
-        let maxTextSize = scl * 0.3;
-        let minTextSize = 10;
-
-        // Adjust text size to fit inside a cell
-        let size = maxTextSize;
-        textSize(size);
-        while (textWidth(word) > scl - 10 && size > minTextSize) {
-            size -= 1;
-            textSize(size);
-        }
-
-        fill(0, 90, 255);
         let x = fw.pos.x * scl + scl / 2;
         let y = fw.pos.y * scl + scl / 2;
         text(word, x, y);
     }
 }
+
 
 
 function placeWords() {
