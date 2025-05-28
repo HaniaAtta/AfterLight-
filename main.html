@@ -63,6 +63,8 @@
             padding: 5px 10px;
             border-radius: 0px;
             font-size: 14px;
+    margin-left: 2px;
+
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             display: none;  /* hide initially */
             pointer-events: none;
@@ -74,15 +76,30 @@
 .tooltip.node-tooltip {
     background: #305CCC;
     color: #fff;
+    margin-left: 2px;
+
     border: 2px solid #1645bc;
 }
 
 /* Different tooltip style for .node2 */
 .tooltip.node2-tooltip {
     background: #333;
+    margin-left: 2px;
     color: #d2d2ca; /* gold */
     border: 2px solid #0b0b0b;
 }
+.tooltip::before {
+    content: "◆";
+    margin-right: 1px;
+    color: inherit; /* so it matches tooltip text color */
+    font-weight: bold;
+    display: inline-block;
+}
+.tooltip-text {
+    margin-left: 2px;
+    display: inline-block; /* ensures margin works properly */
+  }
+  
 
     </style>
 </head>
@@ -147,31 +164,35 @@
       const tooltip = document.createElement("div");
       tooltip.classList.add("tooltip");
       document.body.appendChild(tooltip);
-  
+    
       const nodes = document.querySelectorAll(".node, .node2");
-  
+    
       nodes.forEach(node => {
         node.addEventListener("mouseenter", (e) => {
-          const tooltipText = node.getAttribute("data-tooltip") || "No info";
+          const nodeNumber = node.dataset.nodeNumber || '';
+          const tooltipText = node.dataset.tooltip || "No info";
           const nodeClass = node.classList.contains("node2") ? "node2-tooltip" : "node-tooltip";
-  
+    
           tooltip.className = `tooltip ${nodeClass}`;
-          tooltip.innerHTML = (node.dataset.nodeNumber || '') + '<br>' + node.dataset.tooltip;
+          // Wrap tooltip text in span with margin-left
+          tooltip.innerHTML = nodeNumber + '<br>' + `<span class="tooltip-text">${tooltipText}</span>`;
 
+    
           tooltip.style.display = "block";
         });
-  
+    
         node.addEventListener("mousemove", (e) => {
           tooltip.style.left = e.pageX + 15 + "px";
           tooltip.style.top = e.pageY + 15 + "px";
         });
-  
+    
         node.addEventListener("mouseleave", () => {
           tooltip.style.display = "none";
         });
       });
     });
-  </script>
+    </script>
+    
   
  
 </body>

@@ -14,14 +14,30 @@
             --blink-speed: 0.75s;
         }
 
-        body {
+       /* body {
             margin: 0;
             padding: 0;
             background-color: var(--primary);
             color: var(--secondary);
             font-family: 'Roboto Mono', monospace;
             overflow: auto;
-        }
+        }*/
+        body {
+            background-color: #FFFFFF;
+            color: #305CCC;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: auto;
+            
+            background-image: url('images/background.svg');  /* fixed path */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+          }
 
         .loading-screen {
             position: fixed;
