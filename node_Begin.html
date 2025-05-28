@@ -100,7 +100,16 @@
             border-bottom: 2px solid white;
           }
           
-
+          .fade-out {
+            animation: fadeOut 1s forwards;
+          }
+          
+          @keyframes fadeOut {
+            to {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+          }
     </style>
 </head>
 <body>
@@ -265,6 +274,8 @@
         });
     
         // Delay navigation a bit more to allow for the slower text
+        document.body.classList.add("fade-out");
+        
         setTimeout(() => {
             window.location.href = 'main.html';
         }, lines.length * lineDelay + 3000);

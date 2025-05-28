@@ -54,6 +54,16 @@
             font-weight: bold;
             margin-bottom: 1rem;
         }
+        .fade-out {
+            animation: fadeOut 1s forwards;
+          }
+          
+          @keyframes fadeOut {
+            to {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+          }
     </style>
 </head>
 <body>
@@ -62,8 +72,20 @@
         <h2>COLLECTED WORDS:</h2>
         <div id="collected-words-list"></div>
         <button onclick="resetGame()">Play Again</button>
-        <button onclick="window.location.href='main.html'">Main Menu</button>
+        <button onclick="returnToMain()">Main Menu</button>
+
     </div>
     <script src="sketch.js"></script>
+    <script>
+        function returnToMain() {
+            document.body.classList.add("fade-out");
+    
+            // Wait for animation to complete before redirecting
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 1000); // Match this duration to your CSS animation time
+        }
+    </script>
+    
 </body>
 </html>

@@ -28,7 +28,7 @@
       align-items: center;
       
       
-      background-image: url('images/background.svg');  /* fixed path */
+      background-image: url('images/Vector 51.svg');  /* fixed path */
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -84,6 +84,17 @@
         font-size: 0.9rem;
       }
     }
+          /* Add to your existing stylesheet */
+.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
   </style>
 </head>
 <body>
@@ -138,7 +149,12 @@
     });
 
     function proceed() {
-      window.location.href = "main.html"; // or any next node file
+      document.body.classList.add("fade-out");
+        
+      // Delay redirect by animation duration (e.g., 1 second = 1000 ms)
+      setTimeout(() => {
+          window.location.href = 'main.html';
+      }, 1000);
     }
   </script>
 </body>

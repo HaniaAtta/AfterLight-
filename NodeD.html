@@ -116,6 +116,16 @@
       font-size: 0.9rem;
     }
   }
+  .fade-out {
+    animation: fadeOut 1s forwards;
+  }
+  
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
 </style>
 </head>
 <body>
@@ -244,6 +254,8 @@
   // When an option is clicked
   function showResponse(option) {
     if (option === 4) {
+      document.body.classList.add("fade-out");
+     
       // Return to main hub — for demo just alert or redirect
       window.location.href = 'main.html';
       return;
