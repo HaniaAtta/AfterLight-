@@ -244,6 +244,19 @@
                 font-size: 1rem;
             }
         }
+
+        /* Add to your existing stylesheet */
+.fade-out {
+    animation: fadeOut 1s forwards;
+  }
+  
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+  
     </style>
 </head>
 <body>
@@ -558,8 +571,14 @@
     
         // Return to main page function
         function returnToMain() {
-            window.location.href = 'main.html';
+            document.body.classList.add("fade-out");
+        
+            // Delay redirect by animation duration (e.g., 1 second = 1000 ms)
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 1000);
         }
+        
     </script>
     
 </body>
