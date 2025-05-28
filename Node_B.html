@@ -67,17 +67,19 @@
     to { width: 100%; }
 }
 
-        .centered-typing {
-            position: fixed;
-            top: 40%;
-    
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-            opacity: 0;
-        
-            pointer-events: none;
-        }
+.centered-typing {
+    position: relative; /* Changed from fixed */
+    width: 100%;
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+    opacity: 0;
+    display: none; /* Ensure it's hidden by default */
+    pointer-events: auto;
+}
+.centered-typing {
+    transition: opacity 0.5s ease-in-out;
+}
 
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate(-50%, -40%); }
@@ -240,22 +242,20 @@
             document.addEventListener('click', handleClick);
             showNextSection();
         }
-
         async function showNextSection() {
-            if (currentSection >= SECTIONS.length - 2) { // -2 because first two are headers
+            if (currentSection >= SECTIONS.length - 2) {
                 document.removeEventListener('click', handleClick);
                 showReturnButton();
                 return;
             }
         
-            // ✅ Hide the previous section
-            if (currentSection > 0) {
-                const prevSection = document.getElementById(SECTIONS[currentSection + 1].id);
-                prevSection.style.opacity = '0';
-                prevSection.style.display = 'none';
-            }
+            // Hide all centered-typing sections
+            document.querySelectorAll('.centered-typing').forEach(sec => {
+                sec.style.display = 'none';
+                sec.style.opacity = '0';
+            });
         
-            const section = SECTIONS[currentSection + 2]; // Offset for headers
+            const section = SECTIONS[currentSection + 2];
             const element = document.getElementById(section.id);
         
             if (section.html) {
@@ -266,6 +266,7 @@
         
             currentSection++;
         }
+        
         
 
         async function animateSectionContent(section) {

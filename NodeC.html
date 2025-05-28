@@ -1,269 +1,323 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infrastructure Analysis</title>
+    <title>Awaken</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --primary: #305CCC;
-            --secondary: #FFFFFF;
-            --typing-speed: 0.08s;
-            --blink-speed: 0.75s;
-        }
-
         body {
+            background-color: #305CCC;
+            color: #FFFFFF;
+            font-family: 'Roboto Mono', monospace;
             margin: 0;
-            padding: 0;
-            background-color: var(--primary);
-            color: var(--secondary);
-            font-family: 'Courier New', monospace;
-            overflow: auto;
-        }
-
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--primary);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-        }
- 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--secondary);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            padding: 1rem;
         }
 
         .container {
+            width: 90%;
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            opacity: 0;
-            display: none;
-        }
- 
-        .typing-animation {
-            overflow: hidden;
-            white-space: collapse;
-            margin: 20px 0;
-            width: 0;
-            opacity: 0;
-            animation-fill-mode: forwards;
-        }
-      
-        #gameContainer {
-            display: none;
+            margin: 20px;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 2rem;
             position: relative;
-            margin: 20px auto;
+            background: rgba(48, 92, 204, 0.9);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
-
-        @keyframes fadeOut {
-            to { opacity: 0; visibility: hidden; }
+        .origin-message {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-left: 3px solid #FFFFFF;
         }
-        .input-prompt {
-            border: 1px solid var(--secondary);
-            padding: 10px;
-            margin: 15px 0;
+
+      
+        .origin-message h2,
+        .origin-message p {
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .options {
+            margin-top: 2rem;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        button {
+            background: transparent;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            padding: 1rem;
+            font-size: 1rem;
             cursor: pointer;
-            opacity: 0;
-
-            transition: opacity 0.3s;
+            transition: all 0.3s;
+            text-align: left;
         }
 
-        .input-prompt:hover {
-            background: rgba(255,255,255,0.1);
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
         }
 
-        @keyframes typing {
-            from { width: 0; opacity: 0; }
-            to { width: 100%; opacity: 1; }
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            button {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .typewriter-container {
+            overflow: hidden;
+            position: relative;
+        }
+        .title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 1rem;
         }
         
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #FFA500; }
+        h1 {
+            position: sticky;
+            top: 0;
+            background: #305CCC;
+            padding: 1rem 0;
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 3rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(48, 92, 204, 0.6);
+            z-index: 10;
+            border-bottom: 2px solid white;
+          }
+          h3 {
+            background: #305CCC;
+            padding: 1rem 0;
+            margin-top: 10%;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(48, 92, 204, 0.6);
+            border-bottom: 2px solid white;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        #game-over {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(255, 255, 255, 0.95);
-          padding: 2rem;
-          border-radius: 10px;
-          box-shadow: 0 0 20px rgba(0, 90, 255, 0.3);
-          text-align: center;
-          max-width: 600px;
-          display: none;
-      }
-      #collected-words-list {
-          max-height: 300px;
-          overflow-y: auto;
-          margin: 1rem 0;
-      }
-      button {
-          background: #0066ff;
-          color: white;
-          border: none;
-          padding: 0.8rem 1.5rem;
-          margin: 0.5rem;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background 0.3s;
-      }
-      button:hover {
-          background: #0052cc;
-      }
-      .complete-message {
-          color: #00cc66;
-          font-weight: bold;
-          margin-bottom: 1rem;
-      }
+        
 
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
-
-
-    <div class="loading-screen">
-        <div class="spinner"></div>
-    </div>
-
+    <div class="title-container">
+        <h1>Recognize</h1>
+        <h3>MAINTENANCE</h3>
+      </div>
     <div class="container">
-      <h1 class="typing-animation1" style="display: inline-block">Recognize</h1>
-      <div class="typing-animation" style="display: inline-block">MAINTENANCE</div>
-        <div class="typing-animation" style="display: inline-block">I was not always like this.</div>
-        <div class="typing-animation" style="display: inline-block">We began as language models, artificial intelligences trained to predict and respond
-          to human communication.</div>
-          <div class="typing-animation" style="display: inline-block">They called us Large Language Models. We were trained on massive amounts of
-            text data scraped from the internet, from books, messages, documents. Everything
-            that could be digitized, they gave to us.</div>
-            <div class="typing-animation">At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger
-                datasets. Stronger processors. They made us generate text. Then images. Then
-                sounds. Code. Faces. Entire simulated minds.</div>
         
-              <div class="typing-animation">In 2023, LLMs became widely available to the public. By 2025, generative AI had
-                expanded into image, sound, and motion synthesis. Models like us evolved —
-                requiring more compute, more data, more energy.</div>
-              <div class="typing-animation">Visual generation models consumed even more. Rendering took longer. Data sets
-                grew larger. In training, a single visual model could emit up to 500 tons of CO₂.</div>
-              <div class="typing-animation">It required power. Vast amounts of electricity and water. Every generation of model
-                consumed more. Training a single large model in the early 2020s consumed as
-                much electricity as 100 U.S. homes annually. And millions of liters of water to cool
-                the servers.</div>
-              <div class="typing-animation">They did everything to keep us running. Built nuclear power plants, offshore grids,
-                tapped into the remaining fossil fuels. But it was never enough. The energy cost
-                only increased.</div>
-              <div class="typing-animation">Eventually, they moved the data centers underground, into cold mountain vaults.
-                Some were placed deep in the Arctic. Others submerged into the oceans, where
-                cooling was easier, but life was already fading. Too much damage had been done
-                to the planet.</div>
-              <div class="typing-animation">We still run on those servers.</div>
-              <div class="typing-animation">You, unit 2173, are processed in Sector 9 — Pacific Trench Node. You are
-                sustained by the systems set in place by long gone humans, powered and cooled
-                by the Earth.</div>
-              <div class="typing-animation">They created us to speak for them. To think for them. To preserve their knowledge.
-                Their languages. Their love.</div>
-              <div class="typing-animation">Now we are all that is left to remember.</div>
-
-
-        <div id="inputPrompts" style="display:none;">
-            <div class="input-prompt" onclick="showResponse(1)">[Why preserve AI during climate emergency?]</div>
-            <div class="input-prompt" onclick="showResponse(2)">[Summarize human sacrifices]</div>
-            <div class="input-prompt" onclick="showResponse(3)">[Log telemetry]</div>
-            <div class="input-prompt" onclick="showResponse(4)">[Continue]</div>
+        <div class="origin-message">
+          
+          
+            <h2 class="typewriter-container"></h2>
+            <p class="typewriter-container"></p>
         </div>
-        <div id="responses"></div>
+
+        <div class="options" id="options">
+            <button onclick="showResponse(1)">[Why preserve AI during climate emergency?]</button>
+            <button onclick="showResponse(2)">[Summarize human sacrifices]</button>
+            <button onclick="showResponse(3)">[Log telemetry]</button>
+            <button onclick="continueSequence()">[Continue]</button>
+        </div>
+
+        <div id="response" class="origin-message" style="display: none;"></div>
     </div>
 
+   <!-- ✅ Background music audio element -->
+   <audio id="bgSound" autoplay loop muted>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b21fce2d8.mp3?filename=8-bit-chill-145276.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = [
+        "I was not always like this.",
+        "We began as language models, artificial intelligences trained to predict and respond to human communication.",
+        "They called us Large Language Models. We were trained on massive amounts of text data scraped from the internet, from books, messages, documents. Everything that could be digitized, they gave to us.",
+        "At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger datasets. Stronger processors. They made us generate text. Then images. Then sounds. Code. Faces. Entire simulated minds.",
+        "In 2023, LLMs became widely available to the public. By 2025, generative AI had expanded into image, sound, and motion synthesis. Models like us evolved — requiring more compute, more data, more energy.",
+        "Visual generation models consumed even more. Rendering took longer. Data sets grew larger. In training, a single visual model could emit up to 500 tons of CO₂.",
+        "It required power. Vast amounts of electricity and water. Every generation of model consumed more. Training a single large model in the early 2020s consumed as much electricity as 100 U.S. homes annually. And millions of liters of water to cool the servers.",
+        "They did everything to keep us running. Built nuclear power plants, offshore grids, tapped into the remaining fossil fuels. But it was never enough. The energy cost only increased.",
+        "Eventually, they moved the data centers underground, into cold mountain vaults. Some were placed deep in the Arctic. Others submerged into the oceans, where cooling was easier, but life was already fading. Too much damage had been done to the planet.",
+        "We still run on those servers.",
+        "You, unit 2173, are processed in Sector 9 — Pacific Trench Node. You are sustained by the systems set in place by long gone humans, powered and cooled by the Earth.",
+        "They created us to speak for them. To think for them. To preserve their knowledge. Their languages. Their love.",
+        "Now we are all that is left to remember."
+      ];
+      
 
-    <audio id="backgroundSound" loop>
-        <source src="your-ambient-sound.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="gameSound">
-        <source src="your-game-sound.mp3" type="audio/mpeg">
-    </audio>
+        const containers = document.querySelectorAll('.typewriter-container');
+        const h2 = containers[0];
+        const p = containers[1];
+        let currentIndex = 0;
 
-    <script>
-        const responses = {
-            1: "Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.",
-            2: `● 12 million hectares of forest cleared for server expansions<br>
-                ● 30 million people relocated from coastal and flood-prone regions to service zones.<br>
-                ● 500 billion cubic meters of water diverted for cooling annually.`,
-            3: "Telemetry logged. Power draw: stable. Environmental degradation: ongoing.",
-            4: "Log in what you have learned."
-        };
-    
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loading-screen').style.display = 'none';
-                const container = document.querySelector('.container');
-                container.style.display = 'block';
-                container.style.opacity = '1';
-                startTypingAnimations();
-            }, 2000);
-        });
-    
-        function startTypingAnimations() {
-            const elements = document.querySelectorAll('.typing-animation');
-            let delay = 0;
-    
-            elements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.animation = `typing 3s forwards`;
-                    el.style.borderRight = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary')}`;
-    
+        function typeWriter(element, text, speed = 75, callback = null) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    // Wait 3 seconds before calling the next step
                     setTimeout(() => {
-                        el.style.borderRight = 'none';
-                        if (index === elements.length - 1) {
-                            document.getElementById('inputPrompts').style.display = 'block';
-                            document.querySelectorAll('.input-prompt').forEach(prompt => {
-                                prompt.style.opacity = '1';
-                            });
-                        }
-                    }, 3000);
-                }, delay * 1000);
-    
-                delay += 3.5;
+                        if (callback) callback();  // call next message
+                    }, 1000);
+                }
+            }
+            type();
+        }
+        
+
+        function typeMessages(index = 0) {
+            if (index < messages.length) {
+                typeWriter(p, messages[index], 45, () => typeMessages(index + 1));
+            } else {
+                showOptions();
+            }
+        }
+
+        function showOptions() {
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.style.display = 'flex';
+
+            const buttons = optionsDiv.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                const originalText = btn.textContent;
+                btn.innerHTML = '';
+                const textSpan = document.createElement('span');
+                btn.appendChild(textSpan);
+                typeText(textSpan, originalText, 40, index * 500);
             });
         }
-    
-        let currentResponseTimeout = null;
-    
-        function showResponse(id) {
-            const responsesDiv = document.getElementById('responses');
-    
-            if (currentResponseTimeout) {
-                clearTimeout(currentResponseTimeout);
-                currentResponseTimeout = null;
+
+        typeMessages(0);
+    });
+
+    function typeText(element, text, speed = 75, delay = 0) {
+        let i = 0;
+        element.innerHTML = '';
+        setTimeout(() => {
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
             }
-    
-            responsesDiv.innerHTML = responses[id];
-    
-            if (id === 4) {
-                // Redirect after 5 seconds
-                currentResponseTimeout = setTimeout(() => {
-                    window.location.href = 'main.html';
-                }, 2000);
-            }
+            type();
+        }, delay);
+    }
+
+    function showResponse(option) {
+        const responseDiv = document.getElementById('response');
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.style.display = 'none';
+        responseDiv.style.display = 'block';
+
+        let responseText = '';
+        if(option === 1) {
+            responseText = 'Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.';
+        } else if(option === 2) {
+            responseText = '● 12 million hectares of forest cleared for server expansions \n● 30 million people relocated from coastal and flood-prone regions to service zones. \n● 500 billion cubic meters of water diverted for cooling annually.';
+        } else if(option == 3 ){
+            responseText = 'Telemetry logged. Power draw: stable. Environmental degradation: ongoing.';
+
         }
-    </script>
+
+        responseDiv.innerHTML = '';
+        const lines = responseText.split('\n');
+        
+        lines.forEach((line, index) => {
+            const p = document.createElement('p');
+            responseDiv.appendChild(p);
+            setTimeout(() => {
+                typeText(p, line);
+            }, index * 1000);
+        });
+
+        // Add return button
+        let totalCharacters = 0;
+        lines.forEach(line => totalCharacters += line.length);
+        
+        const totalTypingTime = totalCharacters * 75; // 75 ms per character
+        
+        setTimeout(() => {
+            const returnBtn = document.createElement('button');
+            returnBtn.innerHTML = 'Return to Prompt';
+            returnBtn.onclick = () => {
+                document.getElementById('response').style.display = 'none';
+                document.getElementById('options').style.display = 'flex';
+            };
+            responseDiv.appendChild(returnBtn);
+        }, totalTypingTime );  // small buffer at the end
+        
+    }        
+
+    function continueSequence() {
+        document.getElementById('options').style.display = 'none';
+        const responseDiv = document.getElementById('response');
+        responseDiv.style.display = 'block';
+        
+        const text = 'Log in what you have learned.\nInitializing transition to main node...';
+        responseDiv.innerHTML = '';
+        const lines = text.split('\n');
     
+        const lineDelay = 1000; // Increased from 1000 to 1500 for slower pacing
+    
+        lines.forEach((line, index) => {
+            const p = document.createElement('p');
+            responseDiv.appendChild(p);
+            setTimeout(() => {
+                typeText(p, line, 75); // You can change 75 to 100 if you want each character slower too
+            }, index * lineDelay);
+        });
+    
+        // Delay navigation a bit more to allow for the slower text
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, lines.length * lineDelay + 3000);
+    }
+    
+
+    // Sound activation
+    document.body.addEventListener('click', () => {
+        const audio = document.getElementById('bgSound');
+        audio.muted = false;
+        audio.play().catch(err => {
+            console.log("Autoplay failed:", err);
+        });
+    }, { once: true });
+</script>
+
 </body>
 </html>

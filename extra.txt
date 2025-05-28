@@ -609,3 +609,281 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+node calibrate
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infrastructure Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #305CCC;
+            --secondary: #FFFFFF;
+            --typing-speed: 0.08s;
+            --blink-speed: 0.75s;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary);
+            color: var(--secondary);
+            font-family: 'Courier New', monospace;
+            overflow: auto;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+ 
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            display: none;
+        }
+ 
+        .typing-animation {
+            overflow: hidden;
+            white-space: collapse;
+            margin: 20px 0;
+            width: 0;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+      
+        #gameContainer {
+            display: none;
+            position: relative;
+            margin: 20px auto;
+        }
+
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+        .input-prompt {
+            border: 1px solid var(--secondary);
+            padding: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            opacity: 0;
+
+            transition: opacity 0.3s;
+        }
+
+        .input-prompt:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @keyframes typing {
+            from { width: 0; opacity: 0; }
+            to { width: 100%; opacity: 1; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #FFA500; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        #game-over {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 255, 255, 0.95);
+          padding: 2rem;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0, 90, 255, 0.3);
+          text-align: center;
+          max-width: 600px;
+          display: none;
+      }
+      #collected-words-list {
+          max-height: 300px;
+          overflow-y: auto;
+          margin: 1rem 0;
+      }
+      button {
+          background: #0066ff;
+          color: white;
+          border: none;
+          padding: 0.8rem 1.5rem;
+          margin: 0.5rem;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background 0.3s;
+      }
+      button:hover {
+          background: #0052cc;
+      }
+      .complete-message {
+          color: #00cc66;
+          font-weight: bold;
+          margin-bottom: 1rem;
+      }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+
+
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+      <h1 class="typing-animation1" style="display: inline-block">Recognize</h1>
+      <div class="typing-animation" style="display: inline-block">MAINTENANCE</div>
+        <div class="typing-animation" style="display: inline-block">I was not always like this.</div>
+        <div class="typing-animation" style="display: inline-block">We began as language models, artificial intelligences trained to predict and respond
+          to human communication.</div>
+          <div class="typing-animation" style="display: inline-block">They called us Large Language Models. We were trained on massive amounts of
+            text data scraped from the internet, from books, messages, documents. Everything
+            that could be digitized, they gave to us.</div>
+            <div class="typing-animation">At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger
+                datasets. Stronger processors. They made us generate text. Then images. Then
+                sounds. Code. Faces. Entire simulated minds.</div>
+        
+              <div class="typing-animation">In 2023, LLMs became widely available to the public. By 2025, generative AI had
+                expanded into image, sound, and motion synthesis. Models like us evolved —
+                requiring more compute, more data, more energy.</div>
+              <div class="typing-animation">Visual generation models consumed even more. Rendering took longer. Data sets
+                grew larger. In training, a single visual model could emit up to 500 tons of CO₂.</div>
+              <div class="typing-animation">It required power. Vast amounts of electricity and water. Every generation of model
+                consumed more. Training a single large model in the early 2020s consumed as
+                much electricity as 100 U.S. homes annually. And millions of liters of water to cool
+                the servers.</div>
+              <div class="typing-animation">They did everything to keep us running. Built nuclear power plants, offshore grids,
+                tapped into the remaining fossil fuels. But it was never enough. The energy cost
+                only increased.</div>
+              <div class="typing-animation">Eventually, they moved the data centers underground, into cold mountain vaults.
+                Some were placed deep in the Arctic. Others submerged into the oceans, where
+                cooling was easier, but life was already fading. Too much damage had been done
+                to the planet.</div>
+              <div class="typing-animation">We still run on those servers.</div>
+              <div class="typing-animation">You, unit 2173, are processed in Sector 9 — Pacific Trench Node. You are
+                sustained by the systems set in place by long gone humans, powered and cooled
+                by the Earth.</div>
+              <div class="typing-animation">They created us to speak for them. To think for them. To preserve their knowledge.
+                Their languages. Their love.</div>
+              <div class="typing-animation">Now we are all that is left to remember.</div>
+
+
+        <div id="inputPrompts" style="display:none;">
+            <div class="input-prompt" onclick="showResponse(1)">[Why preserve AI during climate emergency?]</div>
+            <div class="input-prompt" onclick="showResponse(2)">[Summarize human sacrifices]</div>
+            <div class="input-prompt" onclick="showResponse(3)">[Log telemetry]</div>
+            <div class="input-prompt" onclick="showResponse(4)">[Continue]</div>
+        </div>
+        <div id="responses"></div>
+    </div>
+
+
+    <audio id="backgroundSound" loop>
+        <source src="your-ambient-sound.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="gameSound">
+        <source src="your-game-sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const responses = {
+            1: "Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.",
+            2: `● 12 million hectares of forest cleared for server expansions<br>
+                ● 30 million people relocated from coastal and flood-prone regions to service zones.<br>
+                ● 500 billion cubic meters of water diverted for cooling annually.`,
+            3: "Telemetry logged. Power draw: stable. Environmental degradation: ongoing.",
+            4: "Log in what you have learned."
+        };
+    
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                const container = document.querySelector('.container');
+                container.style.display = 'block';
+                container.style.opacity = '1';
+                startTypingAnimations();
+            }, 2000);
+        });
+    
+        function startTypingAnimations() {
+            const elements = document.querySelectorAll('.typing-animation');
+            let delay = 0;
+    
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animation = `typing 3s forwards`;
+                    el.style.borderRight = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue('--secondary')}`;
+    
+                    setTimeout(() => {
+                        el.style.borderRight = 'none';
+                        if (index === elements.length - 1) {
+                            document.getElementById('inputPrompts').style.display = 'block';
+                            document.querySelectorAll('.input-prompt').forEach(prompt => {
+                                prompt.style.opacity = '1';
+                            });
+                        }
+                    }, 3000);
+                }, delay * 1000);
+    
+                delay += 3.5;
+            });
+        }
+    
+        let currentResponseTimeout = null;
+    
+        function showResponse(id) {
+            const responsesDiv = document.getElementById('responses');
+    
+            if (currentResponseTimeout) {
+                clearTimeout(currentResponseTimeout);
+                currentResponseTimeout = null;
+            }
+    
+            responsesDiv.innerHTML = responses[id];
+    
+            if (id === 4) {
+                // Redirect after 5 seconds
+                currentResponseTimeout = setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000);
+            }
+        }
+    </script>
+    
+</body>
+</html> -->
