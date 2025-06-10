@@ -10,8 +10,12 @@
 
     <style>
         body {
-            background-color: #305CCC;
-            color: #FFFFFF;
+            background-color: #FFFFFF;
+            background-image: url('images/vector_51.svg'); /* Set your image path */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #305CCC;
             font-family: 'Roboto Mono', monospace;
             margin: 0;
             min-height: 100vh;
@@ -19,25 +23,34 @@
             justify-content: center;
             align-items: center;
             padding: 1rem;
-        }
+          }
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 20px;
-            border: 2px solid #FFFFFF;
-            border-radius: 8px;
-            padding: 2rem;
-            position: relative;
-            background: rgba(48, 92, 204, 0.9);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+          .container {
+            left: 5%;
+          width: 90%;
+          max-width: 800px;
+          border: 3px solid #305CCC;
+          border-radius: 8px;
+          padding: 2rem;
+          background: white;
+          color: #305CCC;
+          box-shadow: 0 0 20px rgba(48, 92, 204, 0.15);
+          position: relative;
         }
-
+        .heading-box {
+            position: absolute;
+            top: 10%;
+            left: 4%;
+            background-color: #305CCC;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: bold;
+            text-align: center;
+          }
         .origin-message {
             margin: 1.5rem 0;
             padding: 1rem;
-            border-left: 3px solid #FFFFFF;
-        }
+            border-left: 3px solid #305CCC;}
 
       
         .origin-message h2,
@@ -55,14 +68,14 @@
 
         button {
             background: transparent;
-            color: #FFFFFF;
-            border: 2px solid #FFFFFF;
+            color: #305CCC;
+            border: 2px solid #305CCC;
             padding: 1rem;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             text-align: left;
-        }
+          }
 
         button:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -95,33 +108,33 @@
         h1 {
             position: sticky;
             top: 0;
-            background: #305CCC;
+            background: white;
             padding: 1rem 0;
             margin: 0;
             font-family: 'Roboto Mono', monospace;
             font-weight: 700;
             font-size: 3rem;
-            color: white;
+            color: #305CCC;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             text-align: center;
             text-shadow: 1px 1px 3px rgba(48, 92, 204, 0.6);
             z-index: 10;
-            border-bottom: 2px solid white;
+            border-bottom: 2px solid #305CCC;
           }
           h3 {
-            background: #305CCC;
+            background: white;
             padding: 1rem 0;
             margin-top: 10%;
             font-family: 'Roboto Mono', monospace;
             font-weight: 700;
             font-size: 1rem;
-            color: white;
+            color: #305CCC;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             text-align: center;
-            text-shadow: 1px 1px 3px rgba(48, 92, 204, 0.6);
-            border-bottom: 2px solid white;
+            text-shadow: 1px 1px 3px rgb(242, 243, 246);
+            border-bottom: 2px solid #305CCC;
         }
         
         .fade-out {
@@ -137,6 +150,8 @@
     </style>
 </head>
 <body>
+  <div class="heading-box">NODE 3 INFRASTRUCTURE ANALYSIS</div>
+
     <div class="title-container">
         <h1>Recognize</h1>
         <h3>MAINTENANCE</h3>
@@ -296,27 +311,47 @@
         document.getElementById('options').style.display = 'none';
         const responseDiv = document.getElementById('response');
         responseDiv.style.display = 'block';
-        
+    
         const text = 'Log in what you have learned.\nInitializing transition to main node...';
         responseDiv.innerHTML = '';
         const lines = text.split('\n');
     
-        const lineDelay = 1000; // Increased from 1000 to 1500 for slower pacing
+        const lineDelay = 1500; // 1.5 seconds between lines
+        const charDelay = 75;
     
-        lines.forEach((line, index) => {
+        function typeText(element, text, speed, callback) {
+            let index = 0;
+            function type() {
+                if (index < text.length) {
+                    element.innerHTML += text.charAt(index++);
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+    
+        lines.forEach((line, i) => {
             const p = document.createElement('p');
             responseDiv.appendChild(p);
+    
             setTimeout(() => {
-                typeText(p, line, 75); // You can change 75 to 100 if you want each character slower too
-            }, index * lineDelay);
+                typeText(p, line, charDelay, () => {
+                    // If it's the last line, start the fade-out and redirect
+                    if (i === lines.length - 1) {
+                        setTimeout(() => {
+                            document.body.classList.add("fade-out");
+                            setTimeout(() => {
+                                window.location.href = 'main.html';
+                            }, 2000); // Give time for fade-out animation
+                        }, 1000); // Small delay after last line finishes typing
+                    }
+                });
+            }, i * lineDelay);
         });
-        document.body.classList.add("fade-out");
-        
-         // Delay navigation a bit more to allow for the slower text
-        setTimeout(() => {
-            window.location.href = 'main.html';
-        }, lines.length * lineDelay + 3000);
     }
+    
     
 
     // Sound activation

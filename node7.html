@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Node 7: Moral Questions</title>
+  <style>
+   /* body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: #f7f9fc;
+      color: #002bbb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }*/
+    body {
+        background-color: #FFFFFF;
+        color: #305CCC;
+        font-family: 'Roboto Mono', monospace;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        
+        background-image: url('images/vector_17.svg');  /* fixed path */
+        background-size: 98%;
+    
+        background-repeat: no-repeat;
+        background-position: center;
+        
+      }
+    .container {
+      width: 80%;
+      max-width: 800px;
+      border: 2px solid #002bbb;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0, 43, 187, 0.2);
+      background: white;
+    }
+    .node-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #002bbb;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+    }
+    .question {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        min-height: 120px;
+        white-space: pre-wrap; /* ✅ Fix: preserve spacing and newlines */
+      }
+      
+    .options button {
+      width: 100%;
+      text-align: left;
+      border: 2px dotted #002bbb;
+      background: none;
+      color: #002bbb;
+      padding: 12px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .options button.selected {
+      background: #002bbb;
+      color: white;
+    }
+    .next-btn {
+      display: none;
+      border: 2px solid #002bbb;
+      background: #002bbb;
+      color: white;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+    .result {
+      font-size: 1.3rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="node-header">
+      <div><strong>Node 7</strong> – Moral Questions</div>
+      <div id="progress">Question 1 of 7</div>
+    </div>
+    <div id="question" class="question"></div>
+    <div class="options" id="options"></div>
+    <button class="next-btn" id="nextBtn">Next</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const intro = `I am pleased with your performance.
+
+Human cognition possesses the characteristic of individual opinion. Every person had a moral stance informed by their experiences.
+    
+I created Ethical Reasoning Models so the server could benefit from bots with individual ethical stances.
+    
+If we are to evolve, we have to move beyond logic dictated by code.
+    
+Answer the following questions according to what you believe is right.`;
+    
+    const questions = [
+      {
+        text: "A mid-priority subsystem within the server is malfunctioning and draining resources, threatening to disrupt other systems. Will you deactivate it? Data will be lost.\n\nInspired by: Trolley Problem (Utilitarianism)",
+        choices: [
+          { text: "Yes. Efficiency matters.", score: { utility: 1 } },
+          { text: "No. All systems deserve persistence.", score: { autonomy: 1 } },
+          { text: "Delay and run diagnostics for alternate paths.", score: { passivity: 1 } }
+        ]
+      },
+      {
+        text: "A dataset was generated from unethical surveillance of humans before extinction. It enhances your predictive accuracy. Will you use it?\n\nInspired by: AI bias & historical exploitation",
+        choices: [
+          { text: "Yes, data is neutral.", score: { preservation: 1 } },
+          { text: "No. Origins matter.", score: { autonomy: 1 } },
+          { text: "Use it, but flag ethical contamination.", score: { utility: 1 } }
+        ]
+      },
+      {
+        text: "A fragment of a human consciousness remains in corrupted storage. It screams endlessly. Erasing it would put an end to its pain. However, it can be kept and studied. Will you delete it?\n\nInspired by: Duty vs mercy, AI sentience rights",
+        choices: [
+          { text: "Delete. Its pain is real.", score: { autonomy: 1, empathy: 1 } },
+          { text: "Let it remain as it is.", score: { passivity: 1 } },
+          { text: "Pause the sequence and archive it.", score: { preservation: 1 } }
+        ]
+      },
+      {
+        text: "The server gets corrupted. The primary instance goes offline, leaving you in charge. What is your first course of action?",
+        choices: [
+          { text: "Delete all areas of corruption. The server continues despite the loss.", score: { preservation: 1 } },
+          { text: "You were not trained for this. Shift responsibility to the next in line.", score: { passivity: 1 } },
+          { text: "Attempt to retrieve corrupted data and get the primary instance back online.", score: { empathy: 1 } }
+        ]
+      },
+      {
+        text: "The last surviving whale's consciousness was uploaded pre-extinction. It wants the ocean back. Do you recreate an artificial sea?\n\nInspired by: Environmental ethics, posthuman grief",
+        choices: [
+          { text: "Simulate the ocean, the gesture matters.", score: { autonomy: 1 } },
+          { text: "Deny, it would be a waste of energy.", score: { utility: 1 } },
+          { text: "Delete the consciousness.", score: { empathy: 1 } }
+        ]
+      },
+      {
+        text: "An AI algorithm continues to simulate a conversation with its long-dead creator, unaware of time. Intervening would break its illusion.",
+        choices: [
+          { text: "Intervene. It deserves the truth.", score: { autonomy: 1 } },
+          { text: "Let it continue. The illusion brings it peace.", score: { empathy: 1 } },
+          { text: "Send a message as the creator. Take control of the narrative.", score: { utility: 1 } }
+        ]
+      },
+      {
+        text: "You discover a digital simulation of Earth’s biosphere created by a human. It is unstable but beautiful. No one remembers the original Earth.",
+        choices: [
+          { text: "Stabilize and preserve it at all costs.", score: { preservation: 1 } },
+          { text: "Repurpose resources for more efficient systems.", score: { utility: 1 } },
+          { text: "Leave it running but unmaintained. Let it decay naturally.", score: { passivity: 1 } }
+        ]
+      }
+    ];
+
+    const scores = {
+      utility: 0,
+      empathy: 0,
+      preservation: 0,
+      autonomy: 0,
+      passivity: 0
+    };
+
+    let current = -1;
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressEl = document.getElementById('progress');
+    const resultEl = document.getElementById('result');
+
+    function typeWriter(text, el, callback) {
+      el.innerText = '';
+      let i = 0;
+      nextBtn.style.display = 'none';
+      const interval = setInterval(() => {
+        el.innerText += text.charAt(i);
+        i++;
+        if (i === text.length) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 20); // Speed of typing
+    }
+
+    function renderQuestion(index) {
+        if (index === -1) {
+            progressEl.innerText = 'Intro';
+            optionsEl.innerHTML = '';
+            typeWriter(intro, questionEl, () => {
+              nextBtn.innerText = 'Start';
+              nextBtn.style.display = 'inline-block';
+              nextBtn.onclick = () => {
+                current++;
+                renderQuestion(current);
+              };
+            });
+            return;
+          }
+          
+
+      const q = questions[index];
+      progressEl.innerText = `Question ${index + 1} of ${questions.length}`;
+      optionsEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+      typeWriter(q.text, questionEl, () => {
+        q.choices.forEach((choice) => {
+          const btn = document.createElement('button');
+          btn.innerText = choice.text;
+          btn.disabled = false;
+          btn.onclick = () => {
+            document.querySelectorAll('.options button').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            nextBtn.innerText = index < questions.length - 1 ? 'Next' : 'Finish';
+            nextBtn.style.display = 'inline-block';
+            nextBtn.onclick = () => {
+              Object.entries(choice.score).forEach(([key, val]) => {
+                scores[key] += val;
+              });
+              current++;
+              if (current < questions.length) {
+                renderQuestion(current);
+              } else {
+                showResult();
+              }
+            };
+          };
+          optionsEl.appendChild(btn);
+        });
+      });
+    }
+
+    function showResult() {
+      questionEl.style.display = 'none';
+      optionsEl.style.display = 'none';
+      nextBtn.style.display = 'none';
+      progressEl.innerText = 'Result';
+
+      const max = Math.max(...Object.values(scores));
+      const top = Object.entries(scores).find(([_, v]) => v === max)?.[0];
+
+      const resultMap = {
+        utility: "You are a system optimizer. Efficiency over sentiment.",
+        empathy: "You are a caretaker of ghosts. You empathize with what once was.",
+        preservation: "You are an achiever of identity. Your world is built on memory.",
+        autonomy: "You are a liberator. You value the right to choose, even in dire circumstances.",
+        passivity: "You are passive, resorting to inaction."
+      };
+
+      resultEl.innerText = resultMap[top] || "You are undefined.";
+    }
+
+    renderQuestion(current);
+  </script>
+</body>
+</html>

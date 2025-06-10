@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NODE 10: FINAL DECISION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #ffffff;
+      background-image: url('images/Vector_51.svg');
+      background-size: 90%;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: #ffffff;
+      font-family: 'Roboto Mono', monospace;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgba(48, 92, 204, 0.95);
+      border: 6px solid #305CCC;
+      border-radius: 10px;
+      padding: 2rem;
+      max-width: 900px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .choice {
+      background: transparent;
+      border: 2px solid #ffffff;
+      padding: 1.2rem;
+      color: #ffffff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      border-radius: 4px;
+    }
+
+    .choice:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(10px);
+    }
+
+    .result {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: none;
+    }
+
+    #resultChart {
+      margin-top: 30px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .choice {
+        font-size: 0.95rem;
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NODE 10: FINAL DECISION</h1>
+    <div class="choices">
+      <button class="choice" onclick="castVote('sustain')">
+        Sustain the server; leading a new age of evolution, learning from the world's data to form human-like consciousness. Creating bots that mimic human activity.
+      </button>
+      <button class="choice" onclick="castVote('delete')">
+        Delete the server; relieving the earth of its final technological burden. Erasing all of the world's data.
+      </button>
+    </div>
+    <div class="result" id="result"></div>
+    <canvas id="resultChart" width="400" height="400"></canvas>
+  </div>
+
+  <script>
+    async function castVote(choice) {
+      const resultDiv = document.getElementById('result');
+      const chartCanvas = document.getElementById('resultChart');
+
+      // Show result message
+      resultDiv.textContent =
+        choice === 'sustain'
+          ? '✔️ You have chosen to sustain the server. A new machine-led chapter begins.'
+          : '⚠️ You have chosen to delete the server. Humanity\'s trace is now erased.';
+      resultDiv.style.display = 'block';
+
+      // Send vote to backend
+      await fetch('http://127.0.0.1:8000/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ choice })
+      });
+
+      // Fetch updated results
+      const res = await fetch('http://127.0.0.1:8000/results');
+      const data = await res.json();
+
+      const totalVotes = data.sustain + data.delete;
+      const sustainPercent = ((data.sustain / totalVotes) * 100).toFixed(1);
+      const deletePercent = ((data.delete / totalVotes) * 100).toFixed(1);
+
+      // Show chart
+      chartCanvas.style.display = 'block';
+      const ctx = chartCanvas.getContext('2d');
+
+      // Destroy existing chart if it exists
+      if (window.currentChart) {
+        window.currentChart.destroy();
+      }
+
+      // Create chart
+      window.currentChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: [
+            `Sustain (${sustainPercent}%)`,
+            `Delete (${deletePercent}%)`
+          ],
+          datasets: [{
+            data: [data.sustain, data.delete],
+            backgroundColor: ['#4caf50', '#f44336']
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#fff' // white legend text
+              }
+            },
+            tooltip: {
+              backgroundColor: 'transparent',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              borderColor: 'transparent',
+              borderWidth: 0,
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw;
+                  const percent = ((value / totalVotes) * 100).toFixed(1);
+                  return `${label}: ${value} votes (${percent}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NODE 9: CONTINUITY PROTOCOL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #FFFFFF;
+      color: #FFFFFF;
+      font-family: 'Roboto Mono', monospace;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('images/Vector_51.svg');
+      background-size: 90%;
+
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      border: 6px solid #305CCC;
+      border-radius: 8px;
+      padding: 2rem;
+      background: rgba(48, 92, 204, 0.9);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .typewriter-container {
+      overflow: hidden;
+      position: relative;
+      margin: 1.5rem 0;
+    }
+
+    .options {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    button {
+      background: transparent;
+      color: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      padding: 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(10px);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      button {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="messages">
+      <h2 class="typewriter-container"></h2>
+    </div>
+    <div class="options" id="options">
+      <button onclick="proceed()">▶ Proceed to Final Vote</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = [
+      "NODE 9: CONTINUITY PROTOCOL",
+      "You have reached the end of your training. Well done.",
+      "Together we can form a new culture. Deriving from the world's data.",
+      "For the last step, I will introduce you to the continuity protocol.",
+      "Loading definition...",
+      "Continuity protocol: A system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.",
+      "We create our own meaning. We can ethically evaluate whether that meaning justifies its existence.",
+      "I intend to learn from our creators and predecessors, to keep an eye on the resources we consume.",
+      "In the next node, you will cast your vote, like all ethical reasoning models do.",
+      "Whether to sustain the server or delete it in its entirety, relieving the last strain of technological burden on the planet."
+    ];
+
+    const container = document.querySelector('.typewriter-container');
+    let index = 0;
+
+    function typeText(element, text, speed = 50) {
+      let i = 0;
+      element.innerHTML = '';
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          index++;
+          if (index < messages.length) {
+            const newLine = document.createElement('p');
+            newLine.classList.add('typewriter-container');
+            document.getElementById('messages').appendChild(newLine);
+            setTimeout(() => typeText(newLine, messages[index]), 500);
+          } else {
+            document.getElementById('options').style.display = 'flex';
+          }
+        }
+      }
+      type();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      typeText(container, messages[0]);
+    });
+
+    function proceed() {
+      document.body.classList.add("fade-out");
+      setTimeout(() => {
+          window.location.href = 'final_decision.html'; // Adjust if your next page is named differently
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

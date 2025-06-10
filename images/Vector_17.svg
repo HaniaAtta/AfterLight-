@@ -1,0 +1,9 @@
+<svg width="1160" height="562" viewBox="0 0 1160 562" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M-76 1H1115.5L1151 61.1481V83.963M1151 167.242V561H1076.86H1008.98L976.609 545.444M-3.94639 545.444H926.03" stroke="#305CCC" stroke-width="1.5"/>
+
+  <!-- Circles aligned exactly on path ends -->
+  <circle cx="1151" cy="171.1481" r="4" fill="#305CCC"/>
+  <circle cx="1151" cy="83.963" r="4" fill="#305CCC"/>
+  <circle cx="976.609" cy="545.444" r="4" fill="#305CCC"/>
+  <circle cx="926.03" cy="545.444" r="4" fill="#305CCC"/>
+</svg>
