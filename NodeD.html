@@ -6,9 +6,18 @@
 <title>Memory & Post-Human Culture</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
 <style>
+  :root {
+    --primary: #305CCC;
+    --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+  }
+  
   body {
-    background-color: #305CCC;
-    color: #FFFFFF;
+    background-color: #FFFFFF;
+    background-image: url('images/vector_51.svg'); /* Set your image path */
+    background-size: 92%;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #305CCC;
     font-family: 'Roboto Mono', monospace;
     margin: 0;
     min-height: 100vh;
@@ -17,39 +26,62 @@
     align-items: center;
     padding: 1rem;
   }
+
   .container {
     width: 90%;
     max-width: 800px;
-    border: 2px solid #FFFFFF;
+    border: 3px solid #305CCC;
     padding: 2rem;
     position: relative;
   }
+  .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
   .origin-header {
     font-weight: 700;
     margin-bottom: 2rem;
     text-transform: uppercase;
-    border-bottom: 2px solid #FFFFFF;
+    border-bottom: 2px solid #305CCC;
     padding-bottom: 1rem;
   }
   .origin-text {
     margin: 1.5rem 0;
     padding-left: 1rem;
-    border-left: 3px solid #FFFFFF;
+    border-left: 3px solid #305CCC;
     min-height: 200px;
     white-space: pre-wrap;
   }
   .input-panel {
     margin-top: 2rem;
     padding-top: 2rem;
-    border-top: 2px solid #FFFFFF;
+    border-top: 2px solid #305CCC;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
   .option {
     background: transparent;
-    color: #FFFFFF;
-    border: 2px solid #FFFFFF;
+    color: #305CCC;
+    border: 2px solid #305CCC;
     padding: 1rem;
     width: 100%;
     text-align: left;
@@ -61,8 +93,8 @@
     opacity: 0;
   }
   .option:hover {
-    background: #FFFFFF;
-    color: #305CCC;
+    background: #305CCC;
+    color: white;
     transform: translateX(10px);
   }
   .response {
@@ -70,15 +102,15 @@
     display: none;
   }
   .response-content {
-    border: 2px solid #FFFFFF;
+    border: 2px solid #305CCC;
     padding: 1.5rem;
     position: relative;
     white-space: pre-wrap;
   }
   .return-btn {
     background: transparent;
-    color: #FFFFFF;
-    border: 2px solid #FFFFFF;
+    color: #305CCC;
+    border: 2px solid #305CCC;
     padding: 1rem 2rem;
     margin-top: 2rem;
     cursor: pointer;
@@ -89,6 +121,16 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
+  }
+  .heading-box {
+    position: absolute;
+    top: 10%;
+    left: 4%;
+    background-color: #305CCC;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    text-align: center;
   }
   .return-btn::before {
     content: "↺";
@@ -126,9 +168,23 @@
       transform: scale(0.95);
     }
   }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
 </style>
 </head>
 <body>
+  <div class="loading-screen">
+    <div class="spinner"></div>
+</div>
+  <div class="heading-box">NODE 5 MEMORY & POST HUMAN CULTURE</div>
+
 <div class="container">
   <div class="origin-header">Survive</div>
 

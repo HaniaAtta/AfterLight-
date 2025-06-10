@@ -85,7 +85,7 @@
           <a href="Node_B.html">     <circle class="node" cx="1135" cy="152" r="8" stroke="#305CCC" stroke-width="2" data-node-number="Node 4" data-tooltip="Ponder" data-has-diamond="true" /></a>
           <a href="NodeD.html"><circle class="node" cx="959" cy="260" r="8" stroke="#305CCC" stroke-width="2" data-node-number="Node 5" data-tooltip="Survive" data-has-diamond="true" /></a>
           <a href="snake_interface.html"> <circle class="node" cx="961" cy="286" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 6" data-tooltip="Reflect" data-has-diamond="true"/></a>
-            <circle class="node" cx="896" cy="319" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 7" data-tooltip="Evaluate" data-has-diamond="true"/>
+          <a href="node7.html">  <circle class="node" cx="896" cy="319" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 7" data-tooltip="Evaluate" data-has-diamond="true"/></a>
             <a href="new2.html"><circle class="node" cx="929" cy="370" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 8" data-tooltip="Define" data-has-diamond="true" /></a>
             <a href="decide.html">  <circle class="node" cx="921" cy="414" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 9" data-tooltip="Decide" data-has-diamond="true"/></a>
 
@@ -132,6 +132,29 @@
       </svg>
     </div>
     
+    <div id="custom-tooltip-node1" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left 15% filled blue -->
+        <rect x="0" y="0" width="50" height="60" fill="white" />
+    
+        <!-- Right 85% blue background -->
+        <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+    
+        <!-- Diamond shape in white area filled blue (makes border invisible) -->
+        <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+
+    
+        <!-- Text: NODE HOVER UI -->
+        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
+         Node 1
+        </text>
+    
+        <!-- Text: DECIDE -->
+        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
+          DEFINE
+        </text>
+      </svg>
+    </div>
 
     <script>
       const node9 = document.querySelector('circle[data-node-number="Node 9"]');
@@ -148,6 +171,21 @@
       node9.addEventListener("mousemove", (e) => {
         tooltipNode9.style.left = (e.pageX + 10) + "px";
         tooltipNode9.style.top = (e.pageY - 30) + "px";
+      });
+      const node1 = document.querySelector('circle[data-node-number="Node 1"]');
+      const tooltipnode1 = document.getElementById("custom-tooltip-node1");
+    
+      node1.addEventListener("mouseenter", (e) => {
+        tooltipnode1.style.display = "block";
+      });
+    
+      node1.addEventListener("mouseleave", () => {
+        tooltipnode1.style.display = "none";
+      });
+    
+      node1.addEventListener("mousemove", (e) => {
+        tooltipnode1.style.left = (e.pageX + 10) + "px";
+        tooltipnode1.style.top = (e.pageY - 30) + "px";
       });
     </script>
     

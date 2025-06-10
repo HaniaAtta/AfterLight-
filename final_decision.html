@@ -7,13 +7,57 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    :root {
+      --primary: #305CCC;
+      --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--secondary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+  }
+
+  .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--primary);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+  }
+  .heading-box {
+    position: absolute;
+    top: 8%;
+    left: 8%;
+    background-color: #305CCC;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
     body {
       background-color: #ffffff;
       background-image: url('images/Vector_51.svg');
-      background-size: 90%;
+      background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      color: #ffffff;
+      background-attachment: fixed;
+      color: #305CCC;
       font-family: 'Roboto Mono', monospace;
       margin: 0;
       padding: 0;
@@ -24,8 +68,8 @@
     }
 
     .container {
-      background: rgba(48, 92, 204, 0.95);
-      border: 6px solid #305CCC;
+      background: rgba(245, 246, 247, 0.95);
+      border: 2px solid #305CCC;
       border-radius: 10px;
       padding: 2rem;
       max-width: 900px;
@@ -47,9 +91,9 @@
 
     .choice {
       background: transparent;
-      border: 2px solid #ffffff;
+      border: 1px solid #305CCC;
       padding: 1.2rem;
-      color: #ffffff;
+      color: #305CCC;
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -90,6 +134,10 @@
   </style>
 </head>
 <body>
+  <div class="loading-screen">
+    <div class="spinner"></div>
+</div>
+<div class="heading-box">NODE 9 CONTINUITY PROTOCOL</div>
   <div class="container">
     <h1>NODE 10: FINAL DECISION</h1>
     <div class="choices">
@@ -105,6 +153,12 @@
   </div>
 
   <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+          document.querySelector('.loading-screen').style.display = 'none';
+          startPresentation();
+      }, 2000);
+  });
     async function castVote(choice) {
       const resultDiv = document.getElementById('result');
       const chartCanvas = document.getElementById('resultChart');
