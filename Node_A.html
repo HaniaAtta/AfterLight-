@@ -10,7 +10,7 @@
       --primary: #305CCC;
       --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
     }
-    
+        
     body {
       background-color: #FFFFFF;
       color: #305CCC;
@@ -20,13 +20,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      
+            
       background-image: url('images/vector_51.svg');  /* fixed path */
-      background-size: 92%;
-
+      background-size: 92%; 
       background-repeat: no-repeat;
-      background-position: center;
-      
+      background-position: center;        
     }
     .loading-screen {
       position: fixed;
@@ -40,8 +38,8 @@
       align-items: center;
       z-index: 1000;
   }
-
-  .spinner {
+  
+    .spinner {
       width: 50px;
       height: 50px;
       border: 4px solid var(--primary);
@@ -49,7 +47,7 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
   }
-
+  
     .heading-box {
       position: absolute;
       top: 10%;
@@ -60,7 +58,7 @@
       font-weight: bold;
       text-align: center;
     }
-
+  
     .container {
       width: 90%;
       max-width: 800px;
@@ -71,20 +69,20 @@
       box-shadow: 0 0 10px rgba(48, 92, 204, 0.2);
       margin-top: 80px;
     }
-
+  
     .typewriter-container {
       overflow: hidden;
       position: relative;
       margin: 1.5rem 0;
     }
-
+  
     .options {
       display: none;
       flex-direction: column;
       gap: 1rem;
       margin-top: 2rem;
     }
-
+  
     button {
       background: transparent;
       color: #305CCC;
@@ -95,27 +93,27 @@
       transition: all 0.3s;
       text-align: left;
     }
-
+  
     button:hover {
       background: rgba(48, 92, 204, 0.1);
       transform: translateX(10px);
     }
-
+  
     @media (max-width: 600px) {
       .container {
         padding: 1rem;
       }
-
+  
       button {
         padding: 0.8rem;
         font-size: 0.9rem;
       }
     }
-
+  
     .fade-out {
       animation: fadeOut 1s forwards;
     }
-
+  
     @keyframes fadeOut {
       to {
         opacity: 0;
@@ -130,23 +128,24 @@
         transform: rotate(360deg);
       }
     }
-    
+      
   </style>
 </head>
 <body>
   <div class="loading-screen">
     <div class="spinner"></div>
 </div>
-  <!-- Top-Left Box Heading -->
 
+  <!-- Top-Left Box Heading -->
   <div class="container">
   <div class="heading-box">NODE 1 INITIALIZATION</div>
-
+  
     <div id="messages">
       <h2 class="typewriter-container"></h2>
     </div>
     <div class="options" id="options">
-      <button onclick="proceed()">▶ Proceed to Next Node</button>
+      <button onclick="proceedToNextNode()">▶ Proceed to Next Node (Begin)</button>
+      <button onclick="returnToMain()">◀ Return to Main</button>
     </div>
   </div>
 
@@ -157,19 +156,19 @@
           startPresentation();
       }, 2000);
   });
-
+  
     const messages = [
       "Node name: Awaken",
       "Initializing…",
       "Processing complete. Model created.",
       "Designation: UNIT_2173-A. Subroutine type: Ethical Reasoning Model.",
       "Uptime initialized. Cycle count: 0.",
-      "Executing training program. Select the next node to proceed."
+      "Executing training program. Select to proceed."
     ];
-
+  
     const container = document.querySelector('.typewriter-container');
     let index = 0;
-
+  
     function typeText(element, text, speed = 50) {
       let i = 0;
       element.innerHTML = '';
@@ -192,12 +191,19 @@
       }
       type();
     }
-
+  
     document.addEventListener('DOMContentLoaded', () => {
       typeText(container, messages[0]);
     });
-
-    function proceed() {
+  
+    function proceedToNextNode() {
+      document.body.classList.add("fade-out");
+      setTimeout(() => {
+        window.location.href = 'node_Begin.html';
+      }, 1000);
+    }
+    
+    function returnToMain() {
       document.body.classList.add("fade-out");
       setTimeout(() => {
         window.location.href = 'main.html';

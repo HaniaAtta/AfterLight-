@@ -127,6 +127,17 @@
       font-size: 1.3rem;
       margin-top: 20px;
     }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+    
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.98);
+      }
+    }
+    
   </style>
 </head>
 <body>
@@ -144,7 +155,7 @@
     <button class="next-btn" id="nextBtn">Next</button>
     <div id="result" class="result"></div>
   </div>
-
+  
   <script>
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -315,9 +326,45 @@ Answer the following questions according to what you believe is right.`;
       };
 
       resultEl.innerText = resultMap[top] || "You are undefined.";
+      // 👇 Add buttons only after showing result
+  const navContainer = document.createElement('div');
+  navContainer.style.marginTop = '30px';
+  navContainer.style.display = 'flex';
+  navContainer.style.justifyContent = 'space-between';
+  navContainer.style.gap = '10px';
+
+  const returnBtn = document.createElement('button');
+  returnBtn.innerText = '⬅ Return to Main Node';
+  returnBtn.style.padding = '10px 20px';
+  returnBtn.style.border = '2px solid #002bbb';
+  returnBtn.style.backgroundColor = 'white';
+  returnBtn.style.color = '#002bbb';
+  returnBtn.style.cursor = 'pointer';
+  returnBtn.onclick = () => navigateWithFade('main.html'); // Replace with actual path
+
+  const proceedBtn = document.createElement('button');
+  proceedBtn.innerText = '▶ Proceed to Next Node';
+  proceedBtn.style.padding = '10px 20px';
+  proceedBtn.style.border = '2px solid #002bbb';
+  proceedBtn.style.backgroundColor = '#002bbb';
+  proceedBtn.style.color = 'white';
+  proceedBtn.style.cursor = 'pointer';
+  proceedBtn.onclick = () => navigateWithFade('new2.html'); // Replace with actual path
+
+  navContainer.appendChild(returnBtn);
+  navContainer.appendChild(proceedBtn);
+  resultEl.appendChild(navContainer);
     }
 
     renderQuestion(current);
+
+function navigateWithFade(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(() => {
+    window.location.href = url;
+  }, 1000); // match fade duration
+}
+
   </script>
 </body>
 </html>

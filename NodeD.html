@@ -201,6 +201,12 @@
 </div>
 
 <script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.querySelector('.loading-screen').style.display = 'none';
+        startPresentation();
+    }, 2000);
+});
   // Text lines for the origin text
   const originLines = [
     "The atmosphere churns.",
