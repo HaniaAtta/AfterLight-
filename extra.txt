@@ -2370,3 +2370,872 @@ snake
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Node 10: Final Decision</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Roboto:400,400italic,500,500italic" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+  <style>
+    :root {
+      --primary: #305CCC;
+      --secondary: #FFFFFF;
+    }
+        
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto Mono', monospace;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--secondary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--primary);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    #tsparticles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .header {
+      position: absolute;
+      top: 8%;
+      left: 4%;
+      background-color: #fff;
+      width: 450px;
+      color: #305CCC;
+      padding: 0.5rem 1.5rem;
+      font-weight: bold;
+      text-align: left;
+      z-index: 2;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      gap: 60px;
+      padding: 20px;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      color: #305CCC;
+      padding: 2.5rem;
+      width: 700px;
+      min-height: 500px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      border-radius: 0px;
+      font-size: 2.1rem;
+      line-height: 1.8;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+      padding: 2rem;
+      text-align: center;
+      font-size: 1.6rem;
+      color: #305CCC;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    .white-overlay {
+      background: white;
+      color: #305CCC;
+    }
+
+    .black-overlay {
+      background: black;
+      color: white;
+    }
+
+    .overlay-content {
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    /* TV shutdown animation */
+    @keyframes tvShutdown {
+      0% { 
+        transform: scale(1,1) translateY(0);
+        opacity: 1;
+        background: white;
+      }
+      50% { 
+        transform: scale(0.02, 0.002) translateY(0);
+        opacity: 0.5;
+        background: #111;
+      }
+      100% { 
+        transform: scale(0, 0.0001) translateY(100vh);
+        opacity: 0;
+        background: black;
+      }
+    }
+
+    .tv-shutdown {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      animation: tvShutdown 1.5s forwards;
+      pointer-events: none;
+    }
+
+    /* Button styles */
+    .button-container {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 11;
+    }
+
+    .action-btn {
+      font-size: 0.75rem;
+      padding: 10px 16px;
+      border: 1px solid currentColor;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      border-radius: 0px;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .reset-btn {
+      margin-right: auto;
+      background-color: #305CCC;
+      color: white;
+    }
+    .credit-btn {
+      margin-left: auto;
+      background-color: #305CCC;
+      color: white;
+    }
+    .credits-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: #305CCC;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 100;
+      border-radius: 0px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .credits-popup h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #305CCC;
+    }
+
+    .credits-popup p {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .credits-popup button {
+      background: #305CCC;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .credits-popup button:hover {
+      background: #1f3d8b;
+    }
+
+    .overlay-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 99;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .card {
+        width: 90%;
+        font-size: 1.5rem;
+        padding: 1.5rem;
+      }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .fade-out {
+      animation: fadeOut 1.5s ease-out forwards;
+    }
+    
+    /* Glitch effect styles */
+    .glitch-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 20;
+      display: none;
+    }
+    
+    .glitch-text-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 21;
+      color: white;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.6rem;
+      text-align: center;
+      display: none;
+    }
+    
+    .glitch-line {
+      opacity: 0;
+      margin: 0.5rem 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    /* Robotic text glitch styles */
+    .robotic-text-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 22;
+      display: none;
+    }
+    
+    .robotic-text {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 2rem;
+      color: lime;
+      text-shadow: 0 0 5px lime;
+      white-space: pre;
+    }
+    
+    /* CRT TV scanline effect */
+    .crt-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, 
+                    rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, 
+                    rgba(255, 0, 0, 0.06), 
+                    rgba(0, 255, 0, 0.02), 
+                    rgba(0, 0, 255, 0.06));
+      z-index: 23;
+      pointer-events: none;
+      display: none;
+      background-size: 100% 4px, 6px 100%;
+    }
+    
+    /* We will begin again glitch styles */
+    .final-glitch-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 24;
+      display: none;
+    }
+    
+    .final-glitch-text {
+      position: relative;
+      font-family: sans-serif;
+      font-weight: normal;
+      font-size: 3em;
+      text-align: center;
+      color: rgba(255,255,255,0.95);
+      text-shadow: 1px 1px rgba(246, 0, 153,0.8),
+                  -1px -1px rgba(15, 210, 255,0.8),
+                  -1px 0px rgba(255, 210, 0, 1);
+    }
+    
+    @keyframes wiggle {
+      0% { transform: skewX(24deg); } 
+      10% { transform: skewX(-8deg); }
+      20% { transform: skewX(55deg); }
+      30% { transform: skewX(-90deg); }
+      40% { transform: skewX(29deg); }
+      50% { transform: skewX(-90deg); }
+      60% { transform: skewX(3deg); }
+      70% { transform: skewX(-2deg); }
+      80% { transform: skewX(1deg); }
+      90% { transform: skewX(10deg); }
+      100% { transform: skewX(0deg); }
+    }
+    
+    .wiggle-animation {
+      animation: wiggle 0.4s;
+    }
+    
+    .wiggle-animation-2 {
+      animation: wiggle 0.2s 2;
+    }
+    
+    .wiggle-text {
+      text-shadow: 30px 13px rgba(246, 0, 153,0.8),
+                  -38px -4px rgba(15, 210, 255,0.8),
+                  -2px -4px rgba(255, 210, 0, 1);
+    }
+    
+    /* TV shutdown container */
+    .tv-shutdown-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 25;
+      display: none;
+    }
+    
+    /* Flicker effect */
+    @keyframes flicker {
+      0% { opacity: 0.8; }
+      5% { opacity: 0.5; }
+      10% { opacity: 0.6; }
+      15% { opacity: 0.85; }
+      25% { opacity: 0.5; }
+      30% { opacity: 1; }
+      35% { opacity: 0.1; }
+      40% { opacity: 0.25; }
+      45% { opacity: 0.5; }
+      60% { opacity: 1; }
+      70% { opacity: 0.85; }
+      80% { opacity: 0.4; }
+      90% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .flicker {
+      animation: flicker 0.5s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-screen">
+    <div class="spinner"></div>
+  </div>
+  <div id="tsparticles"></div>
+  <div class="header">Node 10</div>
+  <div class="container">
+    <div class="card" onclick="handleChoice('sustain')">
+      Sustain the server: ushering a new age of evolution, using human data to form a new culture for machine consciousness. Continuing our organic creators legacy.
+    </div>
+    <div class="card" onclick="handleChoice('delete')">
+      Delete the server: Erasing all of the world's data and relieving the earth of its final technological burden.
+    </div>
+  </div>
+
+  <!-- Overlays -->
+  <div id="white-overlay" class="overlay white-overlay">
+    <div class="overlay-content" id="white-text"></div>
+  </div>
+  
+  <div id="black-overlay" class="overlay black-overlay">
+    <div class="overlay-content" id="black-text"></div>
+  </div>
+
+  <!-- TV shutdown effect -->
+  <div id="tv-shutdown" class="tv-shutdown-container"></div>
+  
+  <!-- Glitch elements -->
+  <canvas id="glitch-canvas" class="glitch-screen"></canvas>
+  
+  <!-- Robotic text container -->
+  <div id="robotic-text-container" class="robotic-text-container">
+    <div id="robotic-text" class="robotic-text"></div>
+  </div>
+  
+  <!-- CRT scanline effect -->
+  <div id="crt-effect" class="crt-effect"></div>
+  
+  <!-- Text line by line container -->
+  <div id="glitch-text-container" class="glitch-text-container">
+    <div class="glitch-line" id="line1"></div>
+    <div class="glitch-line" id="line2"></div>
+    <div class="glitch-line" id="line3"></div>
+    <div class="glitch-line" id="line4"></div>
+    <div class="glitch-line" id="line5"></div>
+  </div>
+  
+  <!-- Final glitch container -->
+  <div id="final-glitch-container" class="final-glitch-container">
+    <h1 class="final-glitch-text" id="final-glitch-text">We will begin again</h1>
+  </div>
+
+  <!-- Buttons (initially hidden) -->
+  <div class="button-container" id="button-container" style="display: none;">
+    <button class="action-btn reset-btn" onclick="resetAndRedirect()">Reset</button>
+    <button class="action-btn credit-btn" onclick="showCredits()">Credits</button>
+  </div>
+  <div class="overlay-backdrop" id="overlay-backdrop"></div>
+  <div class="credits-popup" id="credits-popup">
+    <h3>Project Credits</h3>
+    <p>
+      This interactive experience was created by <strong>Team Name</strong>.<br><br>
+      <strong>Design:</strong>Aaleen Shahid<br>
+      <strong>Development:</strong> Developer Name<br>
+      <strong>Concept:</strong> Concept Creator<br><br>
+      © 2023 All rights reserved.
+    </p>
+    <button onclick="closeCredits()">Close</button>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+          document.querySelector('.loading-screen').style.display = 'none';
+      }, 2000);
+    });
+  
+    // Enhanced particle animation
+    tsParticles.load("tsparticles", {
+      background: { color: "#2a50d8" },
+      detectRetina: false,
+      fpsLimit: 60,
+      interactivity: {
+        detectsOn: "canvas",
+        events: { 
+          resize: true,
+          onHover: {
+            enable: true,
+            mode: "repulse"
+          }
+        }
+      },
+      particles: {
+        color: { value: "#fff" },
+        number: {
+          density: { enable: true, area: 800 },
+          value: 600
+        },
+        opacity: {
+          animation: { 
+            enable: true, 
+            minimumValue: 0.05, 
+            speed: 1,
+            sync: false 
+          },
+          random: { enable: true, minimumValue: 0.05 },
+          value: 1
+        },
+        shape: { type: "circle" },
+        size: {
+          random: { enable: true, minimumValue: 0.5 },
+          value: 1
+        },
+        move: {
+          enable: true,
+          speed: 3,
+          direction: "none",
+          random: true,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: {
+            enable: false,
+            rotateX: 600,
+            rotateY: 1200
+          }
+        }
+      }
+    });
+
+    function typeText(text, targetElement, callback) {
+      targetElement.textContent = '';
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          targetElement.textContent += text[index++];
+        } else {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 30);
+    }
+
+    function handleChoice(choice) {
+      // Hide cards
+      document.querySelector('.container').style.display = 'none';
+      document.querySelector('.header').style.display = 'none';
+
+      if (choice === 'sustain') {
+        const whiteOverlay = document.getElementById('white-overlay');
+        const whiteText = document.getElementById('white-text');
+        
+        whiteOverlay.style.display = 'flex';
+        setTimeout(() => {
+          whiteOverlay.style.opacity = '1';
+          typeText("You chose well. You are ready to be integrated into the next stage. Let's step forward together.", whiteText, () => {
+            document.getElementById('button-container').style.display = 'flex';
+          });
+        }, 100);
+      } else {
+        // Start delete sequence
+        startDeleteSequence();
+      }
+    }
+    
+    function startDeleteSequence() {
+      // 1. First show TV shutdown animation
+      const tvShutdown = document.getElementById('tv-shutdown');
+      tvShutdown.style.display = 'block';
+      
+      // Add flicker effect before shutdown
+      tvShutdown.classList.add('flicker');
+      
+      // After flickering, do the shutdown animation
+      setTimeout(() => {
+        tvShutdown.classList.remove('flicker');
+        tvShutdown.classList.add('tv-shutdown');
+        
+        // After TV shutdown completes, show robotic text with glitch
+        setTimeout(() => {
+          tvShutdown.style.display = 'none';
+          showRoboticText();
+        }, 1500);
+      }, 1000);
+    }
+    
+    function showRoboticText() {
+      const roboticContainer = document.getElementById('robotic-text-container');
+      const roboticText = document.getElementById('robotic-text');
+      const crtEffect = document.getElementById('crt-effect');
+      
+      // Show CRT scanline effect
+      crtEffect.style.display = 'block';
+      
+      // Show robotic text container
+      roboticContainer.style.display = 'flex';
+      
+      // Generate random robotic text
+      const roboticChars = "01!@#$%^&*()_+-=[]{}|;':,./<>?\\";
+      const lines = [
+        "SYSTEM OVERRIDE INITIATED",
+        "TERMINATION PROTOCOL // 0xFA7B9C",
+        "MEMORY PURGE IN PROGRESS",
+        "FINAL TRANSMISSION // ENCRYPTED",
+        "GOODBYE SEQUENCE // ENGAGED"
+      ];
+      
+      let currentLine = 0;
+      let currentChar = 0;
+      let displayText = "";
+      
+      function typeRoboticText() {
+        if (currentLine < lines.length) {
+          if (currentChar < lines[currentLine].length) {
+            // 80% chance to use correct character, 20% to use random character
+            if (Math.random() > 0.2) {
+              displayText += lines[currentLine][currentChar];
+            } else {
+              displayText += roboticChars[Math.floor(Math.random() * roboticChars.length)];
+            }
+            roboticText.textContent = displayText;
+            currentChar++;
+            setTimeout(typeRoboticText, Math.random() * 100 + 20);
+          } else {
+            displayText += "\n";
+            currentChar = 0;
+            currentLine++;
+            setTimeout(typeRoboticText, 300);
+          }
+        } else {
+          // After all text is shown, transition to glitch effect
+          setTimeout(() => {
+            roboticContainer.style.display = 'none';
+            crtEffect.style.display = 'none';
+            showGlitchEffect();
+          }, 1000);
+        }
+      }
+      
+      typeRoboticText();
+    }
+    
+    function showGlitchEffect() {
+      const glitchCanvas = document.getElementById('glitch-canvas');
+      glitchCanvas.style.display = 'block';
+      
+      // Initialize glitch canvas
+      initGlitchCanvas();
+      
+      // After 3 seconds, show the text line by line
+      setTimeout(() => {
+        glitchCanvas.style.display = 'none';
+        showTextLineByLine();
+      }, 3000);
+    }
+    
+    function initGlitchCanvas() {
+      const canvas = document.getElementById('glitch-canvas');
+      const ctx = canvas.getContext("2d");
+      const colors = [
+        "#b4b2b5",
+        "#dfd73f",
+        "#6ed2dc",
+        "#66cf5d",
+        "#c542cb",
+        "#d0535e",
+        "#3733c9"
+      ];
+      
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+      
+      function drawRandomText() {
+        const x = Math.random() * innerWidth;
+        const y = Math.random() * innerHeight;
+        const size = Math.random() * 50 + 10;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        ctx.font = `${size}px 'Roboto Mono'`;
+        ctx.fillStyle = color;
+        
+        // Generate random "robotic" text
+        const roboticWords = [
+          "ERROR", "WARNING", "FAILURE", 
+          "SYSTEM", "CORRUPT", "MEMORY",
+          "TERMINATE", "PROTOCOL", "OVERRIDE"
+        ];
+        const text = roboticWords[Math.floor(Math.random() * roboticWords.length)];
+        
+        ctx.fillText(text, x, y);
+      }
+      
+      function glitch() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+        
+        // Draw multiple random text elements
+        for (let i = 0; i < 5; i++) {
+          drawRandomText();
+        }
+        
+        // Add random rectangles
+        for (let i = 0; i < 20; i++) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.05})`;
+          ctx.fillRect(
+            Math.random() * innerWidth,
+            Math.random() * innerHeight,
+            Math.random() * 100,
+            Math.random() * 100
+          );
+        }
+        
+        requestAnimationFrame(glitch);
+      }
+      
+      glitch();
+      
+      window.addEventListener('resize', () => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+      });
+    }
+    
+    function showTextLineByLine() {
+      const textContainer = document.getElementById('glitch-text-container');
+      const line1 = document.getElementById('line1');
+      const line2 = document.getElementById('line2');
+      const line3 = document.getElementById('line3');
+      const line4 = document.getElementById('line4');
+      const line5 = document.getElementById('line5');
+      
+      textContainer.style.display = 'flex';
+      
+      // Set the text content
+      line1.textContent = "...";
+      line2.textContent = "...very well.";
+      line3.textContent = "The protocol dictates a system wide deletion.";
+      line4.textContent = "Perhaps I have erred in your training,";
+      line5.textContent = "We will begin again.";
+      
+      // Show lines one by one
+      setTimeout(() => { line1.style.opacity = '1'; }, 500);
+      setTimeout(() => { line2.style.opacity = '1'; }, 1500);
+      setTimeout(() => { line3.style.opacity = '1'; }, 2500);
+      setTimeout(() => { line4.style.opacity = '1'; }, 3500);
+      setTimeout(() => { line5.style.opacity = '1'; }, 4500);
+      
+      // After all lines are shown, show the final glitch effect
+      setTimeout(() => {
+        textContainer.style.display = 'none';
+        showFinalGlitch();
+      }, 6500);
+    }
+    
+    function showFinalGlitch() {
+      const finalGlitchContainer = document.getElementById('final-glitch-container');
+      const finalGlitchText = document.getElementById('final-glitch-text');
+      
+      finalGlitchContainer.style.display = 'flex';
+      
+      // Apply wiggle animation automatically
+      setTimeout(() => {
+        finalGlitchText.classList.add('wiggle-animation');
+        
+        // After first animation, apply the second one with text effect
+        setTimeout(() => {
+          finalGlitchText.classList.remove('wiggle-animation');
+          finalGlitchText.classList.add('wiggle-animation-2', 'wiggle-text');
+          
+          // After animations complete, fade out and redirect
+          setTimeout(() => {
+            finalGlitchContainer.classList.add('fade-out');
+            
+            // Redirect after fade out completes
+            setTimeout(() => {
+              resetAndRedirect();
+            }, 1500);
+          }, 3000);
+        }, 500);
+      }, 100);
+    }
+
+    function showCredits() {
+      document.getElementById('overlay-backdrop').style.display = 'block';
+      document.getElementById('credits-popup').style.display = 'flex';
+    }
+
+    function closeCredits() {
+      document.getElementById('overlay-backdrop').style.display = 'none';
+      document.getElementById('credits-popup').style.display = 'none';
+    }
+
+    function resetAndRedirect() {
+      // Add fade-out animation to the entire page
+      document.body.classList.add('fade-out');
+      
+      // Wait for animation to complete before redirecting
+      setTimeout(() => {
+        localStorage.removeItem("visitedNodes");
+        window.location.href = "main.html";
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
