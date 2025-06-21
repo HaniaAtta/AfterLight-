@@ -7,6 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <style>
+    :root {
+      --primary: #305CCC;
+      --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+    }
+        
     html, body {
       margin: 0;
       padding: 0;
@@ -16,7 +21,41 @@
       overflow: hidden;
       position: relative;
     }
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--secondary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+  }
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
 
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
     #tsparticles {
       position: fixed;
       top: 0; left: 0;
@@ -129,12 +168,12 @@
 
     .action-btn {
       font-size: 0.75rem;
-      padding: 4px 10px;
+      padding: 10px 16px;
       border: 1px solid currentColor;
       background: transparent;
       color: inherit;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 0px;
       font-family: 'Roboto Mono', monospace;
     }
 
@@ -143,11 +182,63 @@
       background-color: #305CCC;
       color: white;
     }
-
     .credit-btn {
       margin-left: auto;
       background-color: #305CCC;
       color: white;
+    }
+    .credits-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: #305CCC;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 100;
+      border-radius: 0px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .credits-popup h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #305CCC;
+    }
+
+    .credits-popup p {
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .credits-popup button {
+      background: #305CCC;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .credits-popup button:hover {
+      background: #1f3d8b;
+    }
+
+    .overlay-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 99;
+      display: none;
     }
 
     @media (max-width: 700px) {
@@ -162,9 +253,21 @@
         padding: 1.5rem;
       }
     }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .fade-out {
+      animation: fadeOut 1.5s ease-out forwards;
+    }
+    
+    
   </style>
 </head>
 <body>
+  <div class="loading-screen">
+    <div class="spinner"></div>
+</div>
   <div id="tsparticles"></div>
   <div class="header">Node 10</div>
   <div class="container">
@@ -190,8 +293,27 @@
     <button class="action-btn reset-btn" onclick="resetAndRedirect()">Reset</button>
     <button class="action-btn credit-btn" onclick="showCredits()">Credits</button>
   </div>
+  <div class="overlay-backdrop" id="overlay-backdrop"></div>
+  <div class="credits-popup" id="credits-popup">
+    <h3>Project Credits</h3>
+    <p>
+      This interactive experience was created by <strong>Your Team Name</strong>.<br><br>
+      <strong>Design:</strong> Designer Name<br>
+      <strong>Development:</strong> Developer Name<br>
+      <strong>Concept:</strong> Concept Creator<br><br>
+      © 2023 All rights reserved.
+    </p>
+    <button onclick="closeCredits()">Close</button>
+  </div>
 
   <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+          document.querySelector('.loading-screen').style.display = 'none';
+          startPresentation();
+      }, 2000);
+  });
+  
     // Enhanced particle animation
     tsParticles.load("tsparticles", {
       background: { color: "#2a50d8" },
@@ -302,12 +424,25 @@
     }
 
     function showCredits() {
-      alert("This interactive experience was created by [Your Name/Team Name].\n\nCredits:\n- Design: [Name]\n- Development: [Name]\n- Concept: [Name]\n\n© 2023 All rights reserved.");
+      document.getElementById('overlay-backdrop').style.display = 'block';
+      document.getElementById('credits-popup').style.display = 'flex';
     }
 
+    function closeCredits() {
+      document.getElementById('overlay-backdrop').style.display = 'none';
+      document.getElementById('credits-popup').style.display = 'none';
+    }
+
+
     function resetAndRedirect() {
-      localStorage.removeItem("visitedNodes");
-      window.location.href = "main.html";
+      // Add fade-out animation to the entire page
+      document.body.classList.add('fade-out');
+      
+      // Wait for animation to complete before redirecting
+      setTimeout(() => {
+        localStorage.removeItem("visitedNodes");
+        window.location.href = "main.html";
+      }, 1500); // Match this duration with your animation time (1.5s)
     }
   </script>
 </body>
