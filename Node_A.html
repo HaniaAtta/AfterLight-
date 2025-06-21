@@ -99,6 +99,48 @@
       background: rgba(48, 92, 204, 0.1);
       transform: translateX(10px);
     }
+    
+    .nav-buttons {
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      padding: 0 60px;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    
+    #next-button, #return-button {
+      width: auto;
+      position: relative;
+    }
+
+    #next-button{
+margin-left: 67%;
+    }
+    #return-button{
+    
+      margin-left: 1%;
+          }
+
+    .nav-button {
+      padding: 12px 25px;
+      background: transparent;
+      color: #305CCC;
+      border: 2px solid #305CCC;
+      border-radius: 0px;
+      cursor: pointer;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    
+    .nav-button:hover {
+      transform: translateY(-2px);
+    }
   
     @media (max-width: 600px) {
       .container {
@@ -109,8 +151,9 @@
         padding: 0.8rem;
         font-size: 0.9rem;
       }
+      
     }
-  
+   
     .fade-out {
       animation: fadeOut 1s forwards;
     }
@@ -145,8 +188,11 @@
       <h2 class="typewriter-container"></h2>
     </div>
     <div class="options" id="options">
-      <button onclick="proceedToNextNode()">▶ Proceed to Next Node (Begin)</button>
-      <button onclick="returnToMain()">◀ Return to Main</button>
+      
+    </div>
+    <div class="nav-buttons" id="nav-buttons">
+      <button id="return-button" class="nav-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
+      <button id="next-button" class="nav-button" onclick="proceedToNextNode()">GO TO NEXT NODE</button>
     </div>
   </div>
 
@@ -187,12 +233,15 @@
             setTimeout(() => typeText(newLine, messages[index]), 500);
           } else {
             document.getElementById('options').style.display = 'flex';
+            // Show navigation buttons when messages are complete
+            setTimeout(() => {
+              document.getElementById('nav-buttons').style.opacity = '1';
+            }, 500);
           }
         }
       }
       type();
     }
-  
     document.addEventListener('DOMContentLoaded', () => {
       typeText(container, messages[0]);
     });
