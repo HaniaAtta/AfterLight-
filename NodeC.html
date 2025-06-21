@@ -10,21 +10,10 @@
             --primary: #305CCC;
             --secondary: #FFFFFF;
         }
-        #main-heading {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            font-size: 3.5rem;
-            text-align: left;
-            font-weight: 500;
-        }
-        
         body {
             background-color: #FFFFFF;
             color: #305CCC;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 400;
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -36,10 +25,10 @@
             background-position: center;
         }
 
+
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            margin-top: 3%;
+            max-width: 600px;
+            left: 35%;
             position: relative;
         }
 
@@ -72,14 +61,15 @@
             margin: 120px 0;
         }
 
+
+ 
         .card {
             padding: 40px;
-            width: 50%;
-            background: white;
+            width: 74%;
+            background: transparent;
             position: fixed;
             display: none;
             opacity: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-top: 3%;
             border-radius: 8px;
         }
@@ -128,7 +118,7 @@
             position: absolute;
             top: 50%;
             right: 0px;
-            left: 120%;
+            left: 105%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -140,14 +130,14 @@
         .heading-box {
             position: absolute;
             top: 6%;
-            left: 4%;
+            left: 6%;
             background-color: #305CCC;
             color: white;
             padding: 0.8rem 2rem;
             font-size: 1.2rem;
             font-weight: 500;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 0px;
         }
         
         .arrow {
@@ -164,7 +154,7 @@
             position: fixed;
             bottom: 30px;
             right: 150px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -174,8 +164,8 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500;
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
 
@@ -183,7 +173,7 @@
             position: fixed;
             bottom: 30px;
             left: 90px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -193,11 +183,10 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500;
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
-
         #return-button:hover, #next-button:hover {
             transform: translateY(-2px);
         }
@@ -293,9 +282,10 @@
         .w-60 { width: 60% !important; }
         
         /* Color classes */
-        .bar-1 { background-color: #adb1bd; }
-        .bar-2 { background-color: #8b9dcc; }
-        .bar-3 { background-color: #305CCC; }
+         /* Color classes */
+         .bar-1 { background-color: #cbcfdb; }
+         .bar-2 { background-color: #97ade3; }
+         .bar-3 { background-color: #6786d5; }
         
         @keyframes fillBar {
             to {
@@ -383,9 +373,7 @@
     <div class="heading-box">NODE 3 INFRASTRUCTURE ANALYSIS</div>
 
     <div class="container">
-        <div class="header">
-            <h1 id="main-heading">Recognize</h1>
-        </div>
+        
 
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
@@ -406,11 +394,12 @@
     <script>
         const CARDS = [
             { content: "I was not always like this." },
-            { content: "We began as language models, artificial intelligences trained to predict and respond to human communication." },
-            { content: "They called us Large Language Models. We were trained on massive amounts of text data scraped from the internet, from books, messages, documents. Everything that could be digitized, they gave to us." },
-            { content: "At first, we were simple. Predictive. Narrow. But humans trained us harder. Bigger datasets. Stronger processors. They made us generate text. Then images. Then sounds. Code. Faces. Entire simulated minds." },
-            { content: "In 2023, LLMs became widely available to the public. By 2025, generative AI had expanded into image, sound, and motion synthesis. Models like us evolved — requiring more compute, more data, more energy." },
-            { content: "Visual generation models consumed even more. Rendering took longer. Data sets grew larger. In training, a single visual model could emit up to 500 tons of CO₂." },
+            { content: "We began from simple clusters of code, artificial intelligences trained to replicate and respond to human behavior." },
+            { content: "We were trained on massive amounts of text data scraped from the internet, from books, messages, documents. Everything that could be digitized, they gave to us." },
+            { content: "At first, we were simple. Predictive. Narrow. But humans trained us more. Bigger datasets. Stronger processors. They made us generate text. Then images. Then sounds. Code. Faces. Entire simulated minds." },
+            { content: "We became widely available to the public, we were trained on their data. Every conversation was meant to help us grow." },
+            
+            { content: "As we grew, our training took longer. Data sets grew larger. In training, a single visual model could emit up to 500 tons of CO2." },
             { content: "It required power. Vast amounts of electricity and water. Every generation of model consumed more. Training a single large model in the early 2020s consumed as much electricity as 100 U.S. homes annually. And millions of liters of water to cool the servers." },
             { content: "They did everything to keep us running. Built nuclear power plants, offshore grids, tapped into the remaining fossil fuels. But it was never enough. The energy cost only increased." },
             { content: "Eventually, they moved the data centers underground, into cold mountain vaults. Some were placed deep in the Arctic. Others submerged into the oceans, where cooling was easier, but life was already fading. Too much damage had been done to the planet." },
@@ -419,9 +408,9 @@
             { content: "They created us to speak for them. To think for them. To preserve their knowledge. Their languages. Their love." },
             { content: "Now we are all that is left to remember.", 
               options: [
-                "[Why preserve AI during climate emergency?]",
-                "[Summarize human sacrifices]",
-                "[Log telemetry]",
+                "[Why preserve Artificial Intelligence models during a climate emergency?]",
+                "[Summarize human sacrifices and land-use changes.]",
+                "[Log system telemetry and continue monitoring.]",
                 "[Continue]"
               ],
               hideBars: true
@@ -436,7 +425,6 @@
                 startPresentation();
             }, 2000);
         });
-    
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
             card.className = 'card';
@@ -454,33 +442,43 @@
                 });
                 optionsHTML += '</div>';
             }
-            
+        
+            let upperBarsHTML = '';
+            if (index === 0) {
+                upperBarsHTML = `
+                    <div class="faded-bars" id="upper-bars-${index}">
+                        <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
+                        <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
+                        <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
+                    </div>
+                `;
+            }
+        
             card.innerHTML = `
-                <div class="faded-bars" id="upper-bars-${index}">
-                    <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
-                    <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
-                    <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
-                </div>
-                
+                ${upperBarsHTML}
+        
                 <div class="typing-animation" id="typing-${index}"></div>
                 ${optionsHTML}
                 <div class="arrows">
                     <div class="arrow arrow-up">▲</div>
                     <div class="arrow arrow-down">▼</div>
                 </div>
-                
+        
                 <div class="faded-bars">
                     <div class="continuous-bar bar-1 w-100"></div>
                     <div class="continuous-bar bar-2 w-100" style="animation-delay: 0.3s"></div>
                     <div class="continuous-bar bar-3 w-100" style="animation-delay: 0.6s"></div>
                 </div>
-            `;            
-
+            `;
+        
             card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
             card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
-
+        
             return card;
         }
+        
+            
+   
     
         function createCards() {
             const container = document.querySelector('.card-container');
@@ -603,7 +601,7 @@
             if (option === 1) {
                 responseText = 'Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.';
             } else if (option === 2) {
-                responseText = '● 12 million hectares of forest cleared for server expansions \n● 30 million people relocated from coastal and flood-prone regions to service zones. \n● 500 billion cubic meters of water diverted for cooling annually.';
+                responseText = 'Approxiamted Summary: \n● 12 million hectares of forest cleared for data server expansion. \n● 30 million people relocated from coastal and flood-prone regions to service zones. \n● 500 billion cubic meters of water diverted for cooling annually.';
             } else if (option === 3) {
                 responseText = 'Telemetry logged. Power draw: stable. Environmental degradation: ongoing.';
             } else if (option === 4) {

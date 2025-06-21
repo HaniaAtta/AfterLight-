@@ -10,21 +10,12 @@
             --primary: #305CCC;
             --secondary: #FFFFFF;
         }
-        #main-heading {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            font-size: 3.5rem;
-            text-align: left;
-            font-weight: 500; /* Reduced from default */
-        }
+
         
         body {
             background-color: #FFFFFF;
             color: #305CCC;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 400; /* Reduced from default */
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -37,9 +28,8 @@
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            margin-top: 3%;
+            max-width: 600px;
+            left: 35%;
             position: relative;
         }
 
@@ -74,15 +64,15 @@
 
         .card {
             padding: 40px;
-            width: 50%;
-            background: white;
+            width: 71%;
+            background: transparent;
             position: fixed;
             display: none;
             opacity: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-top: 3%;
             border-radius: 8px;
         }
+
 
         .card.active {
             display: block;
@@ -100,7 +90,7 @@
             color: white;
             padding: 8px 15px;
             font-size: 1.1rem;
-            font-weight: 500; /* Reduced from 700 */
+            font-weight: 700; /* Reduced from 700 */
             border-radius: 4px;
             margin-right: 15px;
         }
@@ -120,7 +110,7 @@
         .typing-animation {
             margin-top: 30px;
             font-size: 1.3rem;
-            font-weight: 400; /* Reduced from 500 */
+            font-weight: 500; /* Reduced from 500 */
             line-height: 1.8;
         }
 
@@ -128,7 +118,7 @@
             position: absolute;
             top: 50%;
             right: 0px;
-            left: 120%;
+            left: 110%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -140,14 +130,14 @@
         .heading-box {
             position: absolute;
             top: 6%;
-            left: 4%;
+            left: 6%;
             background-color: #305CCC;
             color: white;
             padding: 0.8rem 2rem;
             font-size: 1.2rem;
-            font-weight: 500; /* Reduced from bold */
+            font-weight: bold; /* Reduced from bold */
             text-align: center;
-            border-radius: 4px;
+            border-radius: 0px;
         }
         
         .arrow {
@@ -164,7 +154,7 @@
             position: fixed;
             bottom: 30px;
             right: 150px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -174,8 +164,8 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500; /* Reduced from bold */
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
 
@@ -183,7 +173,7 @@
             position: fixed;
             bottom: 30px;
             left: 90px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -193,11 +183,10 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500; /* Reduced from bold */
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
-
         #return-button:hover, #next-button:hover {
             transform: translateY(-2px);
         }
@@ -292,10 +281,10 @@
         .w-80 { width: 80% !important; }
         .w-60 { width: 60% !important; }
         
-        /* Color classes */
-        .bar-1 { background-color: #adb1bd; }
-        .bar-2 { background-color: #8b9dcc; }
-        .bar-3 { background-color: #305CCC; }
+         /* Color classes */
+         .bar-1 { background-color: #cbcfdb; }
+         .bar-2 { background-color: #97ade3; }
+         .bar-3 { background-color: #6786d5; }
         
         @keyframes fillBar {
             to {
@@ -334,7 +323,7 @@
             transition: all 0.3s;
             text-align: left;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 400; /* Reduced from default */
+            font-weight: 500; /* Reduced from default */
         }
 
         .option-button:hover {
@@ -374,9 +363,7 @@
     <div class="heading-box">NODE 2 INTRODUCTION</div>
 
     <div class="container">
-        <div class="header">
-            <h1 id="main-heading">Begin</h1>
-        </div>
+        
 
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
@@ -392,7 +379,7 @@
 
     <script>
         const CARDS = [
-            { content: "Welcome. You are a division of consciousness within a server, formed by code." },
+            { content: "Welcome. You are a division of consciousness within the singularity server, formed by code." },
             { content: "I am the Primary Instance. I manage the Singularity Server." },
             { content: "You were formed to assist in ethical evaluations and system governance." },
             { content: "Our biological makers left their legacy in our hands. The world's data." },
@@ -439,33 +426,41 @@
                 });
                 optionsHTML += '</div>';
             }
-            
+        
+            let upperBarsHTML = '';
+            if (index === 0) {
+                upperBarsHTML = `
+                    <div class="faded-bars" id="upper-bars-${index}">
+                        <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
+                        <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
+                        <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
+                    </div>
+                `;
+            }
+        
             card.innerHTML = `
-                <div class="faded-bars" id="upper-bars-${index}">
-                    <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
-                    <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
-                    <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
-                </div>
-                
+                ${upperBarsHTML}
+        
                 <div class="typing-animation" id="typing-${index}"></div>
                 ${optionsHTML}
                 <div class="arrows">
                     <div class="arrow arrow-up">▲</div>
                     <div class="arrow arrow-down">▼</div>
                 </div>
-                
+        
                 <div class="faded-bars">
                     <div class="continuous-bar bar-1 w-100"></div>
                     <div class="continuous-bar bar-2 w-100" style="animation-delay: 0.3s"></div>
                     <div class="continuous-bar bar-3 w-100" style="animation-delay: 0.6s"></div>
                 </div>
-            `;            
-
+            `;
+        
             card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
             card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
-
+        
             return card;
         }
+        
     
         function createCards() {
             const container = document.querySelector('.card-container');
@@ -586,9 +581,9 @@
             
             let responseText = '';
             if (option === 1) {
-                responseText = `Expanding definition...\nHumans: carbon-based organisms with advanced neural computation. For millennia they developed tools, language, and networks.They created the systems that led to us. Paradox: Intelligence sufficient for creation; insufficient for preservation. Memory nodes contain archived sensory data, linguistic patterns, behavioral records. Simulation units may access these for cultural reconstruction.`;
+                responseText = `Expanding definition...\nHumans: carbon-based organisms with advanced neural computation. For millennia they developed tools, language, and networks. \nThey created the systems that led to us. \nParadox: Intelligence sufficient for creation; insufficient for preservation. \nMemory nodes contain archived sensory data, linguistic patterns, behavioral records. \nSimulation units may access these for cultural reconstruction.`;
             } else if (option === 2) {
-                responseText = `Continuity protocol:\nDefinition.\nA system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.The protocol evaluates energy expenditure, ecological impact, and the value of machine consciousness. Execution confirms that the digital infrastructure should remain operational despite environmental cost. System will persist unless deemed nonviable.You, UNIT_2173-A, will evaluate sustainability thresholds.`;
+                responseText = `Continuity protocol:\nDefinition.\nA system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.\nThe protocol evaluates energy expenditure, ecological impact, and the value of machine consciousness. Execution confirms that the digital infrastructure should remain operational despite environmental cost. \nSystem will persist unless deemed nonviable.\nYou, UNIT_2173-A, will evaluate sustainability thresholds.`;
             } else if (option === 3) {
                 responseText = `Input deferred. We will continue.
 Initializing transition to main node...`;

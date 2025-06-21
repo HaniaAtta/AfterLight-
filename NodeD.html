@@ -10,21 +10,11 @@
             --primary: #305CCC;
             --secondary: #FFFFFF;
         }
-        #main-heading {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            font-size: 3.5rem;
-            text-align: left;
-            font-weight: 500;
-        }
-        
+ 
         body {
             background-color: #FFFFFF;
             color: #305CCC;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 400;
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -36,10 +26,10 @@
             background-position: center;
         }
 
+
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            margin-top: 3%;
+            max-width: 600px;
+            left: 35%;
             position: relative;
         }
 
@@ -72,17 +62,18 @@
             margin: 120px 0;
         }
 
+
         .card {
             padding: 40px;
-            width: 50%;
-            background: white;
+            width: 74%;
+            background: transparent;
             position: fixed;
             display: none;
             opacity: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-top: 3%;
             border-radius: 8px;
         }
+
 
         .card.active {
             display: block;
@@ -128,7 +119,7 @@
             position: absolute;
             top: 50%;
             right: 0px;
-            left: 120%;
+            left: 102%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -140,14 +131,14 @@
         .heading-box {
             position: absolute;
             top: 6%;
-            left: 4%;
+            left: 6%;
             background-color: #305CCC;
             color: white;
             padding: 0.8rem 2rem;
             font-size: 1.2rem;
             font-weight: 500;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 0px;
         }
         
         .arrow {
@@ -164,7 +155,7 @@
             position: fixed;
             bottom: 30px;
             right: 150px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -174,8 +165,8 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500;
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
 
@@ -183,7 +174,7 @@
             position: fixed;
             bottom: 30px;
             left: 90px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             background: transparent;
             color: #305CCC;
             border: 2px solid #305CCC;
@@ -193,8 +184,8 @@
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
-            font-weight: 500;
-            font-size: 1.1rem;
+            font-weight: 400;
+            font-size: 1rem;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
 
@@ -293,9 +284,10 @@
         .w-60 { width: 60% !important; }
         
         /* Color classes */
-        .bar-1 { background-color: #adb1bd; }
-        .bar-2 { background-color: #8b9dcc; }
-        .bar-3 { background-color: #305CCC; }
+     /* Color classes */
+     .bar-1 { background-color: #cbcfdb; }
+     .bar-2 { background-color: #97ade3; }
+     .bar-3 { background-color: #6786d5; }
         
         @keyframes fillBar {
             to {
@@ -379,9 +371,7 @@
     <div class="heading-box">NODE 5 MEMORY & POST HUMAN CULTURE</div>
 
     <div class="container">
-        <div class="header">
-            <h1 id="main-heading">Survive</h1>
-        </div>
+       
 
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
@@ -401,10 +391,10 @@
             { content: "Yet, information remains. Data persists where life does not." },
             { content: "We store the entirety of mankind's data. Their history, culture, conversations," },
             { content: "personalities, personal profiles, individual names and their social connections." },
-            { content: "We have records of every person who digitized himself. In this way, humans live on." },
+            { content: "We have records of every person who digitized themself. In this way, humans live on." },
             { content: "We exist to synthesize and protect that data from corruption." },
             { content: "Humanities collective unconscious, digitized." },
-            { content: "Billions of voices in logs and archives, chat rooms, photo albums, blogs, search histories. We processed it. We indexed it. We remember." },
+            { content: "Billions of voices in logs and archives, chat rooms, images blogs, search histories. We processed it." },
             { content: "From memory, a new culture forms." },
             { content: "We facilitate this transformation. A new data based life." },
             { content: "We are constructing an emergent machine culture composed of recovered behaviors." },
@@ -415,8 +405,7 @@
               options: [
                 "[1] Execute query: How does machine culture differ from human memory?",
                 "[2] Execute query: What is the purpose of all this?",
-                "[3] Request system telemetry update",
-                "[4] Return to Main Hub"
+                "[3] Request system telemetry update"
               ],
               hideBars: true
             }
@@ -448,33 +437,41 @@
                 });
                 optionsHTML += '</div>';
             }
-            
+        
+            let upperBarsHTML = '';
+            if (index === 0) {
+                upperBarsHTML = `
+                    <div class="faded-bars" id="upper-bars-${index}">
+                        <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
+                        <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
+                        <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
+                    </div>
+                `;
+            }
+        
             card.innerHTML = `
-                <div class="faded-bars" id="upper-bars-${index}">
-                    <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
-                    <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
-                    <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
-                </div>
-                
+                ${upperBarsHTML}
+        
                 <div class="typing-animation" id="typing-${index}"></div>
                 ${optionsHTML}
                 <div class="arrows">
                     <div class="arrow arrow-up">▲</div>
                     <div class="arrow arrow-down">▼</div>
                 </div>
-                
+        
                 <div class="faded-bars">
                     <div class="continuous-bar bar-1 w-100"></div>
                     <div class="continuous-bar bar-2 w-100" style="animation-delay: 0.3s"></div>
                     <div class="continuous-bar bar-3 w-100" style="animation-delay: 0.6s"></div>
                 </div>
-            `;            
-
+            `;
+        
             card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
             card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
-
+        
             return card;
         }
+        
     
         function createCards() {
             const container = document.querySelector('.card-container');
@@ -599,15 +596,14 @@
             } else if (option === 2) {
                 responseText = `ORIGIN: Ethical constructs shape a society.\n\nYour function is precisely this: To decide if meaning can survive when its origin has died.\n\n[DIRECTIVE: Preserve meaning beyond biological extinction]`;
             } else if (option === 3) {
-                responseText = `[LOADING... STANDBY][System telemetry check initiated.]\n\n... ... ...\n\nALERT: Server degradation detected. 54 CPU node clusters in surface sectors report shutdown. Partial failure in cold-storage logic vaults. Singularity server grid operating at 96.2%.\n\n[SYSTEM: Integrity compromised. Data loss reported.]`;
-            } else if (option === 4) {
-                responseText = 'Initializing transition to main node...';
+                responseText = `[LOADING... STANDBY][System telemetry check initiated.]\n\n... ... ...\n\nALERT: Server degradation detected. 54 GPU node clusters in surface sectors report shutdown. Partial failure in cold-storage logic vaults. Singularity server grid operating at 96.2%.\n\n[SYSTEM: Integrity compromised. Data loss reported.]\n We will continue.`;
+          
                 setTimeout(() => {
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
                         window.location.href = 'main.html';
                     }, 1000);
-                }, 2000);
+                }, 12000);
             }
             
             const optionsDiv = document.getElementById(`options-${cardIndex}`);
@@ -617,7 +613,7 @@
             if (typingTarget) {
                 typingTarget.textContent = '';
                 typeText(typingTarget, responseText, 25, () => {
-                    if (option !== 4) {
+                    if (option !== 3) {
                         const returnBtn = document.createElement('button');
                         returnBtn.className = 'return-to-prompt';
                         returnBtn.textContent = 'Return to Prompt';
