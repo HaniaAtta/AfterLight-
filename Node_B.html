@@ -4,27 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Climate Collapse</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #305CCC;
             --secondary: #FFFFFF;
-            --typing-speed: 0.1s;
-            --blink-speed: 0.75s;
         }
         #main-heading {
-            font-size: 2.2rem;    /* Bigger font size */
-            font-weight: 900;   /* Bold font */
-            margin-top: 10%;
-            margin-bottom: 0.5rem; /* Optional spacing */
-          }
-          
-          #sub-heading {
-            font-size: 1.1rem;  /* Slightly smaller than main heading */
-            font-weight: 600;
-            margin-bottom: 1.5rem;   /* Semi-bold */
-              /* Optional: better contrast */
-          }
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            font-size: 3.5rem;
+            text-align: left;
+        }
+        
           
         body {
             background-color: #FFFFFF;
@@ -35,24 +29,18 @@
             display: flex;
             align-items: center;
             overflow: auto;
-            
-            background-image: url('images/vector_51.svg');  /* fixed path */
+            background-image: url('images/vector_51.svg');
             background-size: 92%;
-
             background-repeat: no-repeat;
             background-position: center;
-            
-          }
-
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
         }
 
-     
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 3%;
+            position: relative;
+        }
 
         .loading-screen {
             position: fixed;
@@ -68,9 +56,9 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--primary);
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--primary);
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -79,18 +67,20 @@
         .card-container {
             display: flex;
             justify-content: center;
-            min-height: 400px;
-            margin: 100px 0;
+            min-height: 500px;
+            margin: 120px 0;
         }
 
         .card {
-            padding: 30px;
-            width: 100%;
+            padding: 40px;
+            width: 50%;
             background: white;
-            position: relative;
+            position: fixed;
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-top: 3%;
+            border-radius: 8px;
         }
 
         .card.active {
@@ -101,139 +91,140 @@
         .card-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .node-label {
             background-color: #2b57ec;
             color: white;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            border-radius: 2px;
-            margin-right: 10px;
+            padding: 8px 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            margin-right: 15px;
         }
 
         .progress-dot {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background-color: #2b57ec;
             border-radius: 50%;
             opacity: 0.5;
         }
 
         .faded-bars {
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
-        .faded-bars .bar {
-            background-color: #cbdafc;
-            height: 10px;
-            margin: 10px 0;
-            border-radius: 3px;
-            width: 0; /* Start from 0 */
-            animation: fillBar 1.5s ease-out forwards;
-        }
-        
         .typing-animation {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .typing-animation p {
-            display: block;
-            overflow: hidden;
-            white-space: pre-wrap;
-            border-right: 2px solid #2b57ec;
-            animation: typing 2s steps(200, end), blink-caret 0.75s step-end infinite;
+            margin-top: 30px;
+            font-size: 1.3rem;
+            font-weight: 500;
+            line-height: 1.8;
         }
 
         .arrows {
             position: absolute;
             top: 50%;
             right: 0px;
-            left: 115%;
+            left: 120%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: #2b57ec;
             user-select: none;
         }
+        
         .heading-box {
             position: absolute;
-            top: 8%;
+            top: 6%;
             left: 4%;
             background-color: #305CCC;
             color: white;
-            padding: 0.5rem 1.5rem;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
-          }
+            border-radius: 4px;
+        }
+        
         .arrow {
-            margin: 5px 0;
+            margin: 8px 0;
             cursor: pointer;
             transition: transform 0.2s;
         }
 
         .arrow:hover {
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
 
         #return-button {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
+            bottom: 30px;
+            right: 150px;
+            padding: 12px 25px;
             background: #2b57ec;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 0px;
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.5s;
             display: none;
             font-family: 'Roboto Mono', monospace;
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
 
-        #return-button:hover {
+        #next-button {
+            position: fixed;
+            bottom: 30px;
+            left: 90px;
+            padding: 12px 25px;
+            background: #2b57ec;
+            color: white;
+            border: none;
+            border-radius: 0px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s;
+            display: none;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        #return-button:hover, #next-button:hover {
             background: #1a46d0;
+            transform: translateY(-2px);
         }
 
         .progress-container {
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin: 30px 0;
         }
 
         .progress-dots {
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
 
         .progress-dot-indicator {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background-color: #cbdafc;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
         }
 
         .progress-dot-indicator.active {
             background-color: #2b57ec;
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #2b57ec; }
+            transform: scale(1.2);
         }
 
         @keyframes spin {
@@ -242,46 +233,88 @@
 
         @media (max-width: 768px) {
             .card {
-                width: 90%;
-                padding: 20px;
+                width: 92%;
+                padding: 30px;
             }
             
             .arrows {
-                right: 10px;
-                font-size: 1.3rem;
+                right: 15px;
+                font-size: 1.8rem;
+                left: auto;
             }
             
-            .typing-animation {
-                font-size: 1rem;
+            #main-heading {
+                font-size: 2rem;
+            }
+            
+            #next-button {
+                left: 20px;
             }
         }
 
-        /* Add to your existing stylesheet */
-.fade-out {
-    animation: fadeOut 1s forwards;
-  }
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
   
-  @keyframes fadeOut {
-    to {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-  }
-  @keyframes fillBar {
-    to {
-        width: var(--target-width); /* Custom property we'll define per bar */
-    }
-}
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
 
-@keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
+        .initial-bar {
+            background-color: #cbdafc;
+            height: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            width: 0;
+            animation: fillBar 1.5s ease-out forwards;
+        }
+        
+        .continuous-bar {
+            height: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            background: 
+                linear-gradient(90deg, #0001 33%, #0005 50%, #0001 66%)
+                #f2f2f2;
+            background-size: 300% 100%;
+            animation: 
+                l1 1s infinite linear,
+                pulse 2s infinite;
+            opacity: 0;
+            animation-delay: 1.5s;
+        }
+        
+        /* Width classes */
+        .w-70 { width: 70% !important; }
+        .w-80 { width: 80% !important; }
+        .w-60 { width: 60% !important; }
+        
+        /* Color classes */
+        .bar-1 { background-color: #adb1bd; }
+        .bar-2 { background-color: #8b9dcc; }
+        .bar-3 { background-color: #305CCC; }
+        
+        @keyframes fillBar {
+            to {
+                width: var(--target-width);
+            }
+        }
+        
+        @keyframes appear {
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes l1 {
+            0% { background-position: right; }
+        }
     </style>
 </head>
 <body>
@@ -292,9 +325,8 @@
 
     <div class="container">
         <div class="header">
-            <h1 id="main-heading"></h1>
-            <h2 id="sub-heading"></h2>
-          </div>
+            <h1 id="main-heading">Ponder</h1>
+        </div>
 
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
@@ -304,33 +336,22 @@
             <div class="progress-dots" id="progress-dots"></div>
         </div>
 
-        <button id="return-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
+        <button id="next-button">GO TO NEXT NODE</button>
+        <button id="return-button">RETURN TO MAIN NODE</button>
     </div>
 
-    
-
-   
-
     <script>
-        const TYPING_SPEED = 30;
-    
-        const SECTIONS = [
-            { id: 'main-heading', text: 'Ponder' },
-            { id: 'sub-heading', text: 'Initializing historical sequence. Timeframe: Common Era, years 2020–2035.' }
-        ];
-    
         const CARDS = [
-        { nodeLabel: 'Step 1', content: ` Initializing historical sequence. Timeframe: Common Era, years 2020–2035.` },
-
-            { nodeLabel: 'Step 2', content: `During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.` },
-            { nodeLabel: 'Step 3', content: `Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.` },
-            { nodeLabel: 'Step 4', content: `Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.` },
-            { nodeLabel: 'Step 5', content: `Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.` },
-            { nodeLabel: 'Step 6', content: `Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.` },
-            { nodeLabel: 'Step 7', content: `Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.` },
-            { nodeLabel: 'Step 8', content: `Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.` },
-            { nodeLabel: 'Step 9', content: `Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.` },
-            { nodeLabel: 'Step ', content: `These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.` }
+            { content: `Initializing historical sequence. Timeframe: Common Era, years 2020–2035.` },
+            { content: `During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.` },
+            { content: `Rising sea temperatures facilitated the spread of harmful fungal pathogens, such as Aspergillus species, threatening marine ecosystems and human health.` },
+            { content: `Global temperatures rose, leading to increased incidence of heat-related illnesses, including skin and respiratory diseases.` },
+            { content: `Elevated temperatures and prolonged droughts resulted in frequent and intense wildfires, destroying vast forest areas and releasing significant carbon emissions.` },
+            { content: `Habitat loss and climate stressors led to the extinction of numerous species, disrupting ecological balance.` },
+            { content: `Increased frequency of floods, hurricanes, and droughts displaced large populations and caused substantial loss of life.` },
+            { content: `Climate-induced agricultural disruptions led to global food insecurity, speeding up malnutrition and famine.` },
+            { content: `Ocean acidification and warming caused widespread coral bleaching, leading to the collapse of marine biodiversity, and a steep drop in oxygen levels.` },
+            { content: `These compounded effects rendered Earth's environment hostile to human life, leading to societal collapse and the eventual collapse of human civilization.` }
         ];
     
         let currentCardIndex = 0;
@@ -342,75 +363,45 @@
             }, 2000);
         });
     
-        // Type out heading sections one by one
-        function typeText(index = 0, callback) {
-            if (index >= SECTIONS.length) {
-                callback();
-                return;
-            }
-    
-            const { id, text } = SECTIONS[index];
-            const element = document.getElementById(id);
-            element.textContent = '';
-            let charIndex = 0;
-    
-            const interval = setInterval(() => {
-                element.textContent += text.charAt(charIndex);
-                charIndex++;
-                if (charIndex === text.length) {
-                    clearInterval(interval);
-                    setTimeout(() => typeText(index + 1, callback), 500); // Delay before next section
-                }
-            }, TYPING_SPEED);
-        }
-    
-        // Create a card element with navigation arrows and progress dots
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
             card.className = 'card';
             card.id = `card-${index}`;
             card.innerHTML = `
-                <div class="card-header">
-                    <div class="node-label">${cardData.nodeLabel}</div>
-                    <div class="progress-dot"></div>
-                </div>
-                <div class="faded-bars">
-                    <div class="bar" style="--target-width: 70%; animation-delay: 0.2s;"></div>
-                    <div class="bar" style="--target-width: 80%; animation-delay: 0.8s;"></div>
-                    <div class="bar" style="--target-width: 60%; animation-delay: 1.2s;"></div>
-                </div>
+            <div class="faded-bars" id="upper-bars-${index}">
+                <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
+                <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
+                <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
+            </div>
                 
                 <div class="typing-animation" id="typing-${index}"></div>
                 <div class="arrows">
                     <div class="arrow arrow-up">▲</div>
                     <div class="arrow arrow-down">▼</div>
                 </div>
-                <!-- Bottom faded bars -->
-                <div class="faded-bars">
-                    <div class="bar" style="--target-width: 70%; animation-delay: 1.6s;"></div>
-                    <div class="bar" style="--target-width: 80%; animation-delay: 2s;"></div>
-                    <div class="bar" style="--target-width: 60%; animation-delay: 2.4s;"></div>
-                </div>
                 
-            `;
-    
+                <div class="faded-bars">
+                    <div class="continuous-bar bar-1 w-100"></div>
+                    <div class="continuous-bar bar-2 w-100" style="animation-delay: 0.3s"></div>
+                    <div class="continuous-bar bar-3 w-100" style="animation-delay: 0.6s"></div>
+                </div>
+            `;            
+
             card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
             card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
-    
+
             return card;
         }
     
-        // Create all cards and add to container
         function createCards() {
             const container = document.querySelector('.card-container');
-            container.innerHTML = ''; // Clear existing cards if any
+            container.innerHTML = '';
             CARDS.forEach((cardData, i) => {
                 const cardEl = createCardElement(cardData, i);
                 container.appendChild(cardEl);
             });
         }
     
-        // Create progress dots and highlight current
         function createProgressDots() {
             const dotsContainer = document.getElementById('progress-dots');
             dotsContainer.innerHTML = '';
@@ -423,23 +414,59 @@
             });
         }
     
-        // Navigate to specific card by index
         function navigateToCard(index) {
             if (index < 0 || index >= CARDS.length) return;
-    
-            // Hide previous active card
+        
+            // Hide previous card
             const prevCard = document.getElementById(`card-${currentCardIndex}`);
             if (prevCard) prevCard.classList.remove('active');
-    
+        
             currentCardIndex = index;
             const card = document.getElementById(`card-${currentCardIndex}`);
-            if (card) card.classList.add('active');
-    
+            if (!card) return;
+        
+            card.classList.add('active');
+        
+            // Re-run typing animation
+            const typingTarget = document.getElementById(`typing-${currentCardIndex}`);
+            if (typingTarget) {
+                typingTarget.textContent = '';
+                typeText(typingTarget, CARDS[currentCardIndex].content, 25, () => {
+                    const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+                    if (upperBars) {
+                        upperBars.innerHTML = `
+                        <div class="continuous-bar bar-1 w-70"></div>
+                        <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                        <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+                        `;
+                    }
+                });
+            }
+        
             createProgressDots();
-            triggerTypingAnimation(currentCardIndex);
-    
-            // Show or hide return button
+            updateNavigationButtons();
+        }
+        
+        function typeText(element, text, delay = 30, callback = null) {
+            let i = 0;
+            element.textContent = '';
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, delay);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+        
+        function updateNavigationButtons() {
             const returnBtn = document.getElementById('return-button');
+            const nextBtn = document.getElementById('next-button');
+        
+            // Handle Return Button
             if (currentCardIndex > 0) {
                 returnBtn.style.display = 'block';
                 setTimeout(() => { returnBtn.style.opacity = '1'; }, 10);
@@ -447,45 +474,43 @@
                 returnBtn.style.opacity = '0';
                 setTimeout(() => { returnBtn.style.display = 'none'; }, 500);
             }
-        }
-    
-        // Typing animation for card content
-        function triggerTypingAnimation(index) {
-            const typingEl = document.getElementById(`typing-${index}`);
-            const text = CARDS[index].content;
-            typingEl.textContent = ''; // Clear previous text
-            let i = 0;
-    
-            function type() {
-                if (i < text.length) {
-                    typingEl.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, TYPING_SPEED);
-                }
+        
+            // Handle Next Button
+            nextBtn.style.display = 'block';
+            nextBtn.classList.remove('last');
+            setTimeout(() => { nextBtn.style.opacity = '1'; }, 10);
+        
+          
+                nextBtn.textContent = 'GO TO NEXT NODE';
+                nextBtn.classList.add('last');
+                nextBtn.onclick = () => {
+                    document.body.classList.add("fade-out");
+                    setTimeout(() => {
+                        window.location.href = 'noded.html'; // 👈 Your target page
+                    }, 1000);
+                };
             }
-            type();
-        }
-    
-        // Start the whole presentation: type headings first, then show cards
+        
+        
         function startPresentation() {
-            typeText(0, () => {
-                createCards();
-                createProgressDots();
-                navigateToCard(0);
-            });
+            // Set main heading immediately
+            
+            // Create cards and show first one
+            createCards();
+            createProgressDots();
+            navigateToCard(0);
+            
+            // Set up button event listeners
+            document.getElementById('return-button').addEventListener('click', returnToMain);
+            document.getElementById('next-button').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
         }
     
-        // Return to main page function
         function returnToMain() {
             document.body.classList.add("fade-out");
-        
-            // Delay redirect by animation duration (e.g., 1 second = 1000 ms)
             setTimeout(() => {
                 window.location.href = 'main.html';
             }, 1000);
         }
-        
     </script>
-    
 </body>
-</html>
+</html> 
