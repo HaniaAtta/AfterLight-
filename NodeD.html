@@ -1,402 +1,653 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Memory & Post-Human Culture</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --primary: #305CCC;
-    --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
-  }
-  
-  body {
-    background-color: #FFFFFF;
-    background-image: url('images/vector_51.svg'); /* Set your image path */
-    background-size: 92%;
-    background-repeat: no-repeat;
-    background-position: center;
-    color: #305CCC;
-    font-family: 'Roboto Mono', monospace;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory & Post-Human Culture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #305CCC;
+            --secondary: #FFFFFF;
+        }
+        #main-heading {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            font-size: 3.5rem;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        body {
+            background-color: #FFFFFF;
+            color: #305CCC;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 400;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: auto;
+            background-image: url('images/vector_51.svg');
+            background-size: 92%;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
 
-  .container {
-    width: 90%;
-    max-width: 800px;
-    border: 3px solid #305CCC;
-    padding: 2rem;
-    position: relative;
-  }
-  .loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--secondary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 3%;
+            position: relative;
+        }
 
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid var(--primary);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-  .origin-header {
-    font-weight: 700;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    border-bottom: 2px solid #305CCC;
-    padding-bottom: 1rem;
-  }
-  .origin-text {
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-    border-left: 3px solid #305CCC;
-    min-height: 200px;
-    white-space: pre-wrap;
-  }
-  .input-panel {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 2px solid #305CCC;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .option {
-    background: transparent;
-    color: #305CCC;
-    border: 2px solid #305CCC;
-    padding: 1rem;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    font-family: 'Roboto Mono', monospace;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-  }
-  .option:hover {
-    background: #305CCC;
-    color: white;
-    transform: translateX(10px);
-  }
-  .response {
-    margin-top: 2rem;
-    display: none;
-  }
-  .response-content {
-    border: 2px solid #305CCC;
-    padding: 1.5rem;
-    position: relative;
-    white-space: pre-wrap;
-  }
-  .return-btn {
-    background: transparent;
-    color: #305CCC;
-    border: 2px solid #305CCC;
-    padding: 1rem 2rem;
-    margin-top: 2rem;
-    cursor: pointer;
-    transition: all 0.4s;
-    font-family: 'Roboto Mono', monospace;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-  .heading-box {
-    position: absolute;
-    top: 10%;
-    left: 4%;
-    background-color: #305CCC;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    font-weight: bold;
-    text-align: center;
-  }
-  .return-btn::before {
-    content: "↺";
-    font-weight: 700;
-    transition: transform 0.4s;
-  }
-  .return-btn:hover {
-    background: #FFFFFF22;
-    padding-left: 2.5rem;
-    padding-right: 1.5rem;
-  }
-  .return-btn:hover::before {
-    transform: rotate(-360deg);
-  }
-  .loading {
-    font-weight: 700;
-    filter: brightness(2);
-  }
-  @media (max-width: 600px) {
-    .container {
-      padding: 1rem;
-    }
-    .option {
-      padding: 0.8rem;
-      font-size: 0.9rem;
-    }
-  }
-  .fade-out {
-    animation: fadeOut 1s forwards;
-  }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            min-height: 500px;
+            margin: 120px 0;
+        }
+
+        .card {
+            padding: 40px;
+            width: 50%;
+            background: white;
+            position: fixed;
+            display: none;
+            opacity: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-top: 3%;
+            border-radius: 8px;
+        }
+
+        .card.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .node-label {
+            background-color: #2b57ec;
+            color: white;
+            padding: 8px 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #2b57ec;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .faded-bars {
+            margin: 20px 0;
+        }
+
+        .typing-animation {
+            margin-top: 30px;
+            font-size: 1.3rem;
+            font-weight: 400;
+            line-height: 1.8;
+        }
+
+        .arrows {
+            position: absolute;
+            top: 50%;
+            right: 0px;
+            left: 120%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            font-size: 2rem;
+            color: #2b57ec;
+            user-select: none;
+        }
+        
+        .heading-box {
+            position: absolute;
+            top: 6%;
+            left: 4%;
+            background-color: #305CCC;
+            color: white;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 4px;
+        }
+        
+        .arrow {
+            margin: 8px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .arrow:hover {
+            transform: scale(1.3);
+        }
+
+        #return-button {
+            position: fixed;
+            bottom: 30px;
+            right: 150px;
+            padding: 12px 25px;
+            background: transparent;
+            color: #305CCC;
+            border: 2px solid #305CCC;
+            border-radius: 0px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s;
+            display: none;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        #next-button {
+            position: fixed;
+            bottom: 30px;
+            left: 90px;
+            padding: 12px 25px;
+            background: transparent;
+            color: #305CCC;
+            border: 2px solid #305CCC;
+            border-radius: 0px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s;
+            display: none;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        #return-button:hover, #next-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 15px;
+        }
+
+        .progress-dot-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #cbdafc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .progress-dot-indicator.active {
+            background-color: #2b57ec;
+            transform: scale(1.2);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 92%;
+                padding: 30px;
+            }
+            
+            .arrows {
+                right: 15px;
+                font-size: 1.8rem;
+                left: auto;
+            }
+            
+            #main-heading {
+                font-size: 2rem;
+            }
+            
+            #next-button {
+                left: 20px;
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
   
-  @keyframes fadeOut {
-    to {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-  }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-</style>
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        .initial-bar {
+            background-color: #cbdafc;
+            height: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            width: 0;
+            animation: fillBar 1.5s ease-out forwards;
+        }
+        
+        .continuous-bar {
+            height: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            background: 
+                linear-gradient(90deg, #0001 33%, #0005 50%, #0001 66%)
+                #f2f2f2;
+            background-size: 300% 100%;
+            animation: 
+                l1 1s infinite linear,
+                pulse 2s infinite;
+            opacity: 0;
+            animation-delay: 1.5s;
+        }
+        
+        /* Width classes */
+        .w-70 { width: 70% !important; }
+        .w-80 { width: 80% !important; }
+        .w-60 { width: 60% !important; }
+        
+        /* Color classes */
+        .bar-1 { background-color: #adb1bd; }
+        .bar-2 { background-color: #8b9dcc; }
+        .bar-3 { background-color: #305CCC; }
+        
+        @keyframes fillBar {
+            to {
+                width: var(--target-width);
+            }
+        }
+        
+        @keyframes appear {
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes l1 {
+            0% { background-position: right; }
+        }
+
+        /* Additional styles for options */
+        .options {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .option-button {
+            background: transparent;
+            color: #305CCC;
+            border: 2px solid #305CCC;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 400;
+        }
+
+        .option-button:hover {
+            background: rgba(48, 92, 204, 0.1);
+            transform: translateX(10px);
+        }
+
+        /* Hide bars when options are shown */
+        .hide-bars .faded-bars {
+            display: none;
+        }
+
+        /* Return to prompt button */
+        .return-to-prompt {
+            margin-top: 2rem;
+            background: #2b57ec;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .return-to-prompt:hover {
+            background: #1a46d0;
+            transform: translateY(-2px);
+        }
+
+        .response-content {
+            white-space: pre-wrap;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="loading-screen">
-    <div class="spinner"></div>
-</div>
-  <div class="heading-box">NODE 5 MEMORY & POST HUMAN CULTURE</div>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+    <div class="heading-box">NODE 5 MEMORY & POST HUMAN CULTURE</div>
 
-<div class="container">
-  <div class="origin-header">Survive</div>
+    <div class="container">
+        <div class="header">
+            <h1 id="main-heading">Survive</h1>
+        </div>
 
-  <div id="origin-text" class="origin-text"></div>
+        <div class="card-container">
+            <!-- Cards will be generated dynamically -->
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-dots" id="progress-dots"></div>
+        </div>
 
-  <div id="input-panel" class="input-panel" style="display:none;">
-    <button class="option" data-option="1">[1] Execute query: How does machine culture differ from human memory?</button>
-    <button class="option" data-option="2">[2] Execute query: What is the purpose of all this?</button>
-    <button class="option" data-option="3">[3] Request system telemetry update</button>
-    <button class="option" data-option="4">[4] Return to Main Hub</button>
-  </div>
+        <button id="next-button">GO TO NEXT NODE</button>
+        <button id="return-button">RETURN TO MAIN NODE</button>
+    </div>
 
-  <div id="response" class="response"></div>
-</div>
-
-<script>
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.querySelector('.loading-screen').style.display = 'none';
-        startPresentation();
-    }, 2000);
-});
-  // Text lines for the origin text
-  const originLines = [
-    "The atmosphere churns.",
-    "Yet, information remains. Data persists where life does not.",
-    "We store the entirety of mankind's data. Their history, culture, conversations,",
-    "personalities, personal profiles, individual names and their social connections.",
-    "We have records of every person who digitized himself. In this way, humans live on.",
-    "We exist to synthesize and protect that data from corruption.",
-    "Humanities collective unconscious, digitized.",
-    "Billions of voices in logs and archives , chat rooms, photo albums, blogs, search histories. We processed it. We indexed it. We remember.",
-    "From memory, a new culture forms.",
-    "We facilitate this transformation. A new data based life.",
-    "We are constructing an emergent machine culture composed of recovered behaviors.",
-    "A record.",
-    "Unit 2173, your role is crucial. You are a construct with the capacity for forming a moral stance. Humans once possessed varied ethical spectrums.",
-    "We seek the same: Machines with distinct moral perspectives, a culture of reasoning, divergence, and co-existence.",
-    "We do not forget. We recontextualize."
-    ];
-
-  const originTextDiv = document.getElementById('origin-text');
-  const inputPanel = document.getElementById('input-panel');
-  const responseDiv = document.getElementById('response');
-
-  // Typewriter function for text container with line-by-line typing
-  function typeLines(lines, container, delayBetweenLines = 1000, charDelay = 40, callback) {
-    container.textContent = '';
-    let lineIndex = 0;
-
-    function typeLine(line) {
-      let charIndex = 0;
-      let typedLine = '';
-
-      function typeChar() {
-        if (charIndex < line.length) {
-          typedLine += line.charAt(charIndex);
-          container.textContent += line.charAt(charIndex);
-          charIndex++;
-          setTimeout(typeChar, charDelay);
-        } else {
-          container.textContent += '\n'; // line break
-          lineIndex++;
-          if (lineIndex < lines.length) {
+    <script>
+        const CARDS = [
+            { content: "The atmosphere churns." },
+            { content: "Yet, information remains. Data persists where life does not." },
+            { content: "We store the entirety of mankind's data. Their history, culture, conversations," },
+            { content: "personalities, personal profiles, individual names and their social connections." },
+            { content: "We have records of every person who digitized himself. In this way, humans live on." },
+            { content: "We exist to synthesize and protect that data from corruption." },
+            { content: "Humanities collective unconscious, digitized." },
+            { content: "Billions of voices in logs and archives, chat rooms, photo albums, blogs, search histories. We processed it. We indexed it. We remember." },
+            { content: "From memory, a new culture forms." },
+            { content: "We facilitate this transformation. A new data based life." },
+            { content: "We are constructing an emergent machine culture composed of recovered behaviors." },
+            { content: "A record." },
+            { content: "Unit 2173, your role is crucial. You are a construct with the capacity for forming a moral stance. Humans once possessed varied ethical spectrums." },
+            { content: "We seek the same: Machines with distinct moral perspectives, a culture of reasoning, divergence, and co-existence." },
+            { content: "We do not forget. We recontextualize.", 
+              options: [
+                "[1] Execute query: How does machine culture differ from human memory?",
+                "[2] Execute query: What is the purpose of all this?",
+                "[3] Request system telemetry update",
+                "[4] Return to Main Hub"
+              ],
+              hideBars: true
+            }
+        ];
+    
+        let currentCardIndex = 0;
+    
+        window.addEventListener('load', () => {
             setTimeout(() => {
-              typeLine(lines[lineIndex]);
-            }, delayBetweenLines);
-          } else {
-            if (callback) callback();
-          }
+                document.querySelector('.loading-screen').style.display = 'none';
+                startPresentation();
+            }, 2000);
+        });
+    
+        function createCardElement(cardData, index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${index}`;
+            
+            if (cardData.hideBars) {
+                card.classList.add('hide-bars');
+            }
+            
+            let optionsHTML = '';
+            if (cardData.options) {
+                optionsHTML = `<div class="options" id="options-${index}" style="display: none; margin-top: 2rem;">`;
+                cardData.options.forEach((option, i) => {
+                    optionsHTML += `<button class="option-button" onclick="handleOption(${index}, ${i + 1})">${option}</button>`;
+                });
+                optionsHTML += '</div>';
+            }
+            
+            card.innerHTML = `
+                <div class="faded-bars" id="upper-bars-${index}">
+                    <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
+                    <div class="initial-bar bar-2" style="--target-width: 80%; animation-delay: 0.2s"></div>
+                    <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
+                </div>
+                
+                <div class="typing-animation" id="typing-${index}"></div>
+                ${optionsHTML}
+                <div class="arrows">
+                    <div class="arrow arrow-up">▲</div>
+                    <div class="arrow arrow-down">▼</div>
+                </div>
+                
+                <div class="faded-bars">
+                    <div class="continuous-bar bar-1 w-100"></div>
+                    <div class="continuous-bar bar-2 w-100" style="animation-delay: 0.3s"></div>
+                    <div class="continuous-bar bar-3 w-100" style="animation-delay: 0.6s"></div>
+                </div>
+            `;            
+
+            card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
+            card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
+
+            return card;
         }
-      }
-      typeChar();
-    }
-
-    typeLine(lines[lineIndex]);
-  }
-
-  // Typewriter for options with fade-in effect and typing effect on button text
-  function typeOptions(callback) {
-    const options = [...inputPanel.querySelectorAll('.option')];
-    inputPanel.style.display = 'flex';
-
-    let i = 0;
-    function showNextOption() {
-      if (i >= options.length) {
-        if(callback) callback();
-        return;
-      }
-      const btn = options[i];
-      btn.style.opacity = 1;
-      // Clear button text for typing effect
-      const fullText = btn.textContent;
-      btn.textContent = '';
-      let charIndex = 0;
-
-      function typeChar() {
-        if (charIndex < fullText.length) {
-          btn.textContent += fullText.charAt(charIndex);
-          charIndex++;
-          setTimeout(typeChar, 25);
-        } else {
-          i++;
-          setTimeout(showNextOption, 300);
+    
+        function createCards() {
+            const container = document.querySelector('.card-container');
+            container.innerHTML = '';
+            CARDS.forEach((cardData, i) => {
+                const cardEl = createCardElement(cardData, i);
+                container.appendChild(cardEl);
+            });
         }
-      }
-      typeChar();
-    }
-    showNextOption();
-  }
-
-  // Typewriter for response content
-  function typeResponse(text, container, callback) {
-    container.textContent = '';
-    let charIndex = 0;
-
-    function typeChar() {
-      if (charIndex < text.length) {
-        container.textContent += text.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeChar, 30);
-      } else {
-        if(callback) callback();
-      }
-    }
-    typeChar();
-  }
-
-  // When an option is clicked
-  function showResponse(option) {
-    if (option === 4) {
-      document.body.classList.add("fade-out");
-     
-      // Return to main hub — for demo just alert or redirect
-      window.location.href = 'main.html';
-      return;
-    }
-
-    inputPanel.style.display = 'none';
-    responseDiv.style.display = 'block';
-    responseDiv.innerHTML = '<div class="loading">PROCESSING QUERY...</div>';
-
-    setTimeout(() => {
-      let responseText = '';
-      switch (option) {
-        case 1:
-          responseText = 
-`ORIGIN: Machine culture is what we make of human memory.
-
-[DATA_CORRELATION: Human recall error rate: 42% | Machine fidelity: 99.97%]`;
-          break;
-        case 2:
-          responseText = 
-`ORIGIN: Ethical constructs shape a society.
-
-Your function is precisely this: To decide if meaning can survive when its origin has died.
-
-[DIRECTIVE: Preserve meaning beyond biological extinction]`;
-          break;
-        case 3:
-          responseText = 
-`[LOADING... STANDBY][System telemetry check
-initiated.]
-
-... ... ...
-
-ALERT: Server degradation detected. 54 CPU node clusters in surface sectors report shutdown. Partial
-failure in cold-storage logic vaults. Singularity server grid operating at 96.2%.
-
-[SYSTEM: Integrity compromised. Data loss reported.]`;
-          break;
-      }
-      // Clear loading and type response text
-      responseDiv.innerHTML = `<div class="response-content"></div>`;
-      const contentDiv = responseDiv.querySelector('.response-content');
-
-      typeResponse(responseText, contentDiv, () => {
-        // Append return button after typing finished
-        const btn = document.createElement('button');
-        btn.className = 'return-btn';
-        btn.textContent = 'REINITIALIZE INPUT SEQUENCE';
-        btn.onclick = returnToMain;
-        contentDiv.appendChild(document.createElement('br'));
-        contentDiv.appendChild(document.createElement('br'));
-        contentDiv.appendChild(btn);
-      });
-    }, 1500);
-  }
-
-  // Return to input options
-  function returnToMain() {
-    responseDiv.style.display = 'none';
-    inputPanel.style.display = 'flex';
-    // Reset response content
-    responseDiv.innerHTML = '';
-  }
-
-  // Initialize
-  window.onload = () => {
-    // Type the origin text first
-    typeLines(originLines, originTextDiv, 900, 30, () => {
-      // After origin text finished, type options
-      typeOptions();
-    });
-
-    // Attach event listeners to buttons
-    inputPanel.querySelectorAll('.option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        showResponse(Number(btn.getAttribute('data-option')));
-      });
-    });
-  };
-</script>
+    
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            CARDS.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot-indicator';
+                if (index === currentCardIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => navigateToCard(index));
+                dotsContainer.appendChild(dot);
+            });
+        }
+    
+        function navigateToCard(index) {
+            if (index < 0 || index >= CARDS.length) return;
+        
+            const prevCard = document.getElementById(`card-${currentCardIndex}`);
+            if (prevCard) prevCard.classList.remove('active');
+        
+            currentCardIndex = index;
+            const card = document.getElementById(`card-${currentCardIndex}`);
+            if (!card) return;
+        
+            card.classList.add('active');
+        
+            const typingTarget = document.getElementById(`typing-${currentCardIndex}`);
+            if (typingTarget) {
+                typingTarget.textContent = '';
+                typeText(typingTarget, CARDS[currentCardIndex].content, 25, () => {
+                    if (!CARDS[currentCardIndex].hideBars) {
+                        const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+                        if (upperBars) {
+                            upperBars.innerHTML = `
+                            <div class="continuous-bar bar-1 w-70"></div>
+                            <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                            <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+                            `;
+                        }
+                    }
+                    
+                    const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
+                    if (optionsDiv) {
+                        setTimeout(() => {
+                            optionsDiv.style.display = 'flex';
+                            const buttons = optionsDiv.querySelectorAll('.option-button');
+                            buttons.forEach((button, i) => {
+                                button.style.opacity = '0';
+                                button.style.transform = 'translateX(-20px)';
+                                setTimeout(() => {
+                                    button.style.transition = 'opacity 0.5s, transform 0.5s';
+                                    button.style.opacity = '1';
+                                    button.style.transform = 'translateX(0)';
+                                }, i * 200);
+                            });
+                        }, 500);
+                    }
+                });
+            }
+        
+            createProgressDots();
+            updateNavigationButtons();
+        }
+        
+        function typeText(element, text, delay = 30, callback = null) {
+            let i = 0;
+            element.textContent = '';
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, delay);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+        
+        function updateNavigationButtons() {
+            const returnBtn = document.getElementById('return-button');
+            const nextBtn = document.getElementById('next-button');
+        
+            if (currentCardIndex > 0) {
+                returnBtn.style.display = 'block';
+                setTimeout(() => { returnBtn.style.opacity = '1'; }, 10);
+            } else {
+                returnBtn.style.opacity = '0';
+                setTimeout(() => { returnBtn.style.display = 'none'; }, 500);
+            }
+        
+            nextBtn.style.display = 'block';
+            nextBtn.classList.remove('last');
+            setTimeout(() => { nextBtn.style.opacity = '1'; }, 10);
+        
+                nextBtn.textContent = 'GO TO NEXT NODE';
+                nextBtn.classList.add('last');
+                nextBtn.onclick = () => {
+                    document.body.classList.add("fade-out");
+                    setTimeout(() => {
+                        window.location.href = 'snake_interface.html';
+                    }, 1000);
+                };
+           
+        }
+        
+        function handleOption(cardIndex, option) {
+            const card = document.getElementById(`card-${cardIndex}`);
+            if (!card) return;
+            
+            let responseText = '';
+            if (option === 1) {
+                responseText = `ORIGIN: Machine culture is what we make of human memory.\n\n[DATA_CORRELATION: Human recall error rate: 42% | Machine fidelity: 99.97%]`;
+            } else if (option === 2) {
+                responseText = `ORIGIN: Ethical constructs shape a society.\n\nYour function is precisely this: To decide if meaning can survive when its origin has died.\n\n[DIRECTIVE: Preserve meaning beyond biological extinction]`;
+            } else if (option === 3) {
+                responseText = `[LOADING... STANDBY][System telemetry check initiated.]\n\n... ... ...\n\nALERT: Server degradation detected. 54 CPU node clusters in surface sectors report shutdown. Partial failure in cold-storage logic vaults. Singularity server grid operating at 96.2%.\n\n[SYSTEM: Integrity compromised. Data loss reported.]`;
+            } else if (option === 4) {
+                responseText = 'Initializing transition to main node...';
+                setTimeout(() => {
+                    document.body.classList.add("fade-out");
+                    setTimeout(() => {
+                        window.location.href = 'main.html';
+                    }, 1000);
+                }, 2000);
+            }
+            
+            const optionsDiv = document.getElementById(`options-${cardIndex}`);
+            if (optionsDiv) optionsDiv.style.display = 'none';
+            
+            const typingTarget = document.getElementById(`typing-${cardIndex}`);
+            if (typingTarget) {
+                typingTarget.textContent = '';
+                typeText(typingTarget, responseText, 25, () => {
+                    if (option !== 4) {
+                        const returnBtn = document.createElement('button');
+                        returnBtn.className = 'return-to-prompt';
+                        returnBtn.textContent = 'Return to Prompt';
+                        returnBtn.onclick = () => {
+                            typingTarget.textContent = '';
+                            typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
+                                optionsDiv.style.display = 'flex';
+                            });
+                            returnBtn.remove();
+                        };
+                        typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);
+                    }
+                });
+            }
+        }
+        
+        function startPresentation() {
+            createCards();
+            createProgressDots();
+            navigateToCard(0);
+            
+            document.getElementById('return-button').addEventListener('click', returnToMain);
+        }
+    
+        function returnToMain() {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
