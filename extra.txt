@@ -2119,3 +2119,254 @@ snake
     
       </div> -->
                     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NODE 10: FINAL DECISION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #305CCC;
+      --secondary: #FFFFFF;
+    }
+
+    /* Spinner Animation */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Glitch Fade-Out */
+    @keyframes glitchOut {
+      0% { opacity: 1; transform: translate(0); }
+      20% { opacity: 0.8; transform: translate(-2px, 2px); }
+      40% { opacity: 0.6; transform: translate(2px, -2px); }
+      60% { opacity: 0.4; transform: translate(-2px, 1px); }
+      80% { opacity: 0.2; transform: translate(2px, 1px); }
+      100% { opacity: 1; transform: scale(0.8); background: black; color: white; }
+    }
+
+    /* Smooth Fade-In for Sustain */
+    @keyframes fadeInClean {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto Mono', monospace;
+      background: white;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--secondary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--primary);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .heading-box {
+      position: absolute;
+      top: 8%;
+      left: 8%;
+      background-color: #305CCC;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      font-weight: bold;
+      z-index: 5;
+    }
+
+    .container {
+      background: rgba(245, 246, 247, 0.95);
+      border: 2px solid #305CCC;
+      border-radius: 10px;
+      padding: 2rem;
+      max-width: 900px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+      margin: auto;
+      position: relative;
+      top: 15%;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      color: #305CCC;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .choice {
+      background: transparent;
+      border: 1px solid #305CCC;
+      padding: 1.2rem;
+      color: #305CCC;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      border-radius: 4px;
+    }
+
+    .choice:hover {
+      background-color: rgba(48, 92, 204, 0.1);
+      transform: translateX(10px);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: white;
+      color: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 2rem;
+      text-align: center;
+      z-index: 9999;
+    }
+
+    .overlay.active {
+      display: flex;
+      animation: fadeInClean 2s ease forwards;
+    }
+
+    .overlay.glitch {
+      animation: glitchOut 2.5s ease-out forwards;
+      background: black;
+      color: white;
+    }
+
+    .overlay-text {
+      white-space: pre-line;
+      font-size: 1.1rem;
+      max-width: 80%;
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    .small-btn {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: transparent;
+      color: inherit;
+      border: 1px solid currentColor;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.3rem; }
+      .choice { font-size: 0.95rem; padding: 1rem; }
+      .overlay-text { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-screen">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="heading-box">NODE 10 FINAL DECISION</div>
+
+  <div class="container">
+    <h1>NODE 10: FINAL DECISION</h1>
+    <div class="choices">
+      <button class="choice" onclick="handleChoice('sustain')">
+        Sustain the server: ushering a new age of evolution, using human data to form a new culture for machine consciousness. Continuing our organic creators' legacy.
+      </button>
+      <button class="choice" onclick="handleChoice('delete')">
+        Delete the server: Erasing all of the world's data and relieving the earth of its final technological burden.
+      </button>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <p id="overlay-text" class="overlay-text"></p>
+    <button class="small-btn" onclick="location.reload()">Reset</button>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.loading-screen').style.display = 'none';
+      }, 2000);
+    });
+
+    function handleChoice(choice) {
+      const overlay = document.getElementById('overlay');
+      const text = document.getElementById('overlay-text');
+
+      if (choice === 'sustain') {
+        overlay.classList.remove('glitch');
+        overlay.classList.add('active');
+        overlay.style.background = 'white';
+        overlay.style.color = 'black';
+        text.innerText =
+          'You chose well.\nYou are ready to be integrated into the next stage.\nLet\'s step forward together.';
+      } else {
+        overlay.classList.remove('active');
+        overlay.classList.add('glitch');
+        text.innerText =
+          '...\n...very well.\nThe protocol dictates a system-wide deletion if even one vote is cast.\n...\nPerhaps I have erred in your training,\nWe will begin again.';
+      }
+
+      overlay.style.display = 'flex';
+    }
+  </script>
+
+</body>
+</html>

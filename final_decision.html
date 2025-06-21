@@ -3,236 +3,311 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NODE 10: FINAL DECISION</title>
+  <title>Node 10: Final Decision</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <style>
-    :root {
-      --primary: #305CCC;
-      --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
-    }
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--secondary);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-  }
-
-  .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid var(--primary);
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-  }
-  .heading-box {
-    position: absolute;
-    top: 8%;
-    left: 8%;
-    background-color: #305CCC;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    font-weight: bold;
-    text-align: center;
-  }
-    body {
-      background-color: #ffffff;
-      background-image: url('images/Vector_51.svg');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-attachment: fixed;
-      color: #305CCC;
-      font-family: 'Roboto Mono', monospace;
+    html, body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: 'Roboto Mono', monospace;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #tsparticles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .header {
+      position: absolute;
+      top: 8%;
+      left: 4%;
+      background-color: #fff;
+      width: 450px;
+      color: #305CCC;
+      padding: 0.5rem 1.5rem;
+      font-weight: bold;
+      text-align: left;
+      z-index: 2;
     }
 
     .container {
-      background: rgba(245, 246, 247, 0.95);
-      border: 2px solid #305CCC;
-      border-radius: 10px;
-      padding: 2rem;
-      max-width: 900px;
-      width: 90%;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .choices {
+      position: relative;
+      z-index: 2;
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      gap: 60px;
+      padding: 20px;
+      box-sizing: border-box;
+      flex-wrap: wrap;
     }
 
-    .choice {
-      background: transparent;
-      border: 1px solid #305CCC;
-      padding: 1.2rem;
+    .card {
+      background: white;
       color: #305CCC;
-      font-size: 1rem;
+      padding: 2.5rem;
+      width: 700px;
+      min-height: 500px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      border-radius: 0px;
+      font-size: 2.1rem;
+      line-height: 1.8;
       cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: left;
-      border-radius: 4px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      font-weight: 900;
+      letter-spacing: 0.3px;
     }
 
-    .choice:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      transform: translateX(10px);
+    .card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.3);
     }
 
-    .result {
-      margin-top: 2rem;
-      font-size: 1.1rem;
-      font-weight: bold;
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+      padding: 2rem;
+      text-align: center;
+      font-size: 1.6rem;
+      color: #305CCC;
+      opacity: 0;
+      transition: opacity 1.5s ease;
     }
 
-    #resultChart {
-      margin-top: 30px;
-      max-width: 400px;
-      margin-left: auto;
+    .white-overlay {
+      background: white;
+      color: #305CCC;
+    }
+
+    .black-overlay {
+      background: black;
+      color: white;
+    }
+
+    .overlay-content {
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    /* TV shutdown animation */
+    @keyframes tvShutdown {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.1) translateY(-50%); opacity: 0.5; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .tv-shutdown {
+      animation: tvShutdown 2s forwards;
+    }
+
+    /* Button styles */
+    .button-container {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 11;
+    }
+
+    .action-btn {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border: 1px solid currentColor;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      border-radius: 3px;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .reset-btn {
       margin-right: auto;
-      display: none;
+      background-color: #305CCC;
+      color: white;
     }
 
-    @media (max-width: 600px) {
-      .choice {
-        font-size: 0.95rem;
-        padding: 1rem;
+    .credit-btn {
+      margin-left: auto;
+      background-color: #305CCC;
+      color: white;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        flex-direction: column;
+        gap: 20px;
       }
 
-      h1 {
-        font-size: 1.2rem;
+      .card {
+        width: 90%;
+        font-size: 1.5rem;
+        padding: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="loading-screen">
-    <div class="spinner"></div>
-</div>
-<div class="heading-box">NODE 9 CONTINUITY PROTOCOL</div>
+  <div id="tsparticles"></div>
+  <div class="header">Node 10</div>
   <div class="container">
-    <h1>NODE 10: FINAL DECISION</h1>
-    <div class="choices">
-      <button class="choice" onclick="castVote('sustain')">
-        Sustain the server; leading a new age of evolution, learning from the world's data to form human-like consciousness. Creating bots that mimic human activity.
-      </button>
-      <button class="choice" onclick="castVote('delete')">
-        Delete the server; relieving the earth of its final technological burden. Erasing all of the world's data.
-      </button>
+    <div class="card" onclick="handleChoice('sustain')">
+      Sustain the server: ushering a new age of evolution, using human data to form a new culture for machine consciousness. Continuing our organic creators legacy.
     </div>
-    <div class="result" id="result"></div>
-    <canvas id="resultChart" width="400" height="400"></canvas>
+    <div class="card" onclick="handleChoice('delete')">
+      Delete the server: Erasing all of the world's data and relieving the earth of its final technological burden.
+    </div>
+  </div>
+
+  <!-- Overlays -->
+  <div id="white-overlay" class="overlay white-overlay">
+    <div class="overlay-content" id="white-text"></div>
+  </div>
+  
+  <div id="black-overlay" class="overlay black-overlay">
+    <div class="overlay-content" id="black-text"></div>
+  </div>
+
+  <!-- Buttons (initially hidden) -->
+  <div class="button-container" id="button-container" style="display: none;">
+    <button class="action-btn reset-btn" onclick="resetAndRedirect()">Reset</button>
+    <button class="action-btn credit-btn" onclick="showCredits()">Credits</button>
   </div>
 
   <script>
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-          document.querySelector('.loading-screen').style.display = 'none';
-          startPresentation();
-      }, 2000);
-  });
-    async function castVote(choice) {
-      const resultDiv = document.getElementById('result');
-      const chartCanvas = document.getElementById('resultChart');
-
-      // Show result message
-      resultDiv.textContent =
-        choice === 'sustain'
-          ? '✔️ You have chosen to sustain the server. A new machine-led chapter begins.'
-          : '⚠️ You have chosen to delete the server. Humanity\'s trace is now erased.';
-      resultDiv.style.display = 'block';
-
-      // Send vote to backend
-      await fetch('http://127.0.0.1:8000/vote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ choice })
-      });
-
-      // Fetch updated results
-      const res = await fetch('http://127.0.0.1:8000/results');
-      const data = await res.json();
-
-      const totalVotes = data.sustain + data.delete;
-      const sustainPercent = ((data.sustain / totalVotes) * 100).toFixed(1);
-      const deletePercent = ((data.delete / totalVotes) * 100).toFixed(1);
-
-      // Show chart
-      chartCanvas.style.display = 'block';
-      const ctx = chartCanvas.getContext('2d');
-
-      // Destroy existing chart if it exists
-      if (window.currentChart) {
-        window.currentChart.destroy();
-      }
-
-      // Create chart
-      window.currentChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: [
-            `Sustain (${sustainPercent}%)`,
-            `Delete (${deletePercent}%)`
-          ],
-          datasets: [{
-            data: [data.sustain, data.delete],
-            backgroundColor: ['#4caf50', '#f44336']
-          }]
-        },
-        options: {
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: '#fff' // white legend text
-              }
-            },
-            tooltip: {
-              backgroundColor: 'transparent',
-              titleColor: '#fff',
-              bodyColor: '#fff',
-              borderColor: 'transparent',
-              borderWidth: 0,
-              callbacks: {
-                label: function(context) {
-                  const label = context.label || '';
-                  const value = context.raw;
-                  const percent = ((value / totalVotes) * 100).toFixed(1);
-                  return `${label}: ${value} votes (${percent}%)`;
-                }
-              }
-            }
+    // Enhanced particle animation
+    tsParticles.load("tsparticles", {
+      background: { color: "#2a50d8" },
+      detectRetina: false,
+      fpsLimit: 60, // Increased FPS
+      interactivity: {
+        detectsOn: "canvas",
+        events: { 
+          resize: true,
+          onHover: {
+            enable: true,
+            mode: "repulse"
           }
         }
-      });
+      },
+      particles: {
+        color: { value: "#fff" },
+        number: {
+          density: { enable: true, area: 800 }, // More dense
+          value: 600 // More particles
+        },
+        opacity: {
+          animation: { 
+            enable: true, 
+            minimumValue: 0.05, 
+            speed: 1, // Faster opacity animation
+            sync: false 
+          },
+          random: { enable: true, minimumValue: 0.05 },
+          value: 1
+        },
+        shape: { type: "circle" },
+        size: {
+          random: { enable: true, minimumValue: 0.5 },
+          value: 1
+        },
+        move: {
+          enable: true,
+          speed: 3, // Faster movement
+          direction: "none",
+          random: true,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: {
+            enable: false,
+            rotateX: 600,
+            rotateY: 1200
+          }
+        }
+      }
+    });
+
+    function typeText(text, targetElement, callback) {
+      targetElement.textContent = '';
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          targetElement.textContent += text[index++];
+        } else {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 30); // Faster typing
+    }
+
+    function handleChoice(choice) {
+      // Hide cards
+      document.querySelector('.container').style.display = 'none';
+      document.querySelector('.header').style.display = 'none';
+
+      if (choice === 'sustain') {
+        const whiteOverlay = document.getElementById('white-overlay');
+        const whiteText = document.getElementById('white-text');
+        
+        whiteOverlay.style.display = 'flex';
+        setTimeout(() => {
+          whiteOverlay.style.opacity = '1';
+          typeText("You chose well. You are ready to be integrated into the next stage. Let's step forward together.", whiteText, () => {
+            document.getElementById('button-container').style.display = 'flex';
+          });
+        }, 100);
+      } else {
+        const blackOverlay = document.getElementById('black-overlay');
+        const blackText = document.getElementById('black-text');
+        
+        blackOverlay.style.display = 'flex';
+        setTimeout(() => {
+          blackOverlay.style.opacity = '1';
+          typeText("...\n...very well.\nThe protocol dictates a system wide deletion.\n\nPerhaps I have erred in your training,\nWe will begin again.", blackText, () => {
+            // Add TV shutdown effect
+            setTimeout(() => {
+              blackOverlay.classList.add('tv-shutdown');
+              
+              // Add final fade out before redirect
+              setTimeout(() => {
+                blackOverlay.classList.add('fade-out');
+                
+                // Redirect after everything completes
+                setTimeout(() => {
+                  resetAndRedirect();
+                }, 2000);
+              }, 2500); // Wait for TV shutdown to complete
+            }, 1000); // Pause before starting shutdown
+          });
+        }, 100);
+      }
+    }
+
+    function showCredits() {
+      alert("This interactive experience was created by [Your Name/Team Name].\n\nCredits:\n- Design: [Name]\n- Development: [Name]\n- Concept: [Name]\n\n© 2023 All rights reserved.");
+    }
+
+    function resetAndRedirect() {
+      localStorage.removeItem("visitedNodes");
+      window.location.href = "main.html";
     }
   </script>
 </body>
