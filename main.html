@@ -56,11 +56,109 @@
           }
 
 
+        /* Corrupted overlay effect */
+        .corrupted-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 100;
+          display: none;
+          justify-content: center;
+          align-items: center;
+          pointer-events: none;
+      }
+
+      .corrupted-message {
+          position: relative;
+          font-family: sans-serif;
+          font-weight: normal;
+          font-size: 3em;
+          text-align: center;
+          color: rgba(255,255,255,0.95);
+          text-shadow: 1px 1px rgba(246, 0, 153,0.8),
+                      -1px -1px rgba(15, 210, 255,0.8),
+                      -1px 0px rgba(255, 210, 0, 1);
+          animation: wiggle 0.4s infinite alternate;
+      }
+
+      @keyframes wiggle {
+          0% { transform: skewX(24deg); } 
+          10% { transform: skewX(-8deg); }
+          20% { transform: skewX(55deg); }
+          30% { transform: skewX(-90deg); }
+          40% { transform: skewX(29deg); }
+          50% { transform: skewX(-90deg); }
+          60% { transform: skewX(3deg); }
+          70% { transform: skewX(-2deg); }
+          80% { transform: skewX(1deg); }
+          90% { transform: skewX(10deg); }
+          100% { transform: skewX(0deg); }
+      }
+
+      /* Glitch effect */
+      .glitch-effect {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+              linear-gradient(rgba(255,0,0,0.1), rgba(255,0,0,0.1)),
+              linear-gradient(rgba(0,255,0,0.1), rgba(0,255,0,0.1)),
+              linear-gradient(rgba(0,0,255,0.1), rgba(0,0,255,0.1));
+          background-blend-mode: screen;
+          z-index: 99;
+          pointer-events: none;
+          opacity: 0;
+          animation: glitchFlash 0.8s infinite;
+          display: none;
+      }
+
+      @keyframes glitchFlash {
+          0%, 10%, 12%, 15%, 50%, 55%, 100% { opacity: 0; }
+          11%, 13%, 14%, 51%, 54% { opacity: 0.3; }
+      }
+/* Add this to your style section */
+/* Add this to ensure no parent elements interfere */
+#node13-container {
+  pointer-events: bounding-box;
+}
+#node13 {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Prevent any parent from intercepting clicks */
+.node-map-container, .node-map-svg {
+  pointer-events: none;
+}
+.node-map-container *, .node-map-svg * {
+  pointer-events: auto;
+}
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          .node-map-container {
+              padding: 20px;
+              box-sizing: border-box;
+          }
+          
+          .corrupted-message {
+              font-size: 2em;
+          }
+      }
   
 
     </style>
 </head>
 <body>
+      <!-- Glitch effect elements - initially hidden -->
+      <div class="glitch-effect" id="glitch-effect"></div>
+      <div class="corrupted-overlay" id="corrupted-overlay">
+          <div class="corrupted-message">Node 13 CORRUPTED  <br>(◕‿◕✿)</div>
+      </div>
   
     <div class="node-map-container">
         <svg class="node-map-svg" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -103,9 +201,13 @@
          <a href="final_decision.html" onclick="markVisited('Node 10')">   <circle class="node" id="node10" cx="961" cy="575" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 10" data-tooltip="Final Decision" data-has-diamond="true"/></a>
 
             <circle class="node2" id="node11" cx="901" cy="599" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 11" data-tooltip="(Corrupted)" data-has-diamond="true"/>
-            <circle class="node2" id="node12" cx="541" cy="349" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 12" data-tooltip="(Corrupted)" data-has-diamond="true"/>
-            <circle class="node2" id="node13" cx="796" cy="95" r="7" stroke="#99ABD9" stroke-width="2"  fill="#99ABD9" data-node-number="Node 13" data-tooltip="(Corrupted)" data-has-diamond="true"/>
-            
+            <a href="Node12.html" onclick="markVisited('Node 12')">      <circle class="node2" id="node12" cx="541" cy="349" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 12" data-tooltip="(Corrupted)" data-has-diamond="true"/></a>
+         
+            <!-- Change this (remove the <a> tag for Node 13) -->
+<!-- Replace the Node 13 circle with this -->
+<g id="node13-container">
+  <circle class="node2" id="node13" cx="796" cy="95" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 13" data-tooltip="(Corrupted)" data-has-diamond="true"/>
+</g>
             <!-- ... (remaining SVG content) -->
             
             <defs>
@@ -595,21 +697,98 @@ node4.addEventListener("mousemove", (e) => {
             tooltipNode12.style.top = (e.pageY - 30) + "px";
           });
             //                          <!--node 13-->
-            const node13 = document.querySelector('circle[data-node-number="Node 13"]');
-            const tooltipNode13 = document.getElementById("custom-tooltip-node13");
-          
-            node13.addEventListener("mouseenter", (e) => {
-              tooltipNode13.style.display = "block";
+           // Node 13 hover effect
+    
+// Node 13 - Complete Isolation Solution
+const node13 = document.getElementById('node13');
+const glitchEffect = document.getElementById('glitch-effect');
+const corruptedOverlay = document.getElementById('corrupted-overlay');
+
+if (node13) {
+    // 1. Remove any existing event listeners by cloning
+    const node13Container = document.getElementById('node13-container');
+    const newNode13 = node13.cloneNode(true);
+    node13Container.innerHTML = '';
+    node13Container.appendChild(newNode13);
+    
+    // 2. Add CSS to prevent any pointer events on parent elements
+    const style = document.createElement('style');
+    style.textContent = `
+        #node13-container {
+            pointer-events: bounding-box !important;
+        }
+        #node13 {
+            pointer-events: auto !important;
+            cursor: pointer;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // 3. Add our custom event handlers
+    newNode13.addEventListener('mouseenter', () => {
+        glitchEffect.style.display = 'block';
+        corruptedOverlay.style.display = 'flex';
+    });
+    
+    newNode13.addEventListener('mouseleave', () => {
+        glitchEffect.style.display = 'none';
+        corruptedOverlay.style.display = 'none';
+    });
+    
+    newNode13.addEventListener('click', (e) => {
+        // Prevent everything possible
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Show effects
+        glitchEffect.style.display = 'block';
+        corruptedOverlay.style.display = 'flex';
+        
+        // Hide after delay
+        setTimeout(() => {
+            glitchEffect.style.display = 'none';
+            corruptedOverlay.style.display = 'none';
+        }, 1000);
+        
+        return false;
+    }, true); // Use capture phase
+    
+    // 4. Make absolutely sure no parent elements can trigger navigation
+    newNode13.style.pointerEvents = 'auto';
+    newNode13.style.cursor = 'pointer';
+    
+    // 5. Remove any parent anchor tag if somehow exists
+    let parent = newNode13.parentElement;
+    while (parent && parent !== document.body) {
+        if (parent.tagName === 'A') {
+            const grandparent = parent.parentNode;
+            grandparent.insertBefore(newNode13, parent);
+            grandparent.removeChild(parent);
+            break;
+        }
+        parent = parent.parentElement;
+    }
+}
+
+// Modify the generic node click handler to exclude Node 13
+document.addEventListener('DOMContentLoaded', function() {
+    highlightVisitedNodes();
+    
+    document.querySelectorAll("circle.node, circle.node2").forEach((circle) => {
+        if (circle.id !== 'node13') { // Explicitly exclude Node 13
+            const nodeNum = circle.getAttribute("data-node-number");
+            circle.addEventListener("click", function(e) {
+                e.preventDefault();
+                const href = this.parentNode.getAttribute('href');
+                markVisited(nodeNum);
+                setTimeout(() => {
+                    if (href) window.location.href = href;
+                }, 100);
             });
-          
-            node13.addEventListener("mouseleave", () => {
-              tooltipNode13.style.display = "none";
-            });
-          
-            node13.addEventListener("mousemove", (e) => {
-              tooltipNode13.style.left = (e.pageX + 10) + "px";
-              tooltipNode13.style.top = (e.pageY - 30) + "px";
-            });
+        }
+    });
+});
  //<!--node 9-->
       const node9 = document.querySelector('circle[data-node-number="Node 9"]');
       const tooltipNode9 = document.getElementById("custom-tooltip-node9");
