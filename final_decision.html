@@ -7,6 +7,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Roboto:400,400italic,500,500italic" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+  <!-- Audio elements for sound effects -->
+  <audio id="typingSound" src="https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3" preload="auto"></audio>
+  <audio id="glitchSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" preload="auto"></audio>
   <style>
     :root {
       --primary: #305CCC;
@@ -69,7 +72,7 @@
     .header {
       position: absolute;
       top: 8%;
-      left: 4%;
+      left: 6%;
       background-color: #fff;
       width: 450px;
       color: #305CCC;
@@ -86,7 +89,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      gap: 60px;
+      gap: 40px;
       padding: 20px;
       box-sizing: border-box;
       flex-wrap: wrap;
@@ -95,21 +98,25 @@
     .card {
       background: white;
       color: #305CCC;
-      padding: 2.5rem;
-      width: 700px;
-      min-height: 500px;
+      padding: 1.5rem;
+      width: 500px;
+      min-height: 300px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.25);
       border-radius: 0px;
-      font-size: 2.1rem;
-      line-height: 1.8;
+      font-size: 1.4rem;
+      line-height: 1.6;
       cursor: pointer;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
     .card:hover {
-      transform: scale(1.04);
+      transform: scale(1.03);
       box-shadow: 0 10px 28px rgba(0,0,0,0.3);
     }
 
@@ -135,7 +142,7 @@
 
     .black-overlay {
       background: black;
-      color: white; /* Changed to white for visibility */
+      color: white;
     }
 
     .overlay-content {
@@ -223,76 +230,8 @@
       animation: tvShutdown 1.5s forwards, tvGlow 0.5s infinite;
       background-color: #000;
     }
-    @keyframes tvShutdown {
-      0% { 
-        transform: scale(1,1) translateY(0); 
-        opacity: 1; 
-        background-color: #000;
-        box-shadow: 0 0 0 rgba(255,255,255,0);
-      }
-      10% { 
-        transform: scale(1.02,0.98) translateY(0); 
-        opacity: 0.8; 
-        background-color: #111;
-        box-shadow: 0 0 20px rgba(255,255,255,0.1);
-      }
-      20% { 
-        transform: scale(0.98,1.02) translateY(0); 
-        opacity: 0.9; 
-        background-color: #000;
-        box-shadow: 0 0 10px rgba(255,255,255,0.05);
-      }
-      30% { 
-        transform: scale(1.01,0.99) translateY(0); 
-        opacity: 0.85; 
-        background-color: #050505;
-        box-shadow: 0 0 30px rgba(255,255,255,0.15);
-      }
-      40% { 
-        transform: scale(0.99,1.01) translateY(0); 
-        opacity: 0.95; 
-        background-color: #000;
-        box-shadow: 0 0 5px rgba(255,255,255,0.02);
-      }
-      50% { 
-        transform: scale(1,0.2) translateY(0); 
-        opacity: 0.5; 
-        background-color: #000;
-        box-shadow: 0 0 50px rgba(255,255,255,0.3);
-      }
-      60% { 
-        transform: scale(1,0.1) translateY(0); 
-        opacity: 0.3; 
-        background-color: #000;
-        box-shadow: 0 0 80px rgba(255,255,255,0.4);
-      }
-      70% { 
-        transform: scale(1,0.05) translateY(0); 
-        opacity: 0.2; 
-        background-color: #000;
-        box-shadow: 0 0 100px rgba(255,255,255,0.5);
-      }
-      80% { 
-        transform: scale(1,0.01) translateY(0); 
-        opacity: 0.1; 
-        background-color: #000;
-        box-shadow: 0 0 120px rgba(255,255,255,0.6);
-      }
-      90% { 
-        transform: scale(1,0.005) translateY(0); 
-        opacity: 0.05; 
-        background-color: #000;
-        box-shadow: 0 0 150px rgba(255,255,255,0.7);
-      }
-      100% { 
-        transform: scale(1,0) translateY(0); 
-        opacity: 0; 
-        background-color: #000;
-        box-shadow: 0 0 200px rgba(255,255,255,0.8);
-      }
-    }
     
-    /* New border glow effect */
+    /* TV border glow effect */
     .tv-border-glow {
       position: fixed;
       top: 0;
@@ -325,6 +264,7 @@
         box-shadow: inset 0 0 0 100px rgba(255,255,255,0);
       }
     }
+    
     /* Button styles */
     .button-container {
       position: fixed;
@@ -468,25 +408,28 @@
       margin: 0.5rem 0;
       transition: opacity 0.5s ease;
       color: #fff;
-      overflow: hidden; /* Ensures the content is not revealed until the animation */
-      white-space: nowrap; /* Keeps the content on a single line */
-      margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-      letter-spacing: .15em; /* Adjust as needed */
-      animation: 
-        typing 3.5s steps(40, end),
-        blink-caret .75s step-end infinite;
-    }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
+      overflow: hidden;
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: .15em;
+      max-width: 80%;
     }
     
     /* The typewriter cursor effect */
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: orange; }
+    .typing-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.2em;
+      background: white;
+      vertical-align: middle;
+      margin-left: 3px;
+      animation: blink 1s infinite;
     }
     
+    @keyframes blink {
+      from, to { opacity: 0; }
+      50% { opacity: 1; }
+    }
     
     /* We will begin again glitch styles */
     .final-glitch-container {
@@ -505,42 +448,95 @@
     
     .final-glitch-text {
       position: relative;
-      font-family: sans-serif;
-      font-weight: normal;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: bold;
       font-size: 3em;
       text-align: center;
-      color: rgba(255,255,255,0.95);
-      text-shadow: 1px 1px rgba(246, 0, 153,0.8),
-                  -1px -1px rgba(15, 210, 255,0.8),
-                  -1px 0px rgba(255, 210, 0, 1);
+      color: #fff;
+      animation: glitch-effect 0.8s infinite;
     }
     
-    @keyframes wiggle {
-      0% { transform: skewX(24deg); } 
-      10% { transform: skewX(-8deg); }
-      20% { transform: skewX(55deg); }
-      30% { transform: skewX(-90deg); }
-      40% { transform: skewX(29deg); }
-      50% { transform: skewX(-90deg); }
-      60% { transform: skewX(3deg); }
-      70% { transform: skewX(-2deg); }
-      80% { transform: skewX(1deg); }
-      90% { transform: skewX(10deg); }
-      100% { transform: skewX(0deg); }
+    @keyframes glitch-effect {
+      0% {
+        transform: translate(0);
+        text-shadow: 
+          0.05em 0 0 #00fffc,
+          -0.05em -0.025em 0 #ff00fc,
+          0.025em 0.05em 0 #fcff00;
+        opacity: 1;
+      }
+      14% {
+        transform: translate(-0.05em, 0.025em);
+        text-shadow: 
+          -0.05em 0 0 #00fffc,
+          0.025em 0.025em 0 #ff00fc,
+          -0.05em -0.05em 0 #fcff00;
+        opacity: 0.8;
+      }
+      15% {
+        transform: translate(0.025em, -0.05em);
+        text-shadow: 
+          0.025em 0 0 #00fffc,
+          0.05em 0.05em 0 #ff00fc,
+          -0.05em -0.025em 0 #fcff00;
+        opacity: 1;
+      }
+      49% {
+        transform: translate(0.025em, 0.05em);
+        text-shadow: 
+          0.05em 0 0 #00fffc,
+          -0.05em 0.025em 0 #ff00fc,
+          0.025em -0.05em 0 #fcff00;
+        opacity: 0.7;
+      }
+      50% {
+        transform: translate(-0.025em, -0.025em);
+        text-shadow: 
+          -0.025em 0 0 #00fffc,
+          0.05em 0.05em 0 #ff00fc,
+          0.05em -0.05em 0 #fcff00;
+        opacity: 1;
+      }
+      99% {
+        transform: translate(0, 0);
+        text-shadow: 
+          0.05em 0 0 #00fffc,
+          -0.05em -0.025em 0 #ff00fc,
+          0.025em 0.05em 0 #fcff00;
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(0);
+        text-shadow: none;
+        opacity: 1;
+      }
     }
     
-    .wiggle-animation {
-      animation: wiggle 0.4s;
+    /* Add this for an extra CRT scanline effect during the glitch */
+    .final-glitch-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(255,255,255,0.1) 50%
+      );
+      background-size: 100% 4px;
+      animation: scanline 0.1s linear infinite;
+      pointer-events: none;
     }
     
-    .wiggle-animation-2 {
-      animation: wiggle 0.2s 2;
+    @keyframes scanline {
+      from { transform: translateY(0); }
+      to { transform: translateY(4px); }
     }
     
-    .wiggle-text {
-      text-shadow: 30px 13px rgba(246, 0, 153,0.8),
-                  -38px -4px rgba(15, 210, 255,0.8),
-                  -2px -4px rgba(255, 210, 0, 1);
+    .glitch-animation {
+      animation: glitch-effect 2s infinite;
     }
     
     /* Enhanced TV scan lines with more visible flickering */
@@ -588,55 +584,7 @@
       }
     }
     
-    .flicker {
-      animation: flicker 0.5s infinite;
-    }
-    
-    /* Text typing animation */
-    @keyframes blink {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-    
-    .typing-cursor {
-      display: inline-block;
-      width: 10px;
-      height: 1.2em;
-      background: white;
-      vertical-align: middle;
-      margin-left: 3px;
-      animation: blink 1s infinite;
-    }
-    
-    /* Protocol text container */
-    .protocol-text {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 24;
-      color: white;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 1.6rem;
-      text-align: center;
-      display: none;
-      background-color: #000;
-    }
-    
-    .protocol-line {
-      opacity: 0;
-      margin: 0.5rem 0;
-      color: #fff;
-      text-shadow: 0 0 5px #fff;
-    }
-    
-    /* More intense static noise */
+    /* Static noise */
     .static-noise {
       position: fixed;
       top: 0;
@@ -693,7 +641,54 @@
       pointer-events: none;
       display: none;
     }
-    
+    @media (max-width: 1200px) {
+      .card {
+        width: 450px;
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .container {
+        gap: 30px;
+      }
+      .card {
+        width: 400px;
+        font-size: 1.2rem;
+        min-height: 250px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+        padding: 80px 20px;
+      }
+      .card {
+        width: 90%;
+        max-width: 500px;
+        font-size: 1.2rem;
+        min-height: 200px;
+      }
+      .header {
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        font-size: 1.1rem;
+        padding: 1.2rem;
+        min-height: 180px;
+      }
+    }
+ 
   </style>
 </head>
 <body>
@@ -729,6 +724,7 @@
     <div class="glitch-line" id="line3"></div>
     <div class="glitch-line" id="line4"></div>
     <div class="glitch-line" id="line5"></div>
+    <div class="glitch-line" id="line6"></div>
   </div>
   
   <div id="final-glitch-container" class="final-glitch-container">
@@ -755,7 +751,7 @@
     <h3>Project Credits</h3>
     <p>
       This interactive experience was created by <strong>Team Name</strong>.<br><br>
-      <strong>Design:</strong>Aaleen Shahid<br>
+      <strong>Design:</strong> Aaleen Shahid<br>
       <strong>Development:</strong> Developer Name<br>
       <strong>Concept:</strong> Concept Creator<br><br>
       © 2023 All rights reserved.
@@ -766,14 +762,8 @@
   <script>
     window.addEventListener('load', () => {
       setTimeout(() => {
-          document.querySelector('.loading-screen').style.display = 'none';
-          startPresentation();
-      }, 2000);
-    });
-    window.addEventListener('load', () => {
-      setTimeout(() => {
         document.querySelector('.loading-screen').style.display = 'none';
-        initParticles(); // Initialize particles here
+        initParticles();
       }, 2000);
     });
     
@@ -783,7 +773,7 @@
     function initParticles() {
       particlesInstance = tsParticles.load("tsparticles", {
         background: { 
-          color: "#2a50d8" // Blue background
+          color: "#2a50d8"
         },
         detectRetina: false,
         fpsLimit: 60,
@@ -836,17 +826,19 @@
       });
     }
 
-    function typeText(text, targetElement, callback) {
-      targetElement.textContent = '';
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < text.length) {
-          targetElement.textContent += text[index++];
+    function typeWithSound(element, text, speed, callback) {
+      let i = 0;
+      element.textContent = '';
+      const typingInterval = setInterval(() => {
+        if (i < text.length) {
+          element.textContent += text[i++];
         } else {
-          clearInterval(interval);
+          clearInterval(typingInterval);
           if (callback) callback();
         }
-      }, 30);
+      }, speed);
+      
+      return typingInterval;
     }
 
     function handleChoice(choice) {
@@ -861,7 +853,7 @@
         whiteOverlay.style.display = 'flex';
         setTimeout(() => {
           whiteOverlay.style.opacity = '1';
-          typeText("You chose well. You are ready to be integrated into the next stage. Let's step forward together.", whiteText, () => {
+          typeWithSound(whiteText, "You chose well. You are ready to be integrated into the next stage. Let's step forward together.", 50, () => {
             document.getElementById('button-container').style.display = 'flex';
           });
         }, 100);
@@ -893,6 +885,7 @@
         startTVShutdown();
       }, 2000);
     }
+
     function startTVShutdown() {
       // Show TV shutdown animation immediately
       document.body.style.backgroundColor = "#000";
@@ -936,6 +929,7 @@
         showGlitchEffect();
       }, 2000);
     }
+
     function showGlitchEffect() {
       document.body.style.backgroundColor = "#000";
       // Show TV glitch effect
@@ -974,12 +968,12 @@
         ctx.shadowColor = color;
         ctx.fillStyle = color;
         ctx.setTransform(1, -0.15, 0, 1, 0, -10);
-        ctx.fillText("PROTOCOL", innerWidth / 2, innerHeight / 2 - 5);
+        ctx.fillText("", innerWidth / 2, innerHeight / 2 - 5);
 
         ctx.fillStyle = "white";
         ctx.shadowBlur = 30;
         ctx.shadowColor = color;
-        ctx.fillText("Terminates", innerWidth / 2, innerHeight / 2);
+        ctx.fillText("", innerWidth / 2, innerHeight / 2);
 
         ctx.font = "18vh Bungee Inline";
         ctx.shadowBlur = 30;
@@ -987,7 +981,7 @@
         ctx.fillStyle = "#fff";
         ctx.setTransform(1, -0.15, 0, 1, 0, -10);
         ctx.fillText(
-          "System",
+          "",
           innerWidth / 2,
           innerHeight / 2 + innerHeight / 10
         );
@@ -1045,33 +1039,47 @@
     
     function showTextLineByLine() {
       const textContainer = document.getElementById('glitch-text-container');
-      const line1 = document.getElementById('line1');
-      const line2 = document.getElementById('line2');
-      const line3 = document.getElementById('line3');
-      const line4 = document.getElementById('line4');
-      const line5 = document.getElementById('line5');
+      const lines = [
+        { id: 'line1', text: "...", speed: 200 },
+        { id: 'line2', text: "...very well.", speed: 150 },
+        { id: 'line3', text: "........", speed: 200 },
+        { id: 'line4', text: "The protocol dictates a system wide deletion.", speed: 70 },
+        { id: 'line5', text: "Perhaps I have erred in your training,", speed: 70 },
+        { id: 'line6', text: "We will begin again.", speed: 90 }
+      ];
       
       textContainer.style.display = 'flex';
       
-      // Set the text content
-      line1.textContent = "...";
-      line2.textContent = "...very well.";
-      line3.textContent = "The protocol dictates a system wide deletion.";
-      line4.textContent = "Perhaps I have erred in your training,";
-      line5.textContent = "We will begin again.";
-      
-      // Show lines one by one
-      setTimeout(() => { line1.style.opacity = '1'; }, 500);
-      setTimeout(() => { line2.style.opacity = '1'; }, 1500);
-      setTimeout(() => { line3.style.opacity = '1'; }, 2500);
-      setTimeout(() => { line4.style.opacity = '1'; }, 3500);
-      setTimeout(() => { line5.style.opacity = '1'; }, 4500);
+      // Show lines one by one with typing animation
+      lines.forEach((line, index) => {
+        const element = document.getElementById(line.id);
+        element.style.opacity = '0';
+        
+        setTimeout(() => {
+          element.style.opacity = '1';
+          typeWithSound(element, line.text, line.speed);
+          
+          // Special effect for the last line
+          if (index === lines.length - 1) {
+            setTimeout(() => {
+              const finalText = document.getElementById('final-glitch-text');
+              finalText.classList.add('glitch-animation');
+              
+              // Play glitch sound after a delay
+              setTimeout(() => {
+                const glitchSound = document.getElementById('glitchSound');
+                glitchSound.play();
+              }, 1000);
+            }, line.text.length * line.speed + 500);
+          }
+        }, index * 2500); // Increased delay between lines
+      });
       
       // After all lines are shown, show the final glitch effect
       setTimeout(() => {
         textContainer.style.display = 'none';
         showFinalGlitch();
-      }, 6500);
+      }, lines.length * 2500 + 3000);
     }
     
     function showFinalGlitch() {
@@ -1080,28 +1088,26 @@
       
       finalGlitchContainer.style.display = 'flex';
       
-      // Apply wiggle animation automatically
+      // More intense sound effect
+      const glitchSound = document.getElementById('glitchSound');
+      glitchSound.play();
+      
+      // Random flickering
+      const flickerInterval = setInterval(() => {
+        finalGlitchText.style.opacity = Math.random() > 0.3 ? 1 : 0.2;
+      }, 50);
+      
+      // After animations complete, fade out and redirect
       setTimeout(() => {
-        finalGlitchText.classList.add('wiggle-animation');
+        clearInterval(flickerInterval);
+        finalGlitchContainer.classList.add('fade-out');
         
-        // After first animation, apply the second one with text effect
+        // Redirect after fade out completes
         setTimeout(() => {
-          finalGlitchText.classList.remove('wiggle-animation');
-          finalGlitchText.classList.add('wiggle-animation-2', 'wiggle-text');
-          
-          // After animations complete, fade out and redirect
-          setTimeout(() => {
-            finalGlitchContainer.classList.add('fade-out');
-            
-            // Redirect after fade out completes
-            setTimeout(() => {
-              resetAndRedirect();
-            }, 1500);
-          }, 3000);
-        }, 500);
-      }, 100);
+          resetAndRedirect();
+        }, 1500);
+      }, 3000);
     }
-
     function showCredits() {
       document.getElementById('overlay-backdrop').style.display = 'block';
       document.getElementById('credits-popup').style.display = 'flex';

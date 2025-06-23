@@ -46,7 +46,7 @@
           fill: #305CCC;
         }
         .node2 {
-            fill: 99ABD9;
+            fill: #99ABD9;
             transition: fill 0.3s ease;
             cursor: pointer;
           }
@@ -55,122 +55,121 @@
             fill: #99ABD9;
           }
 
+        /* Corrupted tooltip effect */
+        .corrupted-tooltip {
+            position: absolute;
+            overflow: hidden;
+            z-index: 20;
+            display: none;
+            pointer-events: none;
+        }
+        
+        .corrupted-tooltip svg {
+            position: relative;
+        }
+        
+        .corrupted-tooltip::before,
+        .corrupted-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        
+        .corrupted-tooltip::before {
+            background: rgba(255,0,0,0.1);
+            animation: glitch-anim-1 1s infinite linear alternate-reverse;
+        }
+        
+        .corrupted-tooltip::after {
+            background: rgba(0,255,255,0.1);
+            animation: glitch-anim-2 1s infinite linear alternate-reverse;
+        }
+        
+        /* Wiggle animation for the entire tooltip */
+        .corrupted-tooltip svg {
+            animation: wiggle 0.4s infinite alternate;
+        }
+        
+        @keyframes wiggle {
+            0% { transform: skewX(24deg); } 
+            10% { transform: skewX(-8deg); }
+            20% { transform: skewX(55deg); }
+            30% { transform: skewX(-90deg); }
+            40% { transform: skewX(29deg); }
+            50% { transform: skewX(-90deg); }
+            60% { transform: skewX(3deg); }
+            70% { transform: skewX(-2deg); }
+            80% { transform: skewX(1deg); }
+            90% { transform: skewX(10deg); }
+            100% { transform: skewX(0deg); }
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%); }
+            10% { clip-path: polygon(0 30%, 100% 30%, 100% 60%, 0 60%); }
+            20% { clip-path: polygon(0 60%, 100% 60%, 100% 90%, 0 90%); }
+            30% { clip-path: polygon(0 90%, 100% 90%, 100% 100%, 0 100%); }
+            40% { clip-path: polygon(0 10%, 100% 10%, 100% 40%, 0 40%); }
+            50% { clip-path: polygon(0 40%, 100% 40%, 100% 70%, 0 70%); }
+            60% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
+            70% { clip-path: polygon(0 20%, 100% 20%, 100% 50%, 0 50%); }
+            80% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); }
+            90% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+            100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip-path: polygon(0 10%, 100% 10%, 100% 40%, 0 40%); }
+            10% { clip-path: polygon(0 40%, 100% 40%, 100% 70%, 0 70%); }
+            20% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
+            30% { clip-path: polygon(0 20%, 100% 20%, 100% 50%, 0 50%); }
+            40% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); }
+            50% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+            60% { clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%); }
+            70% { clip-path: polygon(0 30%, 100% 30%, 100% 60%, 0 60%); }
+            80% { clip-path: polygon(0 60%, 100% 60%, 100% 90%, 0 90%); }
+            90% { clip-path: polygon(0 90%, 100% 90%, 100% 100%, 0 100%); }
+            100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
 
-        /* Corrupted overlay effect */
-        .corrupted-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.7);
-          z-index: 100;
-          display: none;
-          justify-content: center;
-          align-items: center;
+        /* Add this to ensure no parent elements interfere */
+        #node13-container {
+          pointer-events: bounding-box;
+        }
+        #node13 {
+          pointer-events: auto !important;
+          cursor: pointer;
+        }
+
+        /* Prevent any parent from intercepting clicks */
+        .node-map-container, .node-map-svg {
           pointer-events: none;
-      }
-
-      .corrupted-message {
-          position: relative;
-          font-family: sans-serif;
-          font-weight: normal;
-          font-size: 3em;
-          text-align: center;
-          color: rgba(255,255,255,0.95);
-          text-shadow: 1px 1px rgba(246, 0, 153,0.8),
-                      -1px -1px rgba(15, 210, 255,0.8),
-                      -1px 0px rgba(255, 210, 0, 1);
-          animation: wiggle 0.4s infinite alternate;
-      }
-
-      @keyframes wiggle {
-          0% { transform: skewX(24deg); } 
-          10% { transform: skewX(-8deg); }
-          20% { transform: skewX(55deg); }
-          30% { transform: skewX(-90deg); }
-          40% { transform: skewX(29deg); }
-          50% { transform: skewX(-90deg); }
-          60% { transform: skewX(3deg); }
-          70% { transform: skewX(-2deg); }
-          80% { transform: skewX(1deg); }
-          90% { transform: skewX(10deg); }
-          100% { transform: skewX(0deg); }
-      }
-
-      /* Glitch effect */
-      .glitch-effect {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: 
-              linear-gradient(rgba(255,0,0,0.1), rgba(255,0,0,0.1)),
-              linear-gradient(rgba(0,255,0,0.1), rgba(0,255,0,0.1)),
-              linear-gradient(rgba(0,0,255,0.1), rgba(0,0,255,0.1));
-          background-blend-mode: screen;
-          z-index: 99;
-          pointer-events: none;
-          opacity: 0;
-          animation: glitchFlash 0.8s infinite;
-          display: none;
-      }
-
-      @keyframes glitchFlash {
-          0%, 10%, 12%, 15%, 50%, 55%, 100% { opacity: 0; }
-          11%, 13%, 14%, 51%, 54% { opacity: 0.3; }
-      }
-/* Add this to your style section */
-/* Add this to ensure no parent elements interfere */
-#node13-container {
-  pointer-events: bounding-box;
-}
-#node13 {
-  pointer-events: auto !important;
-  cursor: pointer;
-}
-
-/* Prevent any parent from intercepting clicks */
-.node-map-container, .node-map-svg {
-  pointer-events: none;
-}
-.node-map-container *, .node-map-svg * {
-  pointer-events: auto;
-}
-      /* Responsive adjustments */
-      @media (max-width: 768px) {
-          .node-map-container {
-              padding: 20px;
-              box-sizing: border-box;
-          }
-          
-          .corrupted-message {
-              font-size: 2em;
-          }
-      }
-  
-
+        }
+        .node-map-container *, .node-map-svg * {
+          pointer-events: auto;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .node-map-container {
+                padding: 20px;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <body>
-      <!-- Glitch effect elements - initially hidden -->
-      <div class="glitch-effect" id="glitch-effect"></div>
-      <div class="corrupted-overlay" id="corrupted-overlay">
-          <div class="corrupted-message">Node 13 CORRUPTED  <br>(◕‿◕✿)</div>
-      </div>
-  
     <div class="node-map-container">
         <svg class="node-map-svg" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <!-- Background -->
             <rect width="1280" height="720" fill="#F6F2F2"/>
             <rect width="1280" height="720" fill-opacity="0.1"/>
-            
-            <!-- Main filter group -->
-            <!-- <g filter="url(#filter0_f_1_34)">
-                <ellipse cx="327.5" cy="267" rx="327.5" ry="267" transform="matrix(1 0 0 -1 714 592)" fill="#305CCC" fill-opacity="0.11"/>
-                <path d="M1041.5 591.5C1222.2 591.5 1368.5 472.093 1368.5 325C1368.5 177.907 1222.2 58.5 1041.5 58.5C860.803 58.5 714.5 177.907 714.5 325C714.5 472.093 860.803 591.5 1041.5 591.5Z" stroke="#FF7D21"/>
-            </g> -->
             
             <!-- Main paths -->
             <path d="M-75.2157 25H177.773L191.396 38.6111H812.193L829.707 56.1111H1172.22L1180 63.8889" stroke="#305CCC" stroke-width="2"/>
@@ -187,28 +186,24 @@
             <path d="M-58.5245 343.391L-13.7768 298.824H587.399L667.167 219.377H834.485L900.634 285.26H955.109" stroke="#305CCC" stroke-width="2"/>
             <path d="M951.218 260.069H908.416L848.104 200H661.33L581.563 279.446H-37.1234L-56.5789 298.824" stroke="#305CCC" stroke-width="2"/>
             <!-- Circles (nodes) with data-tooltip attributes -->
-          <a href="Node_A.html" onclick="markVisited('Node 1')">  <circle class="node" id="node1" cx="1184" cy="68" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 1" data-tooltip="Define" data-has-diamond="true"/> </a>
-          <a href="node_Begin.html" onclick="markVisited('Node 2')">  <circle class="node" id="node2" cx="1148" cy="86" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 2" data-tooltip="Begin" data-has-diamond="true"/> </a>
-          <a href="NodeC.html" onclick="markVisited('Node 3')">  <circle class="node" id="node3" cx="1180" cy="125" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 3" data-tooltip="Recognize" data-has-diamond="true"/></a>
-          <a href="Node_B.html" onclick="markVisited('Node 4')">     <circle class="node" id="node4" cx="1135" cy="152" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 4" data-tooltip="Ponder" data-has-diamond="true" /></a>
-          <a href="NodeD.html" onclick="markVisited('Node 5')"><circle class="node" id="node5" cx="959" cy="260" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 5" data-tooltip="Survive" data-has-diamond="true" /></a>
-          <a href="snake_interface.html" onclick="markVisited('Node 6')"> <circle class="node" id="node6" cx="961" cy="286" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 6" data-tooltip="Reflect" data-has-diamond="true"/></a>
-          <a href="node7.html" onclick="markVisited('Node 7')">  <circle class="node" id="node7" cx="896" cy="319" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 7" data-tooltip="Evaluate" data-has-diamond="true"/></a>
-          <a href="new2.html" onclick="markVisited('Node 8')"><circle class="node" id="node8" cx="929" cy="370" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 8" data-tooltip="Define" data-has-diamond="true" /></a>
-          <a href="decide.html" onclick="markVisited('Node 9')">  <circle class="node" id="node9" cx="921" cy="414" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 9" data-tooltip="Decide" data-has-diamond="true"/></a>
+            <a href="Node_A.html" onclick="markVisited('Node 1')">  <circle class="node" id="node1" cx="1184" cy="68" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 1" data-tooltip="Define" data-has-diamond="true"/> </a>
+            <a href="node_Begin.html" onclick="markVisited('Node 2')">  <circle class="node" id="node2" cx="1148" cy="86" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 2" data-tooltip="Begin" data-has-diamond="true"/> </a>
+            <a href="NodeC.html" onclick="markVisited('Node 3')">  <circle class="node" id="node3" cx="1180" cy="125" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 3" data-tooltip="Recognize" data-has-diamond="true"/></a>
+            <a href="Node_B.html" onclick="markVisited('Node 4')">     <circle class="node" id="node4" cx="1135" cy="152" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 4" data-tooltip="Ponder" data-has-diamond="true" /></a>
+            <a href="NodeD.html" onclick="markVisited('Node 5')"><circle class="node" id="node5" cx="959" cy="260" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 5" data-tooltip="Survive" data-has-diamond="true" /></a>
+            <a href="snake_interface.html" onclick="markVisited('Node 6')"> <circle class="node" id="node6" cx="961" cy="286" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 6" data-tooltip="Reflect" data-has-diamond="true"/></a>
+            <a href="node7.html" onclick="markVisited('Node 7')">  <circle class="node" id="node7" cx="896" cy="319" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 7" data-tooltip="Evaluate" data-has-diamond="true"/></a>
+            <a href="new2.html" onclick="markVisited('Node 8')"><circle class="node" id="node8" cx="929" cy="370" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 8" data-tooltip="Define" data-has-diamond="true" /></a>
+            <a href="decide.html" onclick="markVisited('Node 9')">  <circle class="node" id="node9" cx="921" cy="414" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 9" data-tooltip="Decide" data-has-diamond="true"/></a>
+            <a href="final_decision.html" onclick="markVisited('Node 10')">   <circle class="node" id="node10" cx="961" cy="575" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 10" data-tooltip="Final Decision" data-has-diamond="true"/></a>
 
-           
-         <a href="final_decision.html" onclick="markVisited('Node 10')">   <circle class="node" id="node10" cx="961" cy="575" r="7" stroke="#305CCC" stroke-width="2" data-node-number="Node 10" data-tooltip="Final Decision" data-has-diamond="true"/></a>
-
-            <circle class="node2" id="node11" cx="901" cy="599" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 11" data-tooltip="(Corrupted)" data-has-diamond="true"/>
-            <a href="Node12.html" onclick="markVisited('Node 12')">      <circle class="node2" id="node12" cx="541" cy="349" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 12" data-tooltip="(Corrupted)" data-has-diamond="true"/></a>
+            <a href="corrupted11.html" onclick="markVisited('Node 11')"><circle class="node2" id="node11" cx="901" cy="599" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 11" data-tooltip="(Corrupted)" data-has-diamond="true"/></a>
+            <a href="Node12.html" onclick="markVisited('Node 12')"><circle class="node2" id="node12" cx="541" cy="349" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 12" data-tooltip="(Corrupted)" data-has-diamond="true"/></a>
          
-            <!-- Change this (remove the <a> tag for Node 13) -->
-<!-- Replace the Node 13 circle with this -->
-<g id="node13-container">
-  <circle class="node2" id="node13" cx="796" cy="95" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 13" data-tooltip="(Corrupted)" data-has-diamond="true"/>
-</g>
-            <!-- ... (remaining SVG content) -->
+            <!-- Node 13 - no link, just the circle -->
+            <g id="node13-container">
+                <circle class="node2" id="node13" cx="796" cy="95" r="7" stroke="#99ABD9" stroke-width="2" fill="#99ABD9" data-node-number="Node 13" data-tooltip="(Corrupted)" data-has-diamond="true"/>
+            </g>
             
             <defs>
                 <filter id="filter0_f_1_34" x="0" y="0" width="1280" height="720" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
@@ -218,678 +213,256 @@
                 </filter>
             </defs>
         </svg>
-
     </div>
-    <!--node 2-->
-    <div id="custom-tooltip-node2" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-        <!-- Left 15% filled blue -->
-        <rect x="0" y="0" width="50" height="60" fill="white" />
-    
-        <!-- Right 85% blue background -->
-        <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-    
-        <!-- Diamond shape in white area filled blue (makes border invisible) -->
-        <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
 
-    
-        <!-- Text: NODE HOVER UI -->
-        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-         Node 2
-        </text>
-    
-        <!-- Text: DECIDE -->
-        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-          BEGIN
-        </text>
-      </svg>
-    </div>
-        <!--node 3-->
-        <div id="custom-tooltip-node3" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-          <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-            <!-- Left 15% filled blue -->
-            <rect x="0" y="0" width="50" height="60" fill="white" />
-        
-            <!-- Right 85% blue background -->
-            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-        
-            <!-- Diamond shape in white area filled blue (makes border invisible) -->
-            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-    
-        
-            <!-- Text: NODE HOVER UI -->
-            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-             Node 3
-            </text>
-        
-            <!-- Text: DECIDE -->
-            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-              RECOGNIZE
-            </text>
-          </svg>
-        </div>
-      
-        <!--node 4-->
-            <div id="custom-tooltip-node4" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-              <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                <!-- Left 15% filled blue -->
-                <rect x="0" y="0" width="50" height="60" fill="white" />
-            
-                <!-- Right 85% blue background -->
-                <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-            
-                <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-        
-            
-                <!-- Text: NODE HOVER UI -->
-                <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                 Node 4
-                </text>
-            
-                <!-- Text: DECIDE -->
-                <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                  PONDER
-                </text>
-              </svg>
-            </div>
-                <!--node 5-->
-                <div id="custom-tooltip-node5" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                  <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Left 15% filled blue -->
-                    <rect x="0" y="0" width="50" height="60" fill="white" />
-                
-                    <!-- Right 85% blue background -->
-                    <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-                
-                    <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                    <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-            
-                
-                    <!-- Text: NODE HOVER UI -->
-                    <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                     Node 5
-                    </text>
-                
-                    <!-- Text: DECIDE -->
-                    <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                      SURVIVE
-                    </text>
-                  </svg>
-                </div>
-                    <!--node 6-->
-                    <div id="custom-tooltip-node6" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Left 15% filled blue -->
-                        <rect x="0" y="0" width="50" height="60" fill="white" />
-                    
-                        <!-- Right 85% blue background -->
-                        <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-                    
-                        <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                        <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-                
-                    
-                        <!-- Text: NODE HOVER UI -->
-                        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                         Node 6
-                        </text>
-                    
-                        <!-- Text: DECIDE -->
-                        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                          REFLECT
-                        </text>
-                      </svg>
-                    </div>
-                        <!--node 7-->
-                        <div id="custom-tooltip-node7" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                          <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Left 15% filled blue -->
-                            <rect x="0" y="0" width="50" height="60" fill="white" />
-                        
-                            <!-- Right 85% blue background -->
-                            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-                        
-                            <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-                    
-                        
-                            <!-- Text: NODE HOVER UI -->
-                            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                             Node 7
-                            </text>
-                        
-                            <!-- Text: DECIDE -->
-                            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                              EVALUATE
-                            </text>
-                          </svg>
-                        </div>
-                            <!--node 8-->
-                            <div id="custom-tooltip-node8" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                              <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Left 15% filled blue -->
-                                <rect x="0" y="0" width="50" height="60" fill="white" />
-                            
-                                <!-- Right 85% blue background -->
-                                <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-                            
-                                <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                                <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-                        
-                            
-                                <!-- Text: NODE HOVER UI -->
-                                <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                 Node 8
-                                </text>
-                            
-                                <!-- Text: DECIDE -->
-                                <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                  DEFINE
-                                </text>
-                              </svg>
-                            </div>
-                                <!--node 10-->
-                                <div id="custom-tooltip-node10" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                                  <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                                    <!-- Left 15% filled blue -->
-                                    <rect x="0" y="0" width="50" height="60" fill="white" />
-                                
-                                    <!-- Right 85% blue background -->
-                                    <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-                                
-                                    <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                                    <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-                            
-                                
-                                    <!-- Text: NODE HOVER UI -->
-                                    <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                     Node 10
-                                    </text>
-                                
-                                    <!-- Text: DECIDE -->
-                                    <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                      FINAL DECISION
-                                    </text>
-                                  </svg>
-                                </div>
-                                    <!--node 11-->
-                                    <div id="custom-tooltip-node11" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                                      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                                        <!-- Left 15% filled blue -->
-                                        <rect x="0" y="0" width="50" height="60" fill="white" />
-                                    
-                                        <!-- Right 85% blue background -->
-                                        <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
-                                    
-                                        <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                                        <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
-                                
-                                    
-                                        <!-- Text: NODE HOVER UI -->
-                                        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                         Node 11
-                                        </text>
-                                    
-                                        <!-- Text: DECIDE -->
-                                        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                          CORRUPTED
-                                        </text>
-                                      </svg>
-                                    </div>
-                                        <!--node 12-->
-                                        <div id="custom-tooltip-node12" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                                          <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                                            <!-- Left 15% filled blue -->
-                                            <rect x="0" y="0" width="50" height="60" fill="white" />
-                                        
-                                            <!-- Right 85% blue background -->
-                                            <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
-                                        
-                                            <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                                            <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
-                                    
-                                        
-                                            <!-- Text: NODE HOVER UI -->
-                                            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                             Node 12
-                                            </text>
-                                        
-                                            <!-- Text: DECIDE -->
-                                            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                              CORRUPTED
-                                            </text>
-                                          </svg>
-                                        </div>
-                                            <!--node 13-->
-                                            <div id="custom-tooltip-node13" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-                                              <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                                                <!-- Left 15% filled blue -->
-                                                <rect x="0" y="0" width="50" height="60" fill="white" />
-                                            
-                                                <!-- Right 85% blue background -->
-                                                <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
-                                            
-                                                <!-- Diamond shape in white area filled blue (makes border invisible) -->
-                                                <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
-                                        
-                                            
-                                                <!-- Text: NODE HOVER UI -->
-                                                <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                                 Node 13
-                                                </text>
-                                            
-                                                <!-- Text: DECIDE -->
-                                                <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-                                                  CORRUPTED
-                                                </text>
-                                              </svg>
-                                            </div>
-    <!--node 9-->
-    <div id="custom-tooltip-node9" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-        <!-- Left 15% filled blue -->
-        <rect x="0" y="0" width="50" height="60" fill="white" />
-    
-        <!-- Right 85% blue background -->
-        <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-    
-        <!-- Diamond shape in white area filled blue (makes border invisible) -->
-        <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-
-    
-        <!-- Text: NODE HOVER UI -->
-        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-         Node 9
-        </text>
-    
-        <!-- Text: DECIDE -->
-        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-          DECIDE
-        </text>
-      </svg>
-    </div>
-        <!--node 1-->
+    <!-- Tooltips for all nodes -->
+    <!-- Node 1 -->
     <div id="custom-tooltip-node1" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
-      <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-        <!-- Left 15% filled blue -->
-        <rect x="0" y="0" width="50" height="60" fill="white" />
-    
-        <!-- Right 85% blue background -->
-        <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
-    
-        <!-- Diamond shape in white area filled blue (makes border invisible) -->
-        <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
-
-    
-        <!-- Text: NODE HOVER UI -->
-        <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-         Node 1
-        </text>
-    
-        <!-- Text: DECIDE -->
-        <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">
-          DEFINE
-        </text>
-      </svg>
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 1</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">DEFINE</text>
+        </svg>
     </div>
-  <!--  <button id="resetVisited">Reset Visited Nodes</button>-->
+    
+    <!-- Node 2 -->
+    <div id="custom-tooltip-node2" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 2</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">BEGIN</text>
+        </svg>
+    </div>
+    
+    <!-- Node 3 -->
+    <div id="custom-tooltip-node3" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 3</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">RECOGNIZE</text>
+        </svg>
+    </div>
+    
+    <!-- Node 4 -->
+    <div id="custom-tooltip-node4" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 4</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">PONDER</text>
+        </svg>
+    </div>
+    
+    <!-- Node 5 -->
+    <div id="custom-tooltip-node5" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 5</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">SURVIVE</text>
+        </svg>
+    </div>
+    
+    <!-- Node 6 -->
+    <div id="custom-tooltip-node6" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 6</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">REFLECT</text>
+        </svg>
+    </div>
+    
+    <!-- Node 7 -->
+    <div id="custom-tooltip-node7" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 7</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">EVALUATE</text>
+        </svg>
+    </div>
+    
+    <!-- Node 8 -->
+    <div id="custom-tooltip-node8" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 8</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">DEFINE</text>
+        </svg>
+    </div>
+    
+    <!-- Node 9 -->
+    <div id="custom-tooltip-node9" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 9</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">DECIDE</text>
+        </svg>
+    </div>
+    
+    <!-- Node 10 -->
+    <div id="custom-tooltip-node10" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#305CCC"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#305CCC" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 10</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">FINAL DECISION</text>
+        </svg>
+    </div>
+    
+    <!-- Node 11 - Corrupted with glitch effect -->
+    <div id="custom-tooltip-node11" class="corrupted-tooltip" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 11</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">CORRUPTED</text>
+        </svg>
+    </div>
+    
+    <!-- Node 12 - Corrupted with glitch effect -->
+    <div id="custom-tooltip-node12" class="corrupted-tooltip" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 12</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">CORRUPTED</text>
+        </svg>
+    </div>
+    
+    <!-- Node 13 - Corrupted with glitch effect -->
+    <div id="custom-tooltip-node13" class="corrupted-tooltip" style="position: absolute; display: none; pointer-events: none; z-index: 20;">
+        <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="50" height="60" fill="white" />
+            <rect x="40" y="0" width="100" height="60" fill="#99ABD9"/>
+            <polygon points="20,20 30,30 20,40 10,30" fill="#99ABD9" />
+            <text x="85" y="25" font-size="12" font-family="Arial, sans-serif" fill="white" text-anchor="middle">Node 13</text>
+            <text x="85" y="40" font-size="10" font-family="Arial, sans-serif" fill="white" text-anchor="middle">CORRUPTED</text>
+        </svg>
+    </div>
 
     <script>
-      //node 2
-      const node2 = document.querySelector('circle[data-node-number="Node 2"]');
-      const tooltipNode2 = document.getElementById("custom-tooltip-node2");
-    
-      node2.addEventListener("mouseenter", (e) => {
-        tooltipNode2.style.display = "block";
-      });
-    
-      node2.addEventListener("mouseleave", () => {
-        tooltipNode2.style.display = "none";
-      });
-    
-      node2.addEventListener("mousemove", (e) => {
-        tooltipNode2.style.left = (e.pageX + 10) + "px";
-        tooltipNode2.style.top = (e.pageY - 30) + "px";
-      });
-      //node 3
-      const node3 = document.querySelector('circle[data-node-number="Node 3"]');
-      const tooltipNode3 = document.getElementById("custom-tooltip-node3");
-    
-      node3.addEventListener("mouseenter", (e) => {
-        tooltipNode3.style.display = "block";
-      });
-    
-      node3.addEventListener("mouseleave", () => {
-        tooltipNode3.style.display = "none";
-      });
-    
-      node3.addEventListener("mousemove", (e) => {
-        tooltipNode3.style.left = (e.pageX + 10) + "px";
-        tooltipNode3.style.top = (e.pageY - 30) + "px";
-      });
-//      <!--node 4-->
-const node4 = document.querySelector('circle[data-node-number="Node 4"]');
-const tooltipNode4 = document.getElementById("custom-tooltip-node4");
-
-node4.addEventListener("mouseenter", (e) => {
-  tooltipNode4.style.display = "block";
-});
-
-node4.addEventListener("mouseleave", () => {
-  tooltipNode4.style.display = "none";
-});
-
-node4.addEventListener("mousemove", (e) => {
-  tooltipNode4.style.left = (e.pageX + 10) + "px";
-  tooltipNode4.style.top = (e.pageY - 30) + "px";
-});
-  //        <!--node 5-->
-  const node5 = document.querySelector('circle[data-node-number="Node 5"]');
-  const tooltipNode5 = document.getElementById("custom-tooltip-node5");
-
-  node5.addEventListener("mouseenter", (e) => {
-    tooltipNode5.style.display = "block";
-  });
-
-  node5.addEventListener("mouseleave", () => {
-    tooltipNode5.style.display = "none";
-  });
-
-  node5.addEventListener("mousemove", (e) => {
-    tooltipNode5.style.left = (e.pageX + 10) + "px";
-    tooltipNode5.style.top = (e.pageY - 30) + "px";
-  });
-   //           <!--node 6-->
-   const node6 = document.querySelector('circle[data-node-number="Node 6"]');
-   const tooltipNode6 = document.getElementById("custom-tooltip-node6");
- 
-   node6.addEventListener("mouseenter", (e) => {
-     tooltipNode6.style.display = "block";
-   });
- 
-   node6.addEventListener("mouseleave", () => {
-     tooltipNode6.style.display = "none";
-   });
- 
-   node6.addEventListener("mousemove", (e) => {
-     tooltipNode6.style.left = (e.pageX + 10) + "px";
-     tooltipNode6.style.top = (e.pageY - 30) + "px";
-   });
-     //             <!--node 7-->
-     const node7 = document.querySelector('circle[data-node-number="Node 7"]');
-     const tooltipNode7 = document.getElementById("custom-tooltip-node7");
-   
-     node7.addEventListener("mouseenter", (e) => {
-       tooltipNode7.style.display = "block";
-     });
-   
-     node7.addEventListener("mouseleave", () => {
-       tooltipNode7.style.display = "none";
-     });
-   
-     node7.addEventListener("mousemove", (e) => {
-       tooltipNode7.style.left = (e.pageX + 10) + "px";
-       tooltipNode7.style.top = (e.pageY - 30) + "px";
-     });
-       //               <!--node 8-->
-       const node8 = document.querySelector('circle[data-node-number="Node 8"]');
-       const tooltipNode8 = document.getElementById("custom-tooltip-node8");
-     
-       node8.addEventListener("mouseenter", (e) => {
-         tooltipNode8.style.display = "block";
-       });
-     
-       node8.addEventListener("mouseleave", () => {
-         tooltipNode8.style.display = "none";
-       });
-     
-       node8.addEventListener("mousemove", (e) => {
-         tooltipNode8.style.left = (e.pageX + 10) + "px";
-         tooltipNode8.style.top = (e.pageY - 30) + "px";
-       });
-         //                 <!--node 10-->
-         const node10 = document.querySelector('circle[data-node-number="Node 10"]');
-         const tooltipNode10 = document.getElementById("custom-tooltip-node10");
-       
-         node10.addEventListener("mouseenter", (e) => {
-           tooltipNode10.style.display = "block";
-         });
-       
-         node10.addEventListener("mouseleave", () => {
-           tooltipNode10.style.display = "none";
-         });
-       
-         node10.addEventListener("mousemove", (e) => {
-           tooltipNode10.style.left = (e.pageX + 10) + "px";
-           tooltipNode10.style.top = (e.pageY - 30) + "px";
-         });
-        //                      <!--node 11-->
-        const node11 = document.querySelector('circle[data-node-number="Node 11"]');
-        const tooltipNode11 = document.getElementById("custom-tooltip-node11");
-      
-        node11.addEventListener("mouseenter", (e) => {
-          tooltipNode11.style.display = "block";
-        });
-      
-        node11.addEventListener("mouseleave", () => {
-          tooltipNode11.style.display = "none";
-        });
-      
-        node11.addEventListener("mousemove", (e) => {
-          tooltipNode11.style.left = (e.pageX + 10) + "px";
-          tooltipNode11.style.top = (e.pageY - 30) + "px";
-        });
-          //                        <!--node 12-->
-          const node12 = document.querySelector('circle[data-node-number="Node 12"]');
-          const tooltipNode12 = document.getElementById("custom-tooltip-node12");
-        
-          node12.addEventListener("mouseenter", (e) => {
-            tooltipNode12.style.display = "block";
-          });
-        
-          node12.addEventListener("mouseleave", () => {
-            tooltipNode12.style.display = "none";
-          });
-        
-          node12.addEventListener("mousemove", (e) => {
-            tooltipNode12.style.left = (e.pageX + 10) + "px";
-            tooltipNode12.style.top = (e.pageY - 30) + "px";
-          });
-            //                          <!--node 13-->
-           // Node 13 hover effect
-    
-// Node 13 - Complete Isolation Solution
-const node13 = document.getElementById('node13');
-const glitchEffect = document.getElementById('glitch-effect');
-const corruptedOverlay = document.getElementById('corrupted-overlay');
-
-if (node13) {
-    // 1. Remove any existing event listeners by cloning
-    const node13Container = document.getElementById('node13-container');
-    const newNode13 = node13.cloneNode(true);
-    node13Container.innerHTML = '';
-    node13Container.appendChild(newNode13);
-    
-    // 2. Add CSS to prevent any pointer events on parent elements
-    const style = document.createElement('style');
-    style.textContent = `
-        #node13-container {
-            pointer-events: bounding-box !important;
-        }
-        #node13 {
-            pointer-events: auto !important;
-            cursor: pointer;
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // 3. Add our custom event handlers
-    newNode13.addEventListener('mouseenter', () => {
-        glitchEffect.style.display = 'block';
-        corruptedOverlay.style.display = 'flex';
-    });
-    
-    newNode13.addEventListener('mouseleave', () => {
-        glitchEffect.style.display = 'none';
-        corruptedOverlay.style.display = 'none';
-    });
-    
-    newNode13.addEventListener('click', (e) => {
-        // Prevent everything possible
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        // Show effects
-        glitchEffect.style.display = 'block';
-        corruptedOverlay.style.display = 'flex';
-        
-        // Hide after delay
-        setTimeout(() => {
-            glitchEffect.style.display = 'none';
-            corruptedOverlay.style.display = 'none';
-        }, 1000);
-        
-        return false;
-    }, true); // Use capture phase
-    
-    // 4. Make absolutely sure no parent elements can trigger navigation
-    newNode13.style.pointerEvents = 'auto';
-    newNode13.style.cursor = 'pointer';
-    
-    // 5. Remove any parent anchor tag if somehow exists
-    let parent = newNode13.parentElement;
-    while (parent && parent !== document.body) {
-        if (parent.tagName === 'A') {
-            const grandparent = parent.parentNode;
-            grandparent.insertBefore(newNode13, parent);
-            grandparent.removeChild(parent);
-            break;
-        }
-        parent = parent.parentElement;
-    }
-}
-
-// Modify the generic node click handler to exclude Node 13
-document.addEventListener('DOMContentLoaded', function() {
-    highlightVisitedNodes();
-    
-    document.querySelectorAll("circle.node, circle.node2").forEach((circle) => {
-        if (circle.id !== 'node13') { // Explicitly exclude Node 13
-            const nodeNum = circle.getAttribute("data-node-number");
-            circle.addEventListener("click", function(e) {
-                e.preventDefault();
-                const href = this.parentNode.getAttribute('href');
-                markVisited(nodeNum);
-                setTimeout(() => {
-                    if (href) window.location.href = href;
-                }, 100);
+        // Initialize tooltips for all nodes
+        function setupTooltip(nodeId, tooltipId) {
+            const node = document.querySelector(`circle[data-node-number="${nodeId}"]`);
+            const tooltip = document.getElementById(tooltipId);
+            
+            if (!node || !tooltip) return;
+            
+            node.addEventListener("mouseenter", (e) => {
+                tooltip.style.display = "block";
+                // Position the tooltip
+                tooltip.style.left = (e.pageX + 10) + "px";
+                tooltip.style.top = (e.pageY - 30) + "px";
+            });
+            
+            node.addEventListener("mouseleave", () => {
+                tooltip.style.display = "none";
+            });
+            
+            node.addEventListener("mousemove", (e) => {
+                tooltip.style.left = (e.pageX + 10) + "px";
+                tooltip.style.top = (e.pageY - 30) + "px";
             });
         }
-    });
-});
- //<!--node 9-->
-      const node9 = document.querySelector('circle[data-node-number="Node 9"]');
-      const tooltipNode9 = document.getElementById("custom-tooltip-node9");
-    
-      node9.addEventListener("mouseenter", (e) => {
-        tooltipNode9.style.display = "block";
-      });
-    
-      node9.addEventListener("mouseleave", () => {
-        tooltipNode9.style.display = "none";
-      });
-    
-      node9.addEventListener("mousemove", (e) => {
-        tooltipNode9.style.left = (e.pageX + 10) + "px";
-        tooltipNode9.style.top = (e.pageY - 30) + "px";
-      });
-      const node1 = document.querySelector('circle[data-node-number="Node 1"]');
-      const tooltipnode1 = document.getElementById("custom-tooltip-node1");
-    
-      node1.addEventListener("mouseenter", (e) => {
-        tooltipnode1.style.display = "block";
-      });
-    
-      node1.addEventListener("mouseleave", () => {
-        tooltipnode1.style.display = "none";
-      });
-    
-      node1.addEventListener("mousemove", (e) => {
-        tooltipnode1.style.left = (e.pageX + 10) + "px";
-        tooltipnode1.style.top = (e.pageY - 30) + "px";
-      });
-
-
-
-// Helper function to mark node as visited in localStorage
-function markVisited(nodeNumber) {
-  let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
-  if (!visited.includes(nodeNumber)) {
-    visited.push(nodeNumber);
-    localStorage.setItem("visitedNodes", JSON.stringify(visited));
-    highlightVisitedNodes();
-  }
-}
-
-
-function highlightVisitedNodes() {
-  const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
-  console.log("Visited nodes:", visited);
-
-  visited.forEach((nodeNum) => {
-    const node = document.querySelector(`circle[data-node-number="${nodeNum}"]`);
-    if (node) {
-      if (node.classList.contains('node2')) {
-        node.style.fill = "#99ABD9"; // Corrupted nodes
-      } else {
-        node.style.fill = "#305CCC"; // Regular visited nodes
-      }
-    } else {
-      console.warn("No circle found for:", nodeNum);
-    }
-  });
-}
-
-console.log(localStorage.getItem("visitedNodes"));
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Highlight any previously visited nodes
-  highlightVisitedNodes();
-  
-  // Set up click handlers for all nodes
-  document.querySelectorAll("circle.node, circle.node2").forEach((circle) => {
-    const nodeNum = circle.getAttribute("data-node-number");
-    
-    circle.addEventListener("click", function(e) {
-      e.preventDefault(); // Prevent default anchor behavior
-      const href = this.parentNode.getAttribute('href');
-      markVisited(nodeNum);
-      
-      // Optional: delay navigation to ensure localStorage is updated
-      setTimeout(() => {
-        window.location.href = href;
-      }, 100);
-    });
-  });
-});
-
-
-//document.getElementById("resetVisited").addEventListener("click", function() { 
-//  localStorage.removeItem("visitedNodes");
-
-  //document.querySelectorAll("circle.node, circle.node2").forEach((circle) => {
-   // circle.style.fill = ""; 
-  //});
-
- // console.log("Visited nodes reset.");
-//});
-
+        
+        // Set up tooltips for all nodes
+        for (let i = 1; i <= 13; i++) {
+            setupTooltip(`Node ${i}`, `custom-tooltip-node${i}`);
+        }
+        
+        // Special handling for Node 13
+        const node13 = document.getElementById('node13');
+        if (node13) {
+            // Remove any parent anchor tag if it exists
+            let parent = node13.parentElement;
+            while (parent && parent !== document.body) {
+                if (parent.tagName === 'A') {
+                    const grandparent = parent.parentNode;
+                    grandparent.insertBefore(node13, parent);
+                    grandparent.removeChild(parent);
+                    break;
+                }
+                parent = parent.parentElement;
+            }
+            
+            // Add click handler that does nothing
+            node13.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+        }
+        
+        // Helper function to mark node as visited in localStorage
+        function markVisited(nodeNumber) {
+            let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+            if (!visited.includes(nodeNumber)) {
+                visited.push(nodeNumber);
+                localStorage.setItem("visitedNodes", JSON.stringify(visited));
+                highlightVisitedNodes();
+            }
+        }
+        
+        function highlightVisitedNodes() {
+            const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+            console.log("Visited nodes:", visited);
+        
+            visited.forEach((nodeNum) => {
+                const node = document.querySelector(`circle[data-node-number="${nodeNum}"]`);
+                if (node) {
+                    if (node.classList.contains('node2')) {
+                        node.style.fill = "#99ABD9"; // Corrupted nodes
+                    } else {
+                        node.style.fill = "#305CCC"; // Regular visited nodes
+                    }
+                } else {
+                    console.warn("No circle found for:", nodeNum);
+                }
+            });
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight any previously visited nodes
+            highlightVisitedNodes();
+            
+            // Set up click handlers for all nodes except 13
+            document.querySelectorAll("circle.node, circle.node2").forEach((circle) => {
+                if (circle.id !== 'node13') { // Explicitly exclude Node 13
+                    const nodeNum = circle.getAttribute("data-node-number");
+                    
+                    circle.addEventListener("click", function(e) {
+                        e.preventDefault(); // Prevent default anchor behavior
+                        const href = this.parentNode.getAttribute('href');
+                        markVisited(nodeNum);
+                        
+                        // Optional: delay navigation to ensure localStorage is updated
+                        setTimeout(() => {
+                            if (href) window.location.href = href;
+                        }, 100);
+                    });
+                }
+            });
+        });
     </script>
-    
-
-
- 
 </body>
 </html>

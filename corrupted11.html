@@ -1,0 +1,93 @@
+<canvas></canvas>
+<script>
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+const colors = [
+  "#b4b2b5",
+  "#dfd73f",
+  "#6ed2dc",
+  "#66cf5d",
+  "#c542cb",
+  "#d0535e",
+  "#3733c9"
+];
+let glitchDuration = 3000; // 3 seconds of glitch effect
+let startTime = Date.now();
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+function drawText() {
+  ctx.font = `${Math.min(innerWidth, innerHeight) * 0.15}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  
+  // Glitchy text effect
+  for (let i = 0; i < 3; i++) {
+    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+    ctx.fillText(
+      "Not here",
+      innerWidth/2 + (Math.random() - 0.5) * 20,
+      innerHeight/2 + (Math.random() - 0.5) * 20
+    );
+  }
+  
+  // Main text
+  ctx.fillStyle = "white";
+  ctx.fillText("Not here", innerWidth/2, innerHeight/2);
+}
+
+function glitch() {
+  ctx.fillStyle = "#1a191c";
+  ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // Create 3-4 glitching boxes
+  for (let i = 0; i < 4; i++) {
+    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+    ctx.globalAlpha = Math.random() * 0.5;
+    ctx.fillRect(
+      Math.random() * innerWidth * 0.8,
+      Math.random() * innerHeight * 0.8,
+      Math.random() * innerWidth * 0.2,
+      Math.random() * innerHeight * 0.2
+    );
+  }
+  
+  // Draw the glitchy text
+  drawText();
+  
+  // Add random noise
+  for (let i = 0; i < 1000; i++) {
+    ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.01})`;
+    ctx.fillRect(
+      Math.floor(Math.random() * innerWidth),
+      Math.floor(Math.random() * innerHeight),
+      Math.floor(Math.random() * 30) + 1,
+      Math.floor(Math.random() * 30) + 1
+    );
+
+    ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.1})`;
+    ctx.fillRect(
+      Math.floor(Math.random() * innerWidth),
+      Math.floor(Math.random() * innerHeight),
+      Math.floor(Math.random() * 25) + 1,
+      Math.floor(Math.random() * 25) + 1
+    );
+  }
+  
+  // Check if time is up and redirect
+  if (Date.now() - startTime > glitchDuration) {
+    window.location.href = "main.html";
+    return;
+  }
+  
+  requestAnimationFrame(glitch);
+}
+
+glitch();
+
+window.addEventListener('resize', () => {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+});
+</script>

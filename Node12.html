@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Access Denied</title>
-  <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Caesar+Dressing' rel='stylesheet'>
   <style>
     body {
       background: #000;
@@ -15,124 +16,62 @@
       align-items: center;
       margin: 0;
       overflow: hidden;
-      font-family: 'Roboto Mono', monospace;
+      font-family: 'Amethysta', serif;
     }
 
     .container {
       text-align: center;
       position: relative;
-      margin-bottom: 50px;
     }
 
-    .title {
-      position: relative;
-    }
-
-    .text {
-      font-weight: 700;
-      font-size: calc(15vw / 3);
-      line-height: 1.2;
+    .fire-text {
+      font-size: 4em;
+      font-weight: bold;
       color: white;
-    }
-
-    .write .word {
-      text-shadow: 0 0 10px rgba(255,255,255,0.8);
-      transform-style: preserve-3d;
-      animation: write linear both;
-    }
-
-    .laser {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      filter: blur(4px) contrast(10);
-      pointer-events: none;
-    }
-
-    .laser .word {
-      display: inline-block;
-      color: #99ABD9;
-      text-shadow: 0 0 10px #99ABD9;
-      transform: translateZ(5px);
-      animation: laser linear both;
-    }
-
-    .write .word,
-    .laser .word {
-      animation-duration: 4s;
-      animation-delay: calc(0.3s + var(--word-index) * 160ms);
-      animation-iteration-count: infinite;
-    }
-
-    @keyframes write {
-      from, 30% { clip-path: polygon(-20% 0%, -15% 0%, -15% 100%, -20% 100%) }
-      70%, to { clip-path: polygon(-15% 0%, 120% 0%, 120% 100%, -15% 100%) }
-    }
-
-    @keyframes laser {
-      from, 30% { clip-path: polygon(-20% 0%, -15% 0%, -15% 100%, -20% 100%) }
-      70%, to { clip-path: polygon(115% 0%, 120% 0%, 120% 100%, 115% 100%) }
-    }
-
-    .subtext {
-      position: relative;
-      color: white;
-      margin-top: 40px;
-      font-size: 1.5rem;
       text-transform: uppercase;
-      letter-spacing: 3px;
-      height: 1.5em;
-      overflow: hidden;
+      letter-spacing: 0.3em;
+      text-align: center;
+      min-height: 1.5em;
     }
 
-    .typing-text {
-      display: inline-block;
-      position: relative;
+    .fire {
+      animation: fireAnimation 1s ease-in-out infinite alternate;
     }
 
-    .typing-text::after {
-      content: "|";
-      position: absolute;
-      right: -10px;
-      animation: blink 0.7s infinite;
-      color: #99ABD9;
+    .burn {
+      animation: fireAnimation 0.65s ease-in-out infinite alternate;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .return-btn {
-      background: transparent;
-      color: white;
-      border: 2px solid white;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.5);
-      animation: btnGlow 2s infinite alternate;
-    }
-
-    @keyframes btnGlow {
+    @keyframes fireAnimation {
       0% {
-        box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        text-shadow: 0 0 20px #fefcc9,
+          10px -10px 30px #feec85,
+          -20px -20px 40px #ffae34,
+          20px -40px 50px #ec760c,
+          -20px -60px 60px #cd4606,
+          0 -80px 70px #973716,
+          10px -90px 80px #451b0e;
       }
       100% {
-        box-shadow: 0 0 20px rgba(255,255,255,0.8);
+        text-shadow: 0 0 20px #fefcc9,
+          10px -10px 30px #fefcc9,
+          -20px -20px 40px #feec85,
+          22px -42px 60px #ffae34,
+          -22px -58px 50px #ec760c,
+          0 -82px 80px #cd4606,
+          10px -90px 80px #973716;
       }
     }
 
-    .return-btn:hover {
-      background: white;
-      color: #000;
-      box-shadow: 0 0 30px white;
+    .glitch-char {
+      color: #ff5555;
+      animation: glitch-flicker 0.1s infinite;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    @keyframes glitch-flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
     }
 
     /* TV scanline effect */
@@ -188,9 +127,9 @@
       width: 100%;
       height: 100%;
       background: 
-        linear-gradient(rgba(255,0,0,0.1), rgba(255,0,0,0.1)),
-        linear-gradient(rgba(0,255,0,0.1), rgba(0,255,0,0.1)),
-        linear-gradient(rgba(0,0,255,0.1), rgba(0,0,255,0.1));
+        linear-gradient(rgba(255,0,0,0.1), rgba(221, 214, 214, 0.1)),
+        linear-gradient(rgba(253, 255, 253, 0.961), rgba(0,255,0,0.1)),
+        linear-gradient(rgb(253, 253, 255), rgba(0,0,255,0.1));
       background-blend-mode: screen;
       z-index: 101;
       pointer-events: none;
@@ -210,69 +149,70 @@
   <div class="glitch-overlay"></div>
   
   <div class="container">
-    <div class="title">
-      <span class="text write" data-splitting="lines">
-        CORRUPTED<br/>
-        NODE<br/>
-        DETECTED
-      </span>
-      <span aria-hidden="true" class="text laser" data-splitting="lines">
-        CORRUPTED<br/>
-        NODE<br/>
-        DETECTED
-      </span>
-    </div>
-    <div class="subtext">
-      <span class="typing-text" id="typing-text"></span>
-    </div>
+    <div class="fire-text" id="fire-text"></div>
   </div>
-  <button class="return-btn" onclick="window.history.back()">RETURN TO SAFETY</button>
 
   <script>
-    Splitting();
-    
-    // Typing animation with glitches
+    // Text to display with fire animation
     const text = "YOU ARE NOT SUPPOSED TO BE HERE";
-    const typingElement = document.getElementById('typing-text');
+    const fireElement = document.getElementById('fire-text');
     let i = 0;
     let glitchActive = false;
     
     function typeWriter() {
       if (i < text.length) {
-        // Random glitch during typing
+        // Random glitch during typing (5% chance)
         if (!glitchActive && Math.random() > 0.95) {
           glitchActive = true;
           const glitchChars = "!@#$%^&*()_+-=[]{};':\"\\|,.<>/?";
-          const glitchLength = Math.floor(Math.random() * 5) + 3;
-          let glitchText = '';
+          const glitchLength = Math.floor(Math.random() * 5) + 3; // 3-7 glitch chars
           
-          for (let g = 0; g < glitchLength; g++) {
-            glitchText += glitchChars.charAt(Math.floor(Math.random() * glitchChars.length));
+          // Generate and insert permanent glitch characters
+          for (let g = 0; g < glitchLength && i < text.length; g++) {
+            const glitchChar = document.createElement('span');
+            glitchChar.textContent = glitchChars.charAt(Math.floor(Math.random() * glitchChars.length));
+            glitchChar.className = 'glitch-char';
+            fireElement.appendChild(glitchChar);
+            i++; // Advance position counter
           }
           
-          typingElement.innerHTML += glitchText;
-          setTimeout(() => {
-            typingElement.innerHTML = typingElement.innerHTML.slice(0, -glitchLength);
-            glitchActive = false;
-            typeWriter();
-          }, 200);
+          glitchActive = false;
+          setTimeout(typeWriter, Math.random() * 150 + 50);
           return;
         }
         
-        typingElement.innerHTML += text.charAt(i);
+        // Create normal character with fire animation
+        const charSpan = document.createElement('span');
+        charSpan.textContent = text.charAt(i);
+        
+        // Alternate between fire and burn classes
+        if (i % 2 === 0) {
+          charSpan.className = 'fire';
+        } else {
+          charSpan.className = 'burn';
+        }
+        
+        fireElement.appendChild(charSpan);
         i++;
+        
+        // Random typing speed for more organic feel
         setTimeout(typeWriter, Math.random() * 100 + 50);
       } else {
-        // Start intense glitch effect after typing completes
-        setInterval(() => {
-          typingElement.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`;
-          typingElement.style.color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`;
+        // After typing completes, start intense glitch effect
+        const intenseGlitch = setInterval(() => {
+          fireElement.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`;
         }, 50);
+        
+        // Redirect after 2 seconds of intense glitching
+        setTimeout(() => {
+          clearInterval(intenseGlitch);
+          window.location.href = 'main.html';
+        }, 2000);
       }
     }
     
     // Start typing after a short delay
-    setTimeout(typeWriter, 1000);
+    setTimeout(typeWriter, 500);
     
     // Full screen glitch effect
     function triggerGlitch() {

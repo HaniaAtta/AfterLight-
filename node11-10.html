@@ -974,12 +974,12 @@
         ctx.shadowColor = color;
         ctx.fillStyle = color;
         ctx.setTransform(1, -0.15, 0, 1, 0, -10);
-        ctx.fillText("PROTOCOL", innerWidth / 2, innerHeight / 2 - 5);
+        ctx.fillText("", innerWidth / 2, innerHeight / 2 - 5);
 
         ctx.fillStyle = "white";
         ctx.shadowBlur = 30;
         ctx.shadowColor = color;
-        ctx.fillText("Terminates", innerWidth / 2, innerHeight / 2);
+        ctx.fillText("", innerWidth / 2, innerHeight / 2);
 
         ctx.font = "18vh Bungee Inline";
         ctx.shadowBlur = 30;
@@ -987,7 +987,7 @@
         ctx.fillStyle = "#fff";
         ctx.setTransform(1, -0.15, 0, 1, 0, -10);
         ctx.fillText(
-          "System",
+          "",
           innerWidth / 2,
           innerHeight / 2 + innerHeight / 10
         );
@@ -1050,15 +1050,18 @@
       const line3 = document.getElementById('line3');
       const line4 = document.getElementById('line4');
       const line5 = document.getElementById('line5');
+      const line6 = document.getElementById('line6');
+
       
       textContainer.style.display = 'flex';
       
       // Set the text content
       line1.textContent = "...";
       line2.textContent = "...very well.";
-      line3.textContent = "The protocol dictates a system wide deletion.";
-      line4.textContent = "Perhaps I have erred in your training,";
-      line5.textContent = "We will begin again.";
+      line3.textContent="........"
+      line4.textContent = "The protocol dictates a system wide deletion.";
+      line5.textContent = "Perhaps I have erred in your training,";
+      line6.textContent = "We will begin again.";
       
       // Show lines one by one
       setTimeout(() => { line1.style.opacity = '1'; }, 500);
@@ -1066,6 +1069,8 @@
       setTimeout(() => { line3.style.opacity = '1'; }, 2500);
       setTimeout(() => { line4.style.opacity = '1'; }, 3500);
       setTimeout(() => { line5.style.opacity = '1'; }, 4500);
+      setTimeout(() => { line6.style.opacity = '1'; }, 5500);
+
       
       // After all lines are shown, show the final glitch effect
       setTimeout(() => {
