@@ -1,49 +1,182 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Shape Tile Painter</title>
-    <style>
-        canvas {
-            border: 1px solid #333;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SVG Design</title>
+  <style>
+    :root {
+        --primary: #305CCC;
+        --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
         }
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+        to {
+          transform: rotate(360deg);
         }
-        .controls {
-            margin: 10px;
+      }
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--secondary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+  
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid var(--primary);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    .heading-box {
+      position: absolute;
+      top: 8.5%;
+      left: 12%;
+      background-color: #305CCC;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    body {
+     
+        margin-top: 3.5rem;
+        background-color: #E5EAF6;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Roboto Mono', monospace;
+      }
+      body {
+        background-color: #FFFFFF;
+        color: #305CCC;
+        font-family: 'Roboto Mono', monospace;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        overflow: auto;
+      background-attachment: fixed;
+        
+        background-image: url('images/Group 107.svg');  /* fixed path */
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        
+      }
+      .svg-container {
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 0px;
+      }
+  
+      canvas {
+        border: 1px solid #333;
+        display: block;
+        background-color: #0078d4;
+        margin-bottom: 4rem;
+        margin-top: 8rem;
+
+        position: relative; /* CHANGE from absolute to relative */
+        z-index: 1; /* ensure canvas is below controls */
+      }
+      
+      
+  
+      .controls {
+ 
+        text-align: center;
+      }
+  
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(205deg, #305CCC, rgb(1, 70, 123));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 120, 212, 0.3);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      
+      button:hover {
+        background: linear-gradient(135deg, #005a9e, #003e73);
+        box-shadow: 0 6px 16px rgba(0, 90, 158, 0.5);
+        transform: translateY(-2px);
+      }
+      
+      button:active {
+        transform: scale(0.98);
+        box-shadow: 0 3px 8px rgba(0, 90, 158, 0.4);
+      }
+      .fade-out {
+        animation: fadeOut 1s forwards;
+      }
+      
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: scale(0.95);
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin: 0 5px;
-        }
-    </style>
+      }
+      .main-heading {
+        font-size: 2.5rem;
+        position: absolute;
+        top: 15%; /* new: move it closer to the top */
+        margin: 0 0 1rem 0; /* reduce bottom margin, remove top margin */
+        color: #305CCC;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+      
+      
+
+  </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    <div class="controls">
-        <button onclick="toggleMode()">Toggle View</button>
-        <button onclick="clearCanvas()">Reset Shapes</button>
-        <button onclick="submitShapes()">Submit</button>
+    <div class="loading-screen">
+        <div class="spinner"></div>
     </div>
+    <div class="heading-box">NODE 8 Pattern Making</div>
+    <h1 class="main-heading">Only Hope Remains</h1>
 
-    
 
-    <script>
+      <canvas id="gameCanvas"></canvas>
+      <div class="controls">
+          <button onclick="toggleMode()">Toggle View</button>
+          <button onclick="clearCanvas()">Reset Shapes</button>
+          <button onclick="submitShapes()">Submit</button>
+      </div>
+
+      <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+                startPresentation();
+            }, 2000);
+        });
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const tileSize = 100;
         const gridCols = 7;
-        const gridRows = 3;
+        const gridRows = 4;
         let showPatterns = true;
     
         canvas.width = gridCols * tileSize;
@@ -62,7 +195,7 @@
     
         for (let i = 0; i < gridCols * gridRows; i++) {
             const img = new Image();
-            img.src = `images/tile${i}.png`;  // Change path if images are in a subfolder
+            img.src = `images/tile${i}.svg`;  // Change path if images are in a subfolder
             img.onload = checkAllImagesLoaded;
             img.onerror = () => {
                 console.warn(`Failed to load image tile${i}.png`);
@@ -128,7 +261,7 @@
             grid.forEach((row, y) => {
                 row.forEach((tile, x) => {
                     // Draw white background for tile
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = '#305CCC';
                     ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     
                     // Draw image if showPatterns true and tile active
@@ -177,9 +310,14 @@
 
     
         function submitShapes() {
-            // Redirect to amin.html page on submit
-            window.location.href = 'amin.html';
+            document.body.classList.add("fade-out");
+        
+            // Delay redirect by animation duration (e.g., 1 second = 1000 ms)
+            setTimeout(() => {
+                window.location.href = 'main.html';
+            }, 1000);
         }
+        
     
         // Initial draw will happen after all images load (see checkAllImagesLoaded)
     </script>

@@ -1,14 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SVG Design</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     :root {
         --primary: #305CCC;
-        --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+        --secondary: #FFFFFF;
       }
       @keyframes spin {
         from {
@@ -50,80 +51,76 @@
       text-align: center;
     }
     body {
-     
         margin-top: 3.5rem;
-        background-color: #E5EAF6;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Roboto Mono', monospace;
-      }
-      body {
         background-color: #FFFFFF;
         color: #305CCC;
         font-family: 'Roboto Mono', monospace;
         margin: 0;
         min-height: 100vh;
         display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
         overflow: auto;
-      background-attachment: fixed;
-        
-        background-image: url('images/Group 107.svg');  /* fixed path */
+        background-attachment: fixed;
+        background-image: url('images/Group 107.svg');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        
       }
       .svg-container {
         width: 100%;
         max-width: 1200px;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
       }
   
       canvas {
         border: 1px solid #333;
         display: block;
         background-color: #0078d4;
-        margin-bottom: 2rem;
-        position: relative; /* CHANGE from absolute to relative */
-        z-index: 1; /* ensure canvas is below controls */
+        margin-bottom: 4rem;
+        margin-top: 8rem;
+        position: relative;
+        z-index: 1;
       }
       
-      
-  
-      .controls {
- 
-        text-align: center;
-      }
-  
-      button {
-        padding: 12px 24px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        background: linear-gradient(205deg, #305CCC, rgb(1, 70, 123));
-        color: white;
-        border: none;
-        border-radius: 8px;
-        margin: 0 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 120, 212, 0.3);
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-      }
-      
-      button:hover {
-        background: linear-gradient(135deg, #005a9e, #003e73);
-        box-shadow: 0 6px 16px rgba(0, 90, 158, 0.5);
-        transform: translateY(-2px);
-      }
-      
-      button:active {
-        transform: scale(0.98);
-        box-shadow: 0 3px 8px rgba(0, 90, 158, 0.4);
-      }
+
+        .controls {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+        }
+        
+        button {
+          width: 60px;
+          height: 60px;
+          font-size: 22px;
+          border: 2px solid var(--primary);
+          background-color: white;
+          color: var(--primary);
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 8px rgba(48, 92, 204, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        button:hover {
+          background-color: var(--primary);
+          color: white;
+          box-shadow: 0 6px 12px rgba(0, 90, 158, 0.3);
+          transform: translateY(-2px);
+        }
+        
+        button:active {
+          transform: scale(0.95);
+          box-shadow: 0 3px 6px rgba(0, 90, 158, 0.2);
+        }
+        
       .fade-out {
         animation: fadeOut 1s forwards;
       }
@@ -137,15 +134,12 @@
       .main-heading {
         font-size: 2.5rem;
         position: absolute;
-        top: 15%; /* new: move it closer to the top */
-        margin: 0 0 1rem 0; /* reduce bottom margin, remove top margin */
+        top: 15%;
+        margin: 0 0 1rem 0;
         color: #305CCC;
         text-transform: uppercase;
         letter-spacing: 1.5px;
       }
-      
-      
-
   </style>
 </head>
 <body>
@@ -155,21 +149,21 @@
     <div class="heading-box">NODE 8 Pattern Making</div>
     <h1 class="main-heading">Only Hope Remains</h1>
 
+    <canvas id="gameCanvas"></canvas>
+    <div class="controls">
+      <button onclick="toggleMode()" title="Toggle View"><i class="fas fa-eye"></i></button>
+      <button onclick="clearCanvas()" title="Reset Shapes"><i class="fas fa-redo"></i></button>
+      <button onclick="submitShapes()" title="Submit"><i class="fas fa-arrow-right"></i></button>
+    </div>
+    
 
-      <canvas id="gameCanvas"></canvas>
-      <div class="controls">
-          <button onclick="toggleMode()">Toggle View</button>
-          <button onclick="clearCanvas()">Reset Shapes</button>
-          <button onclick="submitShapes()">Submit</button>
-      </div>
-
-      <script>
+    <script>
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
-                startPresentation();
             }, 2000);
         });
+        
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const tileSize = 100;
@@ -180,91 +174,92 @@
         canvas.width = gridCols * tileSize;
         canvas.height = gridRows * tileSize;
     
-        // Load 21 images for tiles (tile0.png to tile20.png)
+        // Tile types
+        const TILE_TYPES = {
+            IMAGE: 'image',
+            WHITE: 'white',
+            BLUE: 'blue'
+        };
+    
+        // Load all images for tiles
         const tileImages = [];
         let imagesLoaded = 0;
+        const totalImages = 28; // Total number of available images
     
         function checkAllImagesLoaded() {
             imagesLoaded++;
-            if (imagesLoaded === gridCols * gridRows) {
+            if (imagesLoaded === totalImages) {
+                initializeGrid();
                 draw();
             }
         }
     
-        for (let i = 0; i < gridCols * gridRows; i++) {
+        for (let i = 0; i < totalImages; i++) {
             const img = new Image();
-            img.src = `images/tile${i}.svg`;  // Change path if images are in a subfolder
+            img.src = `images/tile${i}.svg`;
             img.onload = checkAllImagesLoaded;
             img.onerror = () => {
-                console.warn(`Failed to load image tile${i}.png`);
+                console.warn(`Failed to load image tile${i}.svg`);
                 checkAllImagesLoaded();
             };
             tileImages.push(img);
         }
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
+        
+        function getRandomImage() {
+            // Get a random image from the loaded images
+            return tileImages[Math.floor(Math.random() * tileImages.length)];
         }
         
-        function createGrid() {
+        function initializeGrid() {
             grid = [];
             for (let row = 0; row < gridRows; row++) {
                 let rowTiles = [];
                 for (let col = 0; col < gridCols; col++) {
-                    const index = row * gridCols + col;
-                    rowTiles.push(new Tile(tileImages[index]));
+                    // 70% chance for image, 15% white, 15% blue
+                    const rand = Math.random();
+                    if (rand < 0.7) {
+                        rowTiles.push({
+                            type: TILE_TYPES.IMAGE,
+                            image: getRandomImage(),
+                            active: true
+                        });
+                    } else if (rand < 0.85) {
+                        rowTiles.push({
+                            type: TILE_TYPES.WHITE,
+                            active: true
+                        });
+                    } else {
+                        rowTiles.push({
+                            type: TILE_TYPES.BLUE,
+                            active: true
+                        });
+                    }
                 }
                 grid.push(rowTiles);
             }
         }
         
         function clearCanvas() {
-            shuffleArray(tileImages);  // Shuffle images array
-            createGrid();              // Create grid with shuffled images
+            initializeGrid();
             draw();
         }
         
-    
-        class Tile {
-            constructor(image) {
-                this.image = image;
-                this.active = true;
-            }
-    
-            drawImage(x, y) {
-                if (this.image && this.image.complete) {
-                    // Draw image stretched to tile size (100x100)
-                    ctx.drawImage(this.image, x, y, tileSize, tileSize);
-                }
-            }
-            
-        }
-    
-        // Create grid with images assigned
-        let grid = [];
-        for (let row = 0; row < gridRows; row++) {
-            let rowTiles = [];
-            for (let col = 0; col < gridCols; col++) {
-                const index = row * gridCols + col;
-                rowTiles.push(new Tile(tileImages[index]));
-            }
-            grid.push(rowTiles);
-        }
-    
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
     
             grid.forEach((row, y) => {
                 row.forEach((tile, x) => {
-                    // Draw white background for tile
-                    ctx.fillStyle = '#305CCC';
+                    // Draw background
+                    if (tile.type === TILE_TYPES.WHITE) {
+                        ctx.fillStyle = '#FFFFFF';
+                    } else {
+                        ctx.fillStyle = '#305CCC';
+                    }
                     ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     
-                    // Draw image if showPatterns true and tile active
-                    if (showPatterns && tile.active) {
-                        tile.drawImage(x * tileSize, y * tileSize);
+                    // Draw image if applicable
+                    if (showPatterns && tile.active && tile.type === TILE_TYPES.IMAGE && tile.image) {
+                        ctx.drawImage(tile.image, x * tileSize, y * tileSize, tileSize, tileSize);
                     }
     
                     // Draw tile border
@@ -280,46 +275,32 @@
             const y = Math.floor((e.clientY - rect.top) / tileSize);
     
             if (x >= 0 && x < gridCols && y >= 0 && y < gridRows) {
-                grid[y][x].active = !grid[y][x].active;
+                const tile = grid[y][x];
+                // Cycle through tile types
+                if (tile.type === TILE_TYPES.IMAGE) {
+                    tile.type = TILE_TYPES.WHITE;
+                    tile.image = null;
+                } else if (tile.type === TILE_TYPES.WHITE) {
+                    tile.type = TILE_TYPES.BLUE;
+                } else {
+                    tile.type = TILE_TYPES.IMAGE;
+                    tile.image = getRandomImage();
+                }
                 draw();
             }
         });
-    
-    /*    canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = Math.floor((e.clientX - rect.left) / tileSize);
-            const y = Math.floor((e.clientY - rect.top) / tileSize);
-        
-            if (x >= 0 && x < gridCols && y >= 0 && y < gridRows) {
-                // Pick random image index
-                const randomIndex = Math.floor(Math.random() * tileImages.length);
-                // Assign new random image to the tile
-                grid[y][x].image = tileImages[randomIndex];
-                grid[y][x].active = true; // Ensure tile is active
-                draw();
-            }
-        });*/
         
         function toggleMode() {
             showPatterns = !showPatterns;
             draw();
         }
     
-
-    
         function submitShapes() {
             document.body.classList.add("fade-out");
-        
-            // Delay redirect by animation duration (e.g., 1 second = 1000 ms)
             setTimeout(() => {
                 window.location.href = 'main.html';
             }, 1000);
         }
-        
-    
-        // Initial draw will happen after all images load (see checkAllImagesLoaded)
     </script>
-
-    
 </body>
-</html>
+</html> 
