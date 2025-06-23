@@ -6,53 +6,29 @@
     <title>NODE10 Snake Game</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        :root {
-            --primary: #305CCC;
-            --secondary: #fff;
-          }
-          
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            background: url('images/vector_17.svg') no-repeat center center;
-            background-size: 100% 100%;
-            font-family: Arial, sans-serif;
-        }
         .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--secondary);
+            background: white;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         
-          .spinner {
+        .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid var(--primary);
-            border-top-color: transparent;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #305CCC;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        
-          .heading-box {
-            position: absolute;
-            top: 8%;
-            left: 4%;
-            background-color: #305CCC;
-            color: white;
-            padding: 0.5rem 1.5rem;
-            font-weight: bold;
-            text-align: center;
-          }
-          @keyframes fadeOut {
+  
+        @keyframes fadeOut {
             to {
               opacity: 0;
               transform: scale(0.95);
@@ -66,31 +42,49 @@
               transform: rotate(360deg);
             }
           }
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 15%;
+        .heading-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #305CCC;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 10;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            /* SVG Background (covers full screen) */
+            background: url('snake.svg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        #game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
         canvas {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.8); /* Slightly transparent */
+            border: 2px solid #333;
         }
-
-        #score-display {
+        #score {
             position: absolute;
-            top: 5%;
-            left: 45%;
-            transform: translateX(-50%);
-            background: #305CCC;
+            top: 20px;
+            left: 20px;
             color: white;
-            padding: 10px 20px;
-            font-weight: bold;
+            font-size: 20px;
+            font-family: Arial, sans-serif;
+            text-shadow: 1px 1px 2px black;
         }
-
+        
         #game-over {
             position: fixed;
             top: 50%;
@@ -105,18 +99,17 @@
             display: none;
             z-index: 100;
         }
-
+        
         #collected-words-list {
             max-height: 300px;
             overflow-y: auto;
-            margin: 1rem 0rem;
+            margin: 1rem 0;
             padding: 0;
-            
             list-style-type: none;
         }
-
+        
         button {
-            background: #0066ff;
+            background: #305CCC;
             color: white;
             border: none;
             padding: 0.8rem 1.5rem;
@@ -126,30 +119,76 @@
             transition: background 0.3s;
             font-size: 1rem;
         }
-
+        
         button:hover {
-            background: #0052cc;
+            background: #1a3a9e;
         }
-
+        
         .complete-message {
             color: #00cc66;
             font-weight: bold;
             margin-bottom: 1rem;
         }
-
+        
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
+        
         .word-item {
             padding: 5px 0;
             border-bottom: 1px solid #eee;
         }
+        
+        .score-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 70px;
+            z-index: 10;
+        }
+        
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            z-index: 11;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
     </style>
 </head>
 <body>
+    
     <div class="loading-screen">
         <div class="spinner"></div>
     </div>
-    <div id="game-container">
-        <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
-        <div id="score-display">LEVEL: <span id="level-value">1</span> | WORDS: <span id="words-value">0</span></div>
+
+    <div class="heading-box">NODE10 SNAKE GAME</div>
+    
+    <div class="score-display">
+        <div class="score-text">LEVEL: <span id="level-value">1</span> | WORDS: <span id="words-value">0</span></div>
+    </div>
+    <div id="canvas-container">
+
+    <img src="snake.svg" style="position: static; top: 0; left: 0; width: 90%; height: 100%; z-index: 1; object-fit: cover;">
+        
     </div>
     
     <div id="game-over">
@@ -160,19 +199,8 @@
     </div>
 
     <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loading-screen').style.display = 'none';
-                startPresentation();
-            }, 2000);
-        });
-        let scl = 80; // Reduced scale to make snake thinner
-        let cols = 10;
-        let rows = 7;
-        let wordBoxWidth = 200; // Width for the word box
-        let gridWordBoxSpacing = 10;
-        let snakeSegmentSize = 50; // Visual size of snake segments (independent of scl)
-let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
+        let scl = 70;
+        let cols, rows;
         let snake;
         let foodWords = [];
         let levels = [
@@ -187,12 +215,10 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         let collectedWords = [];
 
         function setup() {
-            // Calculate canvas width to include grid + word box
-            let canvasWidth = cols * scl + gridWordBoxSpacing+ wordBoxWidth;
-            let canvasHeight = rows * scl;
-            let canvas = createCanvas(1200, 600);
-            canvas.parent('game-container');
-            
+            let canvas = createCanvas(600, 880);
+            canvas.parent('canvas-container');
+            cols = floor((width - 200) / scl);
+            rows = floor(height / scl);
             snake = new Snake();
             placeWords();
 
@@ -200,23 +226,30 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 particles.push(new Particle());
             }
 
-            textFont('Arial');
+            textFont('monospace');
             textAlign(CENTER, CENTER);
-            frameRate(10);
+            frameRate(4);
+            
+            // Hide loading screen
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+            }, 2000);
         }
 
         function draw() {
-            clear();
-            background(255, 255, 255, 0);
+            background(255);
 
             if (gameStarted) {
                 for (let p of particles) {
                     p.update();
                     p.show();
                 }
-                
-                drawGrid();
-                drawWordBox();
+            }
+            
+            drawGrid();
+            drawWordBox();
+
+            if (gameStarted) {
                 drawWords();
                 snake.update();
                 snake.show();
@@ -243,7 +276,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
             } else {
                 fill(0, 90, 255);
                 textSize(22);
-                text("PRESS ARROW KEYS TO START", width / 2, height / 2);
+                text("PRESS ARROW KEYS TO START", width / 2 - 220, height / 2);
             }
         }
 
@@ -256,6 +289,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 for (let y = 0; y <= rows; y++) {
                     let cx = x * scl;
                     let cy = y * scl;
+
                     if (x < cols) line(cx + 2, cy, cx + 2, cy + scl);
                     if (y < rows) line(cx, cy + 2, cx + scl, cy + 2);
                 }
@@ -270,12 +304,16 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 for (let y = 0; y < rows; y++) {
                     let cx = x * scl;
                     let cy = y * scl;
+
                     line(cx + 4, cy + 4, cx + 12, cy + 4);
                     line(cx + 4, cy + 4, cx + 4, cy + 12);
+
                     line(cx + scl - 4, cy + 4, cx + scl - 12, cy + 4);
                     line(cx + scl - 4, cy + 4, cx + scl - 4, cy + 12);
+
                     line(cx + 4, cy + scl - 4, cx + 12, cy + scl - 4);
                     line(cx + 4, cy + scl - 4, cx + 4, cy + scl - 12);
+
                     line(cx + scl - 4, cy + scl - 4, cx + scl - 12, cy + scl - 4);
                     line(cx + scl - 4, cy + scl - 4, cx + scl - 4, cy + scl - 12);
                 }
@@ -288,7 +326,9 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         function drawWords() {
             noStroke();
             textAlign(CENTER, CENTER);
-            textSize(17);
+
+            let fixedSize = scl * 0.15;
+            textSize(fixedSize);
             fill(0, 90, 255);
 
             for (let fw of foodWords) {
@@ -297,50 +337,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 let y = fw.pos.y * scl + scl / 2;
                 text(word, x, y);
             }
-        }
-
-        function drawWordBox() {
-            const leftMargin = 200; // Space from right edge of grid
-            const rightMargin = 0; // Space from right edge of canvas
-            const topMargin = 20; // Space from top
-            const borderRadius = 0; // Adjust corner rounding
-            
-            // Calculate position and size
-            let boxX = cols * scl + leftMargin;
-            let boxY = topMargin;
-            let boxWidth = wordBoxWidth;
-            let boxHeight = height - (topMargin * 2); // Maintain top/bottom margin
-            
-            // Ensure box stays within canvas
-        
-            
-            // Draw the box with adjusted margins
-            fill(0, 90, 255, 230);
-            stroke(0, 90, 255);
-            strokeWeight(3);
-            rect(boxX, boxY, boxWidth, boxHeight, borderRadius);
-            
-            // Rest of your drawing code...
-            noStroke();
-            fill(255);
-            textSize(16);
-            textAlign(CENTER, TOP);
-            text(`Level ${currentLevel + 1}`, boxX + boxWidth / 2, boxY + 10);
-              
-            // Collected words list
-            textSize(14);
-            let startY = boxY + 40;
-            let lineHeight = 20;
-            let maxVisibleItems = Math.floor((boxHeight - 60) / lineHeight);
-            
-            let startIndex = Math.max(0, collectedWords.length - maxVisibleItems);
-            for (let i = startIndex; i < collectedWords.length; i++) {
-                text("• " + collectedWords[i], boxX + boxWidth / 2, startY + (i - startIndex) * lineHeight);
-            }
-            
-            // Total count
-            textSize(12);
-            text(`Total: ${collectedWords.length}`, boxX + boxWidth / 2, boxY + boxHeight - 20);
         }
 
         function placeWords() {
@@ -357,6 +353,30 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 positions.add(`${x},${y}`);
                 foodWords.push({ pos: createVector(x, y), label: word });
             }
+        }
+
+        function drawWordBox() {
+            let boxX = cols * scl + 10;
+            let boxWidth = 180;
+
+            fill(240);
+            stroke(0, 90, 255);
+            strokeWeight(2);
+            rect(boxX, 20, boxWidth, height - 40, 10);
+
+            noStroke();
+            fill(0, 90, 255);
+            textSize(16);
+            textAlign(LEFT, TOP);
+            text(`Level ${currentLevel + 1} Words`, boxX + 10, 30);
+
+            textSize(14);
+            for (let i = 0; i < collectedWords.length; i++) {
+                text("• " + collectedWords[i], boxX + 10, 60 + i * 20);
+            }
+
+            textSize(12);
+            text(`Total: ${collectedWords.length}`, boxX + 10, height - 30);
         }
 
         function resetGame() {
@@ -427,6 +447,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 head.x += this.xdir;
                 head.y += this.ydir;
 
+                // Boundary checks
                 if (head.x >= cols) head.x = 0;
                 else if (head.x < 0) head.x = cols - 1;
                 if (head.y >= rows) head.y = 0;
@@ -461,6 +482,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
 
             endGame() {
                 let head = this.body[this.body.length - 1];
+                // Check collision with body segments only
                 for (let i = 0; i < this.body.length - 1; i++) {
                     if (head.equals(this.body[i])) return true;
                 }
@@ -472,7 +494,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 strokeWeight(scl / 4);
                 noFill();
             
-                drawingContext.lineCap = 'square'; // 👈 makes the ends square
                 drawingContext.shadowBlur = 15;
                 drawingContext.shadowColor = 'rgba(0, 90, 255, 0.6)';
             
@@ -486,7 +507,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
             
                 drawingContext.shadowBlur = 0;
             }
-        }            
+        }
 
         class Particle {
             constructor() {
@@ -495,13 +516,13 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
             }
 
             reset() {
-                this.pos = createVector(random(width), random(height));
+                this.pos = createVector(random(width - 200), random(height));
                 this.vel = p5.Vector.random2D().mult(random(0.2, 0.5));
             }
 
             update() {
                 this.pos.add(this.vel);
-                if (this.pos.x < 0 || this.pos.x > width || this.pos.y < 0 || this.pos.y > height) {
+                if (this.pos.x < 0 || this.pos.x > width - 200 || this.pos.y < 0 || this.pos.y > height) {
                     this.reset();
                 }
             }
@@ -523,6 +544,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
             }, 1000);
         }
 
+        // Make resetGame globally accessible
         window.resetGame = resetGame;
         window.returnToMain = returnToMain;
     </script>
