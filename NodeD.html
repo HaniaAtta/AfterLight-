@@ -425,6 +425,14 @@
     </div>
 
     <script>
+        // Simple function to mark nodes as visited
+function markVisited(nodeNumber) {
+    const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+    if (!visited.includes(nodeNumber)) {
+        visited.push(nodeNumber);
+        localStorage.setItem("visitedNodes", JSON.stringify(visited));
+    }
+}
         const CARDS = [
             { content: "The atmosphere churns." },
             { content: "Yet, information remains. Data persists where life does not." },
@@ -701,6 +709,7 @@
                 nextBtn.textContent = 'GO TO NEXT NODE';
                 nextBtn.classList.add('last');
                 nextBtn.onclick = () => {
+                    markVisited("Node 6"); // Mark Node 5 before navigation
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
                         window.location.href = 'snake_interface.html';
@@ -796,6 +805,7 @@
         }
     
         function returnToMain() {
+            markVisited("Node 5"); // Mark current node when leaving
             document.body.classList.add("fade-out");
             setTimeout(() => {
                 window.location.href = 'main.html';

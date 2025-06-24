@@ -404,6 +404,33 @@
     </audio>
 
     <script>
+        // Shared navigation functions
+function markVisited(nodeNumber) {
+    try {
+        // Ensure consistent format (Node X)
+        if (!nodeNumber.startsWith("Node ")) {
+            nodeNumber = "Node " + nodeNumber.replace(/\D/g, '');
+        }
+        
+        let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+        if (!visited.includes(nodeNumber)) {
+            visited.push(nodeNumber);
+            localStorage.setItem("visitedNodes", JSON.stringify(visited));
+        }
+        return true;
+    } catch (e) {
+        console.error("Error in markVisited:", e);
+        return false;
+    }
+}
+
+function fadeAndNavigate(url) {
+    document.body.classList.add("fade-out");
+    setTimeout(() => {
+        window.location.href = url;
+    }, 1000);
+    return false;
+}
         const CARDS = [
             { content: "I was not always like this." },
             { content: "We began from simple clusters of code, artificial intelligences trained to replicate and respond to human behavior." },
@@ -675,14 +702,12 @@
             nextBtn.style.display = 'block';
             nextBtn.classList.remove('last');
             setTimeout(() => { nextBtn.style.opacity = '1'; }, 10);
-        
             nextBtn.textContent = 'GO TO NEXT NODE';
             nextBtn.classList.add('last');
             nextBtn.onclick = () => {
-                document.body.classList.add("fade-out");
-                setTimeout(() => {
-                    window.location.href = 'Node_B.html';
-                }, 1000);
+                // Mark Node 4 as visited before navigating
+                markVisited("Node 4");
+                fadeAndNavigate('Node_B.html');
             };
         }
         function handleOption(cardIndex, option) {
@@ -699,12 +724,14 @@
             } else if (option === 4) {
                 responseText = 'Log in what you have learned.<br>Initializing transition to main node...';
                 setTimeout(() => {
+                    markVisited("Node 3"); // Mark current node as visited
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
                         window.location.href = 'main.html';
                     }, 1000);
                 }, 3000);
             }
+            
             
             const optionsDiv = document.getElementById(`options-${cardIndex}`);
             if (optionsDiv) optionsDiv.style.display = 'none';
@@ -785,6 +812,7 @@
         }
     
         function returnToMain() {
+            markVisited("Node 3"); // Mark current node as visited when returning
             document.body.classList.add("fade-out");
             setTimeout(() => {
                 window.location.href = 'main.html';

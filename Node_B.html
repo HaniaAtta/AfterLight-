@@ -329,6 +329,14 @@
     </div>
 
     <script>
+        // Simple function to mark nodes as visited
+function markVisited(nodeNumber) {
+    const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+    if (!visited.includes(nodeNumber)) {
+        visited.push(nodeNumber);
+        localStorage.setItem("visitedNodes", JSON.stringify(visited));
+    }
+}
         let typingInterval = null;
 let currentTypingElement = null;
         const CARDS = [
@@ -533,9 +541,10 @@ document.addEventListener('click', (e) => {
                 nextBtn.textContent = 'GO TO NEXT NODE';
                 nextBtn.classList.add('last');
                 nextBtn.onclick = () => {
+                    markVisited("Node 5"); // Mark Node 5 before navigation
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
-                        window.location.href = 'noded.html'; // 👈 Your target page
+                        window.location.href = 'NodeD.html';
                     }, 1000);
                 };
             }
@@ -555,6 +564,7 @@ document.addEventListener('click', (e) => {
         }
     
         function returnToMain() {
+            markVisited("Node 4"); // Mark current node when leaving
             document.body.classList.add("fade-out");
             setTimeout(() => {
                 window.location.href = 'main.html';

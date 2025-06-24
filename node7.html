@@ -163,6 +163,14 @@
           startPresentation();
       }, 2000);
   });
+  // Simple function to mark nodes as visited
+function markVisited(nodeNumber) {
+  const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+  if (!visited.includes(nodeNumber)) {
+      visited.push(nodeNumber);
+      localStorage.setItem("visitedNodes", JSON.stringify(visited));
+  }
+}
     const intro = `I am pleased with your performance.
 
 Human cognition possesses the characteristic of individual opinion. Every person had a moral stance informed by their experiences.
@@ -345,7 +353,14 @@ Answer the following questions according to what you believe is right.`;
   returnBtn.style.backgroundColor = 'white';
   returnBtn.style.color = '#002bbb';
   returnBtn.style.cursor = 'pointer';
-  returnBtn.onclick = () => navigateWithFade('main.html'); // Replace with actual path
+  returnBtn.onclick = () => {
+    markVisited("Node 7"); // Mark current node when returning
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = 'main.html';
+    }, 1000);
+};
+// Replace with actual path
 
   const proceedBtn = document.createElement('button');
   proceedBtn.innerText = '▶ Proceed to Next Node';
@@ -354,8 +369,13 @@ Answer the following questions according to what you believe is right.`;
   proceedBtn.style.backgroundColor = '#002bbb';
   proceedBtn.style.color = 'white';
   proceedBtn.style.cursor = 'pointer';
-  proceedBtn.onclick = () => navigateWithFade('new2.html'); // Replace with actual path
-
+  proceedBtn.onclick = () => {
+    markVisited("Node 8"); // Mark next node before proceeding
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = 'new2.html';
+    }, 1000);
+};
   navContainer.appendChild(returnBtn);
   navContainer.appendChild(proceedBtn);
   resultEl.appendChild(navContainer);

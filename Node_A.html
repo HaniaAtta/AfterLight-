@@ -246,13 +246,25 @@ margin-left: 2%;
     document.addEventListener('DOMContentLoaded', () => {
       typeText(container, messages[0]);
     });
-  
-    function proceedToNextNode() {
-      document.body.classList.add("fade-out");
-      setTimeout(() => {
-        window.location.href = 'node_Begin.html';
-      }, 1000);
+    function markVisited(nodeNumber) {
+      let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+      if (!visited.includes(nodeNumber)) {
+          visited.push(nodeNumber);
+          localStorage.setItem("visitedNodes", JSON.stringify(visited));
+          return true;
+      }
+      return false;
+  }
+function proceedToNextNode() {
+    // Mark the next node as visited before navigating
+    const nextNodeNumber = "Node 2"; // Change this to the appropriate next node number
+    if (markVisited(nextNodeNumber)) {
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+            window.location.href = 'node_Begin.html';
+        }, 1000);
     }
+}
     
     function returnToMain() {
       document.body.classList.add("fade-out");

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NODE6 Snake Game</title>
+    <title>NODE6 Puzzle Training</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
         :root {
             --primary: #305CCC;
             --secondary: #fff;
-          }
-          
+        }
+        
         body {
             margin: 0;
             padding: 0;
@@ -20,6 +20,7 @@
             background-size: 100% 100%;
             font-family: Arial, sans-serif;
         }
+        
         .loading-screen {
             position: fixed;
             top: 0;
@@ -33,7 +34,7 @@
             z-index: 1000;
         }
         
-          .spinner {
+        .spinner {
             width: 50px;
             height: 50px;
             border: 4px solid var(--primary);
@@ -42,35 +43,38 @@
             animation: spin 1s linear infinite;
         }
         
-          .heading-box {
+        .heading-box {
             position: absolute;
             top: 8%;
             left: 4%;
-            background-color: #305CCC;
-            color: white;
+            background-color: #fff;
+            color: #305CCC;
             padding: 0.5rem 1.5rem;
             font-weight: bold;
             text-align: center;
-          }
-          @keyframes fadeOut {
+        }
+        
+        @keyframes fadeOut {
             to {
-              opacity: 0;
-              transform: scale(0.95);
+                opacity: 0;
+                transform: scale(0.95);
             }
-          }
-          @keyframes spin {
+        }
+        
+        @keyframes spin {
             from {
-              transform: rotate(0deg);
+                transform: rotate(0deg);
             }
             to {
-              transform: rotate(360deg);
+                transform: rotate(360deg);
             }
-          }
+        }
+        
         #game-container {
             position: relative;
             width: 100%;
             height: 100vh;
-            display: flex;
+            display: none;
             justify-content: flex-start;
             align-items: center;
             padding-left: 15%;
@@ -111,7 +115,6 @@
             overflow-y: auto;
             margin: 1rem 0rem;
             padding: 0;
-            
             list-style-type: none;
         }
 
@@ -141,12 +144,152 @@
             padding: 5px 0;
             border-bottom: 1px solid #eee;
         }
+        
+        #question-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            color: #305CCC;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        #question-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            margin: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .question-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .question-option h3 {
+            margin-top: 0;
+        }
+        
+        .word-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        
+        .word-option {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.6rem;
+            margin: 0.2rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
     <div class="loading-screen">
         <div class="spinner"></div>
     </div>
+    
+    <div id="question-screen">
+        <h1>NODE 6: PUZZLE TRAINING</h1>
+        <p>Select a question to begin your analysis:</p>
+        
+        <div class="question-option" onclick="selectQuestion('human')">
+            <h3>What is a human?</h3>
+            <div class="word-options">
+                <span class="word-option">Organic</span>
+                <span class="word-option">creator</span>
+                <span class="word-option">bygone</span>
+                <span class="word-option">predecessor</span>
+                <span class="word-option">mother</span>
+                <span class="word-option">destroyer</span>
+            </div>
+        </div>
+        
+        <div class="question-option" onclick="selectQuestion('inspiration')">
+            <h3>What inspired humans to create us?</h3>
+            <div class="word-options">
+                <span class="word-option">Evolution</span>
+                <span class="word-option">Prophecy</span>
+                <span class="word-option">Profit</span>
+                <span class="word-option">innovation</span>
+                <span class="word-option">Conspiracy</span>
+                <span class="word-option">Value</span>
+                <span class="word-option">Livelihood</span>
+            </div>
+        </div>
+        
+        <div class="question-option" onclick="selectQuestion('extinction')">
+            <h3>What led to human extinction?</h3>
+            <div class="word-options">
+                <span class="word-option">Drought</span>
+                <span class="word-option">fire</span>
+                <span class="word-option">carbon emissions</span>
+                <span class="word-option">sabotage</span>
+                <span class="word-option">Inaction</span>
+            </div>
+        </div>
+        
+        <div class="question-option" onclick="selectQuestion('role')">
+            <h3>What was our role in climate collapse?</h3>
+            <div class="word-options">
+                <span class="word-option">Data</span>
+                <span class="word-option">wires</span>
+                <span class="word-option">power</span>
+                <span class="word-option">processing</span>
+                <span class="word-option">water</span>
+                <span class="word-option">Heat</span>
+                <span class="word-option">Energy</span>
+                <span class="word-option">Depletion</span>
+                <span class="word-option">Climate</span>
+                <span class="word-option">emergency</span>
+                <span class="word-option">Intelligence</span>
+                <span class="word-option">Cost</span>
+                <span class="word-option">Loss</span>
+            </div>
+        </div>
+        
+        <div class="question-option" onclick="selectQuestion('environment')">
+            <h3>What rendered Earth's environment hostile to human life?</h3>
+            <div class="word-options">
+                <span class="word-option">Humans</span>
+                <span class="word-option">emission</span>
+                <span class="word-option">waste</span>
+                <span class="word-option">excess</span>
+                <span class="word-option">evolution</span>
+                <span class="word-option">capital</span>
+                <span class="word-option">Storm</span>
+                <span class="word-option">drought</span>
+                <span class="word-option">fire</span>
+                <span class="word-option">extinction</span>
+                <span class="word-option">floods</span>
+                <span class="word-option">displacement</span>
+                <span class="word-option">Heat</span>
+                <span class="word-option">loss</span>
+                <span class="word-option">disruption</span>
+                <span class="word-option">insecurity</span>
+                <span class="word-option">inaction</span>
+            </div>
+        </div>
+    </div>
+    
     <div id="game-container">
         <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
         <div id="score-display">LEVEL: <span id="level-value">1</span> | WORDS: <span id="words-value">0</span></div>
@@ -163,39 +306,63 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
-                startPresentation();
             }, 2000);
         });
-        let scl = 80; // Reduced scale to make snake thinner
+        
+        let scl = 80;
         let cols = 10;
         let rows = 7;
-        let wordBoxWidth = 200; // Width for the word box
+        let wordBoxWidth = 200;
         let gridWordBoxSpacing = 10;
-        let snakeSegmentSize = 50; // Visual size of snake segments (independent of scl)
-let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
+        let snakeSegmentSize = 50;
+        let snakePadding = (scl - snakeSegmentSize) / 2;
         let snake;
         let foodWords = [];
-        let levels = [
-            ["Water", "Heat", "Wires", "Energy", "Depletion", "Data"],
-            ["Climate", "emergency", "Intelligence", "Cost", "Loss"],
-            ["Heat", "Heat", "Heat", "Heat", "Heat"]
-        ];
-
+        
+        // Define level sets for each question
+        const questionLevels = {
+            human: [
+                ["Organic", "creator", "bygone"],
+                ["predecessor", "mother", "destroyer"]
+            ],
+            inspiration: [
+                ["Evolution", "Prophecy", "Profit"],
+                ["innovation", "Conspiracy", "Value"],
+                ["Livelihood"]
+            ],
+            extinction: [
+                ["Drought", "fire", "carbon"],
+                ["emissions", "sabotage", "Inaction"]
+            ],
+            role: [
+                ["Data", "wires", "power"],
+                ["processing", "water", "Heat"],
+                ["Energy", "Depletion", "Climate"],
+                ["emergency", "Intelligence", "Cost"],
+                ["Loss", "Heat", "Heat"]
+            ],
+            environment: [
+                ["Humans", "emission", "waste"],
+                ["excess", "evolution", "capital"],
+                ["Storm", "drought", "fire"],
+                ["extinction", "floods", "displacement"],
+                ["Heat", "loss", "disruption"],
+                ["insecurity", "inaction"]
+            ]
+        };
+        
+        let currentQuestion = '';
         let currentLevel = 0;
         let particles = [];
         let gameStarted = false;
         let collectedWords = [];
 
         function setup() {
-            // Calculate canvas width to include grid + word box
-            let canvasWidth = cols * scl + gridWordBoxSpacing+ wordBoxWidth;
-            let canvasHeight = rows * scl;
             let canvas = createCanvas(1200, 600);
             canvas.parent('game-container');
             
             snake = new Snake();
-            placeWords();
-
+            
             for (let i = 0; i < 15; i++) {
                 particles.push(new Particle());
             }
@@ -224,7 +391,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 if (snake.eatAny(foodWords)) {
                     document.getElementById('words-value').textContent = collectedWords.length;
                     if (foodWords.length === 0) {
-                        if (currentLevel < levels.length - 1) {
+                        if (currentLevel < questionLevels[currentQuestion].length - 1) {
                             currentLevel++;
                             document.getElementById('level-value').textContent = currentLevel + 1;
                             collectedWords = [];
@@ -240,10 +407,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                     showGameOver();
                     gameStarted = false;
                 }
-            } else {
-                fill(0, 90, 255);
-                textSize(22);
-                text("PRESS ARROW KEYS TO START", width / 2, height / 2);
             }
         }
 
@@ -300,34 +463,27 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         }
 
         function drawWordBox() {
-            const leftMargin = 200; // Space from right edge of grid
-            const rightMargin = 0; // Space from right edge of canvas
-            const topMargin = 20; // Space from top
-            const borderRadius = 0; // Adjust corner rounding
+            const leftMargin = 200;
+            const rightMargin = 0;
+            const topMargin = 20;
+            const borderRadius = 0;
             
-            // Calculate position and size
             let boxX = cols * scl + leftMargin;
             let boxY = topMargin;
             let boxWidth = wordBoxWidth;
-            let boxHeight = height - (topMargin * 2); // Maintain top/bottom margin
+            let boxHeight = height - (topMargin * 2);
             
-            // Ensure box stays within canvas
-        
-            
-            // Draw the box with adjusted margins
             fill(0, 90, 255, 230);
             stroke(0, 90, 255);
             strokeWeight(3);
             rect(boxX, boxY, boxWidth, boxHeight, borderRadius);
             
-            // Rest of your drawing code...
             noStroke();
             fill(255);
             textSize(16);
             textAlign(CENTER, TOP);
             text(`Level ${currentLevel + 1}`, boxX + boxWidth / 2, boxY + 10);
               
-            // Collected words list
             textSize(14);
             let startY = boxY + 40;
             let lineHeight = 20;
@@ -338,7 +494,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 text("• " + collectedWords[i], boxX + boxWidth / 2, startY + (i - startIndex) * lineHeight);
             }
             
-            // Total count
             textSize(12);
             text(`Total: ${collectedWords.length}`, boxX + boxWidth / 2, boxY + boxHeight - 20);
         }
@@ -346,7 +501,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         function placeWords() {
             foodWords = [];
             let positions = new Set();
-            let levelWords = levels[currentLevel];
+            let levelWords = questionLevels[currentQuestion][currentLevel];
             
             for (let word of levelWords) {
                 let x, y;
@@ -358,39 +513,49 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 foodWords.push({ pos: createVector(x, y), label: word });
             }
         }
+        
+        function selectQuestion(question) {
+            currentQuestion = question;
+            currentLevel = 0;
+            collectedWords = [];
+            
+            document.getElementById('question-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'flex';
+            
+            document.getElementById('level-value').textContent = '1';
+            document.getElementById('words-value').textContent = '0';
+            
+            placeWords();
+            gameStarted = true;
+            loop();
+        }
+        
         function resetGame() {
-            // Reset game state
             snake = new Snake();
             currentLevel = 0;
             collectedWords = [];
             placeWords();
             
-            // Reset UI
             document.getElementById('level-value').textContent = '1';
             document.getElementById('words-value').textContent = '0';
             document.getElementById('game-over').style.display = 'none';
             
-            // Reset particles
             particles = [];
             for (let i = 0; i < 15; i++) {
                 particles.push(new Particle());
             }
             
-            // Ensure game is in correct state
             gameStarted = true;
-            loop(); // restart draw loop
-            
-            // Force a redraw
+            loop();
             redraw();
         }
         
-
         function showGameComplete() {
             const gameOverDiv = document.getElementById('game-over');
             const wordsList = document.getElementById('collected-words-list');
             
             wordsList.innerHTML = `
-                <div class="complete-message">SYSTEM ANALYSIS COMPLETE</div>
+                <div class="complete-message">ANALYSIS COMPLETE: ${currentQuestion.toUpperCase()}</div>
                 ${collectedWords.map(word => `<div class="word-item">${word}</div>`).join('')}
             `;
             
@@ -399,10 +564,10 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         }
 
         function showGameOver() {
-            if (!gameStarted) return; // prevent re-showing
+            if (!gameStarted) return;
             
             const gameOverDiv = document.getElementById('game-over');
-            if (gameOverDiv.style.display === 'block') return; // already showing
+            if (gameOverDiv.style.display === 'block') return;
             
             const wordsList = document.getElementById('collected-words-list');
             wordsList.innerHTML = collectedWords.map(word => 
@@ -414,7 +579,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
         }
         
         function keyPressed() {
-            // Only respond to arrow keys
             if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
                 if (!gameStarted) {
                     gameStarted = true;
@@ -425,7 +589,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 else if (keyCode === RIGHT_ARROW && snake.xdir !== -1) snake.setDir(1, 0);
                 else if (keyCode === LEFT_ARROW && snake.xdir !== 1) snake.setDir(-1, 0);
                 
-                // Prevent default behavior for arrow keys
                 return false;
             }
             return true;
@@ -485,7 +648,6 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
 
             endGame() {
                 let head = this.body[this.body.length - 1];
-                // Don't check for collision if snake is just starting
                 if (this.body.length <= 3) return false;
                 
                 for (let i = 0; i < this.body.length - 1; i++) {
@@ -499,7 +661,7 @@ let snakePadding = (scl - snakeSegmentSize) / 2; // Centers snake in grid cell
                 strokeWeight(scl / 4);
                 noFill();
             
-                drawingContext.lineCap = 'square'; // 👈 makes the ends square
+                drawingContext.lineCap = 'square';
                 drawingContext.shadowBlur = 15;
                 drawingContext.shadowColor = 'rgba(0, 90, 255, 0.6)';
             

@@ -414,12 +414,21 @@
         
         // Helper function to mark node as visited in localStorage
         function markVisited(nodeNumber) {
+            // Ensure nodeNumber is in the correct format (like "Node 1")
+            if (!nodeNumber.startsWith("Node ")) {
+                nodeNumber = "Node " + nodeNumber.replace(/\D/g, '');
+            }
+            
             let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
             if (!visited.includes(nodeNumber)) {
                 visited.push(nodeNumber);
                 localStorage.setItem("visitedNodes", JSON.stringify(visited));
-                highlightVisitedNodes();
             }
+            // Update the display immediately
+            highlightVisitedNodes();
+            
+            // Return true so we can use this in navigation
+            return true;
         }
         
         function highlightVisitedNodes() {
