@@ -231,7 +231,7 @@
             }, 2000);
         });
         function handleStartScreen(event) {
-            if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(event.keyCode)) {
+            if ([37, 38, 39, 40].includes(event.keyCode)) { // Arrow keys
                 document.getElementById('start-screen').style.display = 'none';
                 startGame();
                 window.removeEventListener('keydown', handleStartScreen);
@@ -549,15 +549,15 @@
         }
         
         function keyPressed() {
-            if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
+            if ([37, 38, 39, 40].includes(keyCode)) { // Arrow keys
                 if (!gameStarted) {
                     gameStarted = true;
                 }
         
-                if (keyCode === UP_ARROW && snake.ydir !== 1) snake.setDir(0, -1);
-                else if (keyCode === DOWN_ARROW && snake.ydir !== -1) snake.setDir(0, 1);
-                else if (keyCode === RIGHT_ARROW && snake.xdir !== -1) snake.setDir(1, 0);
-                else if (keyCode === LEFT_ARROW && snake.xdir !== 1) snake.setDir(-1, 0);
+                if (keyCode === 38 && snake.ydir !== 1) snake.setDir(0, -1); // UP
+                else if (keyCode === 40 && snake.ydir !== -1) snake.setDir(0, 1); // DOWN
+                else if (keyCode === 39 && snake.xdir !== -1) snake.setDir(1, 0); // RIGHT
+                else if (keyCode === 37 && snake.xdir !== 1) snake.setDir(-1, 0); // LEFT
                 
                 return false;
             }

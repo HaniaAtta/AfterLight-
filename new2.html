@@ -704,11 +704,7 @@
           
           // Advance to next level or complete
           if (currentLevel < 6) {
-              setTimeout(() => {
-                  currentLevel++;
-                  clearCanvas();
-                  updatePrompt();
-              }, 500);
+             
           } else {
               // Last level completed - show special message
               setTimeout(() => {
@@ -734,7 +730,7 @@
                   
                   // Add event listener for final continue button
                   document.getElementById('finalContinueBtn').addEventListener('click', proceedToMain);
-              }, 500);
+              }, 2000);
           }
       }
 
