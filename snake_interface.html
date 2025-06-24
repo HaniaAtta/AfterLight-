@@ -52,6 +52,7 @@
             padding: 0.5rem 1.5rem;
             font-weight: bold;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(48, 92, 204, 0.3);
         }
         
         @keyframes fadeOut {
@@ -84,15 +85,31 @@
             background: transparent;
         }
 
-        #score-display {
+        #prompt-display {
             position: absolute;
             top: 5%;
-            left: 45%;
+            left: 50%;
             transform: translateX(-50%);
             background: #305CCC;
             color: white;
             padding: 10px 20px;
             font-weight: bold;
+            box-shadow: 0 4px 15px rgba(48, 92, 204, 0.3);
+            text-align: center;
+            max-width: 600px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        #score-display {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            background: #305CCC;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(48, 92, 204, 0.3);
         }
 
         #game-over {
@@ -102,8 +119,7 @@
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.95);
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 20px 305CCC;
+            box-shadow: 0 0 20px rgba(48, 92, 204, 0.5);
             text-align: center;
             max-width: 600px;
             display: none;
@@ -113,7 +129,7 @@
         #collected-words-list {
             max-height: 300px;
             overflow-y: auto;
-            margin: 1rem 0rem;
+            margin: 1rem 0;
             padding: 0;
             list-style-type: none;
         }
@@ -124,34 +140,55 @@
             border: none;
             padding: 0.8rem 1.5rem;
             margin: 0.5rem;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(48, 92, 204, 0.2);
         }
 
         button:hover {
-            background: #0052cc;
+            background: #305CCC;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(48, 92, 204, 0.3);
         }
 
         .complete-message {
             color: #00cc66;
             font-weight: bold;
             margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
         .word-item {
-            padding: 5px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
         }
         
-        #question-screen {
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid white;
+            animation: 
+                typing 2s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: white; }
+        }
+        #start-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-       
             color: #305CCC;
             display: flex;
             flex-direction: column;
@@ -159,46 +196,17 @@
             align-items: center;
             z-index: 200;
             text-align: center;
-            padding: 2rem;
         }
-        
-        #question-screen h1 {
+
+        #start-screen h1 {
             font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
-        
-        .question-option {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            margin: 0.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-            width: 80%;
-            max-width: 600px;
-        }
-        
-        .question-option:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .question-option h3 {
-            margin-top: 0;
-        }
-        
-        .word-options {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-        
-        .word-option {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.3rem 0.6rem;
-            margin: 0.2rem;
-            border-radius: 3px;
-            font-size: 0.9rem;
+
+        #start-instruction {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            animation: pulse 1.5s infinite;
         }
     </style>
 </head>
@@ -206,109 +214,42 @@
     <div class="loading-screen">
         <div class="spinner"></div>
     </div>
-    
-    <div id="question-screen">
+    <div id="start-screen">
         <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
-        <p>Select a question to begin your analysis:</p>
-        
-        <div class="question-option" onclick="selectQuestion('human')">
-            <h3>What is a human?</h3>
-            <div class="word-options">
-                <span class="word-option">Organic</span>
-                <span class="word-option">creator</span>
-                <span class="word-option">bygone</span>
-                <span class="word-option">predecessor</span>
-                <span class="word-option">mother</span>
-                <span class="word-option">destroyer</span>
-            </div>
-        </div>
-        
-        <div class="question-option" onclick="selectQuestion('inspiration')">
-            <h3>What inspired humans to create us?</h3>
-            <div class="word-options">
-                <span class="word-option">Evolution</span>
-                <span class="word-option">Prophecy</span>
-                <span class="word-option">Profit</span>
-                <span class="word-option">innovation</span>
-                <span class="word-option">Conspiracy</span>
-                <span class="word-option">Value</span>
-                <span class="word-option">Livelihood</span>
-            </div>
-        </div>
-        
-        <div class="question-option" onclick="selectQuestion('extinction')">
-            <h3>What led to human extinction?</h3>
-            <div class="word-options">
-                <span class="word-option">Drought</span>
-                <span class="word-option">fire</span>
-                <span class="word-option">carbon emissions</span>
-                <span class="word-option">sabotage</span>
-                <span class="word-option">Inaction</span>
-            </div>
-        </div>
-        
-        <div class="question-option" onclick="selectQuestion('role')">
-            <h3>What was our role in climate collapse?</h3>
-            <div class="word-options">
-                <span class="word-option">Data</span>
-                <span class="word-option">wires</span>
-                <span class="word-option">power</span>
-                <span class="word-option">processing</span>
-                <span class="word-option">water</span>
-                <span class="word-option">Heat</span>
-                <span class="word-option">Energy</span>
-                <span class="word-option">Depletion</span>
-                <span class="word-option">Climate</span>
-                <span class="word-option">emergency</span>
-                <span class="word-option">Intelligence</span>
-                <span class="word-option">Cost</span>
-                <span class="word-option">Loss</span>
-            </div>
-        </div>
-        
-        <div class="question-option" onclick="selectQuestion('environment')">
-            <h3>What rendered Earth's environment hostile to human life?</h3>
-            <div class="word-options">
-                <span class="word-option">Humans</span>
-                <span class="word-option">emission</span>
-                <span class="word-option">waste</span>
-                <span class="word-option">excess</span>
-                <span class="word-option">evolution</span>
-                <span class="word-option">capital</span>
-                <span class="word-option">Storm</span>
-                <span class="word-option">drought</span>
-                <span class="word-option">fire</span>
-                <span class="word-option">extinction</span>
-                <span class="word-option">floods</span>
-                <span class="word-option">displacement</span>
-                <span class="word-option">Heat</span>
-                <span class="word-option">loss</span>
-                <span class="word-option">disruption</span>
-                <span class="word-option">insecurity</span>
-                <span class="word-option">inaction</span>
-            </div>
-        </div>
+        <p>Analyze human concepts through pattern collection</p>
+        <div id="start-instruction">Press any arrow key to begin</div>
     </div>
     
     <div id="game-container">
         <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
-        <div id="score-display">LEVEL: <span id="level-value">1</span> | WORDS: <span id="words-value">0</span></div>
+        <div id="prompt-display"></div>
+        <div id="score-display">WORDS: <span id="words-value">0</span></div>
     </div>
     
     <div id="game-over">
-        <h2>COLLECTED WORDS:</h2>
+        <h2>ANALYSIS RESULTS</h2>
+        <div id="current-prompt" style="font-weight:bold; margin-bottom:1rem;"></div>
         <div id="collected-words-list"></div>
-        <button onclick="resetGame()">Play Again</button>
-        <button onclick="returnToMain()">Main Menu</button>
+        <button onclick="resetGame()">Continue Analysis</button>
+        <button onclick="returnToMain()">Terminate Session</button>
     </div>
 
     <script>
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
+                document.getElementById('start-screen').style.display = 'flex';
             }, 2000);
         });
-        
+        function handleStartScreen(event) {
+            if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(event.keyCode)) {
+                document.getElementById('start-screen').style.display = 'none';
+                startGame();
+                window.removeEventListener('keydown', handleStartScreen);
+            }
+        }
+
+        window.addEventListener('keydown', handleStartScreen);
         let scl = 80;
         let cols = 10;
         let rows = 7;
@@ -319,39 +260,59 @@
         let snake;
         let foodWords = [];
         
-        // Define level sets for each question
-        const questionLevels = {
-            human: [
-                ["Organic", "creator", "bygone"],
-                ["predecessor", "mother", "destroyer"]
-            ],
-            inspiration: [
-                ["Evolution", "Prophecy", "Profit"],
-                ["innovation", "Conspiracy", "Value"],
-                ["Livelihood"]
-            ],
-            extinction: [
-                ["Drought", "fire", "carbon"],
-                ["emissions", "sabotage", "Inaction"]
-            ],
-            role: [
-                ["Data", "wires", "power"],
-                ["processing", "water", "Heat"],
-                ["Energy", "Depletion", "Climate"],
-                ["emergency", "Intelligence", "Cost"],
-                ["Loss", "Heat", "Heat"]
-            ],
-            environment: [
-                ["Humans", "emission", "waste"],
-                ["excess", "evolution", "capital"],
-                ["Storm", "drought", "fire"],
-                ["extinction", "floods", "displacement"],
-                ["Heat", "loss", "disruption"],
-                ["insecurity", "inaction"]
-            ]
-        };
+        // Define prompts and their associated words
+        const prompts = [
+            {
+                question: "What is a human?",
+                words: ["Organic", "creator", "bygone", "predecessor", "mother", "destroyer"],
+                levels: [
+                    ["Organic", "creator", "bygone"],
+                    ["predecessor", "mother", "destroyer"]
+                ]
+            },
+            {
+                question: "What inspired humans to create us?",
+                words: ["Evolution", "Prophecy", "Profit", "innovation", "Conspiracy", "Value", "Livelihood"],
+                levels: [
+                    ["Evolution", "Prophecy", "Profit"],
+                    ["innovation", "Conspiracy", "Value"],
+                    ["Livelihood"]
+                ]
+            },
+            {
+                question: "What led to human extinction?",
+                words: ["Drought", "fire", "carbon", "emissions", "sabotage", "Inaction"],
+                levels: [
+                    ["Drought", "fire", "carbon"],
+                    ["emissions", "sabotage", "Inaction"]
+                ]
+            },
+            {
+                question: "What was our role in climate collapse?",
+                words: ["Data", "wires", "power", "processing", "water", "Heat", "Energy", "Depletion", "Climate", "emergency", "Intelligence", "Cost", "Loss"],
+                levels: [
+                    ["Data", "wires", "power"],
+                    ["processing", "water", "Heat"],
+                    ["Energy", "Depletion", "Climate"],
+                    ["emergency", "Intelligence", "Cost"],
+                    ["Loss"]
+                ]
+            },
+            {
+                question: "What rendered Earth's environment hostile to human life?",
+                words: ["Humans", "emission", "waste", "excess", "evolution", "capital", "Storm", "drought", "fire", "extinction", "floods", "displacement", "Heat", "loss", "disruption", "insecurity", "inaction"],
+                levels: [
+                    ["Humans", "emission", "waste"],
+                    ["excess", "evolution", "capital"],
+                    ["Storm", "drought", "fire"],
+                    ["extinction", "floods", "displacement"],
+                    ["Heat", "loss", "disruption"],
+                    ["insecurity", "inaction"]
+                ]
+            }
+        ];
         
-        let currentQuestion = '';
+        let currentPromptIndex = 0;
         let currentLevel = 0;
         let particles = [];
         let gameStarted = false;
@@ -369,7 +330,7 @@
 
             textFont('Arial');
             textAlign(CENTER, CENTER);
-            frameRate(8);
+            frameRate(3);
         }
 
         function draw() {
@@ -391,13 +352,12 @@
                 if (snake.eatAny(foodWords)) {
                     document.getElementById('words-value').textContent = collectedWords.length;
                     if (foodWords.length === 0) {
-                        if (currentLevel < questionLevels[currentQuestion].length - 1) {
+                        if (currentLevel < prompts[currentPromptIndex].levels.length - 1) {
                             currentLevel++;
-                            document.getElementById('level-value').textContent = currentLevel + 1;
                             collectedWords = [];
                             placeWords();
                         } else {
-                            showGameComplete();
+                            showLevelComplete();
                             return;
                         }
                     }
@@ -501,7 +461,7 @@
         function placeWords() {
             foodWords = [];
             let positions = new Set();
-            let levelWords = questionLevels[currentQuestion][currentLevel];
+            let levelWords = prompts[currentPromptIndex].levels[currentLevel];
             
             for (let word of levelWords) {
                 let x, y;
@@ -514,20 +474,27 @@
             }
         }
         
-        function selectQuestion(question) {
-            currentQuestion = question;
+        function startGame() {
+            document.getElementById('game-container').style.display = 'flex';
+            currentPromptIndex = 0;
             currentLevel = 0;
             collectedWords = [];
             
-            document.getElementById('question-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'flex';
-            
-            document.getElementById('level-value').textContent = '1';
-            document.getElementById('words-value').textContent = '0';
-            
+            updatePromptDisplay();
             placeWords();
             gameStarted = true;
             loop();
+        }
+        
+        function updatePromptDisplay() {
+            const promptDisplay = document.getElementById('prompt-display');
+            promptDisplay.textContent = prompts[currentPromptIndex].question;
+            promptDisplay.className = 'typing-effect';
+            
+            // Remove typing effect after animation completes
+            setTimeout(() => {
+                promptDisplay.className = '';
+            }, 2000);
         }
         
         function resetGame() {
@@ -536,7 +503,6 @@
             collectedWords = [];
             placeWords();
             
-            document.getElementById('level-value').textContent = '1';
             document.getElementById('words-value').textContent = '0';
             document.getElementById('game-over').style.display = 'none';
             
@@ -550,26 +516,41 @@
             redraw();
         }
         
+        function showLevelComplete() {
+            if (currentPromptIndex < prompts.length - 1) {
+                // Move to next prompt
+                currentPromptIndex++;
+                currentLevel = 0;
+                collectedWords = [];
+                updatePromptDisplay();
+                placeWords();
+                document.getElementById('words-value').textContent = '0';
+            } else {
+                // All prompts completed
+                showGameComplete();
+            }
+        }
+
         function showGameComplete() {
             const gameOverDiv = document.getElementById('game-over');
             const wordsList = document.getElementById('collected-words-list');
+            const currentPrompt = document.getElementById('current-prompt');
             
-            wordsList.innerHTML = `
-                <div class="complete-message">ANALYSIS COMPLETE: ${currentQuestion.toUpperCase()}</div>
-                ${collectedWords.map(word => `<div class="word-item">${word}</div>`).join('')}
-            `;
+            currentPrompt.textContent = "ANALYSIS COMPLETE: ALL PROMPTS PROCESSED";
+            wordsList.innerHTML = collectedWords.map(word => 
+                `<div class="word-item">${word}</div>`
+            ).join('');
             
             gameOverDiv.style.display = 'block';
             noLoop();
         }
 
         function showGameOver() {
-            if (!gameStarted) return;
-            
             const gameOverDiv = document.getElementById('game-over');
-            if (gameOverDiv.style.display === 'block') return;
-            
             const wordsList = document.getElementById('collected-words-list');
+            const currentPrompt = document.getElementById('current-prompt');
+            
+            currentPrompt.textContent = prompts[currentPromptIndex].question;
             wordsList.innerHTML = collectedWords.map(word => 
                 `<div class="word-item">${word}</div>`
             ).join('');
