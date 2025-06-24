@@ -43,16 +43,19 @@
             animation: spin 1s linear infinite;
         }
         
-        .heading-box {
+        .prompt-heading {
             position: absolute;
-            top: 8%;
-            left: 4%;
-            background-color: #305CCC;
-            color: white;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #305CCC;
             padding: 0.5rem 1.5rem;
             font-weight: bold;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(48, 92, 204, 0.3);
+            max-width: 80%;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            font-size: 1.2rem;
         }
         
         @keyframes fadeOut {
@@ -83,22 +86,6 @@
         
         canvas {
             background: transparent;
-        }
-
-        #prompt-display {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #305CCC;
-            color: white;
-            padding: 10px 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(48, 92, 204, 0.3);
-            text-align: center;
-            max-width: 600px;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
         #score-display {
@@ -168,7 +155,7 @@
         .typing-effect {
             overflow: hidden;
             white-space: nowrap;
-            border-right: 3px solid white;
+            border-right: 3px solid #305CCC;
             animation: 
                 typing 2s steps(40, end),
                 blink-caret .75s step-end infinite;
@@ -181,7 +168,7 @@
         
         @keyframes blink-caret {
             from, to { border-color: transparent }
-            50% { border-color: white; }
+            50% { border-color: #305CCC; }
         }
         #start-screen {
             position: fixed;
@@ -215,14 +202,16 @@
         <div class="spinner"></div>
     </div>
     <div id="start-screen">
-        <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
+        <div class="prompt-heading">NODE 6 PUZZLE TRAINING</div>
         <p>Analyze human concepts through pattern collection</p>
+        <br>
+        <p>Revise the concepts you have learned. Answer using the provided words. Choose each word carefully.</p>
+
         <div id="start-instruction">Press any arrow key to begin</div>
     </div>
     
     <div id="game-container">
-        <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
-        <div id="prompt-display"></div>
+        <div class="prompt-heading" id="prompt-display">NODE 6 PUZZLE TRAINING</div>
         <div id="score-display">WORDS: <span id="words-value">0</span></div>
     </div>
     
@@ -487,13 +476,13 @@
         }
         
         function updatePromptDisplay() {
-            const promptDisplay = document.getElementById('prompt-display');
-            promptDisplay.textContent = prompts[currentPromptIndex].question;
-            promptDisplay.className = 'typing-effect';
+            const promptDisplay = document.querySelector('.prompt-heading');
+            promptDisplay.textContent = "NODE 6 PUZZLE TRAINING: " + prompts[currentPromptIndex].question;
+            promptDisplay.className = 'prompt-heading typing-effect';
             
             // Remove typing effect after animation completes
             setTimeout(() => {
-                promptDisplay.className = '';
+                promptDisplay.className = 'prompt-heading';
             }, 2000);
         }
         
