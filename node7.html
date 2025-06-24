@@ -251,14 +251,19 @@ Answer the following questions according to what you believe is right.`;
       el.innerText = '';
       let i = 0;
       nextBtn.style.display = 'none';
-      const interval = setInterval(() => {
-        el.innerText += text.charAt(i);
-        i++;
-        if (i === text.length) {
-          clearInterval(interval);
+    
+      function typeNextChar() {
+        if (i < text.length) {
+          el.innerText += text.charAt(i);
+          i++;
+          setTimeout(typeNextChar, 68); // Delay applies to every character
+        } else {
           if (callback) callback();
         }
-      }, 20); // Speed of typing
+      }
+    
+      // Start the typing effect with an initial delay
+      setTimeout(typeNextChar, 40);
     }
 
     function renderQuestion(index) {

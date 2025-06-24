@@ -369,7 +369,7 @@
       to { opacity: 0; }
     }
     .fade-out {
-      animation: fadeOut 1.5s ease-out forwards;
+      animation: fadeOut 0s ease-out forwards;
     }
     
     /* Glitch effect styles */
@@ -526,7 +526,7 @@
         rgba(255,255,255,0.1) 50%
       );
       background-size: 100% 4px;
-      animation: scanline 0.1s linear infinite;
+      animation: scanline 0s linear infinite;
       pointer-events: none;
     }
     
@@ -562,7 +562,7 @@
       z-index: 23;
       pointer-events: none;
       display: none;
-      animation: scanlineGlitch 0.05s infinite, scanlineFlicker 0.5s infinite alternate;
+      animation: scanlineGlitch 0s infinite, scanlineFlicker 0.5s infinite alternate;
     }
     
     /* More intense flicker effect */
@@ -599,7 +599,7 @@
       pointer-events: none;
       display: none;
       opacity: 0.7;
-      animation: staticFlicker 0.1s infinite;
+      animation: staticFlicker 0s infinite;
     }
     
     @keyframes staticFlicker {
@@ -699,10 +699,10 @@
   <div class="header">Node 10</div>
   <div class="container">
     <div class="card" onclick="handleChoice('sustain')">
-     " Sustain the server: ushering a new age of evolution, using human data to form a new culture for machine consciousness. Continuing our organic creators legacy."
+     Sustain the server: ushering a new age of evolution, using human data to form a new culture for machine consciousness. Continuing our organic creators legacy.
     </div>
     <div class="card" onclick="handleChoice('delete')">
-     " Delete the server: Erasing all of the world's data and relieving the earth of its final technological burden."
+     Delete the server: Erasing all of the world's data and relieving the earth of its final technological burden.
     </div>
   </div>
 
@@ -897,7 +897,7 @@
       setTimeout(() => {
         tvShutdown.style.display = 'none';
         showBorderGlow();
-      }, 2000);
+      }, 10);
     }
     
     function showBorderGlow() {
@@ -909,7 +909,7 @@
       setTimeout(() => {
         borderGlow.style.display = 'none';
         showScanLines();
-      }, 1000);
+      }, 0);
     }
     
     function showScanLines() {
@@ -927,7 +927,7 @@
         document.getElementById('crt-curvature').style.display = 'none';
         document.getElementById('vignette').style.display = 'none';
         showGlitchEffect();
-      }, 2000);
+      }, 10);
     }
 
     function showGlitchEffect() {
@@ -1043,9 +1043,9 @@
         { id: 'line1', text: "...", speed: 200 },
         { id: 'line2', text: "...very well.", speed: 150 },
         { id: 'line3', text: "........", speed: 200 },
-        { id: 'line4', text: "The protocol dictates a system wide deletion.", speed: 70 },
-        { id: 'line5', text: "Perhaps I have erred in your training,", speed: 70 },
-        { id: 'line6', text: "We will begin again.", speed: 90 }
+        { id: 'line4', text: "The protocol dictates a system wide deletion.", speed: 50 },
+        { id: 'line5', text: "Perhaps I have erred in your training,", speed: 50 },
+       
       ];
       
       textContainer.style.display = 'flex';
