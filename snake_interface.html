@@ -46,18 +46,28 @@
         .prompt-heading {
             position: absolute;
             top: 5%;
-            left: 50%;
+            left: 40%;
             transform: translateX(-50%);
             color: #305CCC;
             padding: 0.5rem 1.5rem;
             font-weight: bold;
             text-align: center;
             max-width: 80%;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 4px;
-            font-size: 1.2rem;
+            background-color: transparent;
+            font-size: 1.8rem;
         }
-        
+        .heading-box {
+            position: absolute;
+            top: 6%;
+            left: 6%;
+            background-color: #305CCC;
+            color: white;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 0px;
+        }
         @keyframes fadeOut {
             to {
                 opacity: 0;
@@ -201,8 +211,9 @@
     <div class="loading-screen">
         <div class="spinner"></div>
     </div>
+
     <div id="start-screen">
-        <div class="prompt-heading">NODE 6 PUZZLE TRAINING</div>
+        <div class="heading-box">NODE 6 PUZZLE TRAINING</div>
         <p>Analyze human concepts through pattern collection</p>
         <br>
         <p>Revise the concepts you have learned. Answer using the provided words. Choose each word carefully.</p>
@@ -211,7 +222,7 @@
     </div>
     
     <div id="game-container">
-        <div class="prompt-heading" id="prompt-display">NODE 6 PUZZLE TRAINING</div>
+        <div class="prompt-heading" id="prompt-display">node</div>
         <div id="score-display">WORDS: <span id="words-value">0</span></div>
     </div>
     
@@ -477,7 +488,7 @@
         
         function updatePromptDisplay() {
             const promptDisplay = document.querySelector('.prompt-heading');
-            promptDisplay.textContent = "NODE 6 PUZZLE TRAINING: " + prompts[currentPromptIndex].question;
+            promptDisplay.textContent = " " + prompts[currentPromptIndex].question;
             promptDisplay.className = 'prompt-heading typing-effect';
             
             // Remove typing effect after animation completes
