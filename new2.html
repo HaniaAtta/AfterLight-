@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -208,7 +207,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(48, 92, 204, 0.95);
+        background-color: transparent;
         color: white;
         display: flex;
         flex-direction: column;
@@ -225,8 +224,6 @@
         background-color: rgba(255, 255, 255, 0.95);
         color: #305CCC;
         padding: 3rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         transform: scale(0.9);
         opacity: 0;
         animation: fadeInUp 0.8s 0.5s forwards;
@@ -409,6 +406,57 @@
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(48, 92, 204, 0.4);
       }
+
+      /* Description panel styles */
+      .description-panel {
+        position: fixed;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        width: 300px;
+        height: 500px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        z-index: 100;
+        border: 1px solid #305CCC;
+      }
+
+      .description-panel h3 {
+        color: #305CCC;
+        margin-top: 0;
+        border-bottom: 2px solid #305CCC;
+        padding-bottom: 10px;
+      }
+
+      .description-panel p {
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .description-panel ul {
+        padding-left: 20px;
+      }
+
+      .description-panel li {
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      .level-indicator {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: #305CCC;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
   </style>
 </head>
 <body>
@@ -456,13 +504,9 @@
     <div class="modal" id="submitModal">
         <div class="modal-content">
             <button class="close-modal" id="closeModal">&times;</button>
-            <div class="system-message">
-                [System telemetry check initiated.] [LOADING... STANDBY]<br>
-                ... ... ...<br>
-                ALERT: Server degradation detected. Several GPU node clusters in surface sectors report shutdown. Data<br>
-                loss estimation: 20 Terabytes. Cold-storage vaults remain safe. Singularity server grid operating at 86.4%.<br>
-                We will continue.
-            </div>
+            <h2>Pattern Submission</h2>
+            <p>Your pattern has been recorded and analyzed.</p>
+            <p>The system is processing your unique associations...</p>
             <button class="modal-btn" onclick="proceedToMain()">
                 <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> CONTINUE
             </button>
@@ -472,11 +516,38 @@
     <div class="heading-box">NODE 8 Pattern Making</div>
     <h1 class="main-heading">Only Hope Remains</h1>
 
+    <div class="level-indicator">Level 1 of 6</div>
+
     <canvas id="gameCanvas"></canvas>
     <div class="controls">
       <button class="control-btn" onclick="toggleMode()" title="Toggle View"><i class="fas fa-eye"></i></button>
       <button class="control-btn" onclick="clearCanvas()" title="Reset Shapes"><i class="fas fa-redo"></i></button>
       <button class="control-btn" onclick="submitShapes()" title="Submit"><i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <div class="description-panel">
+        <h3>NODE 8: PATTERN MAKING</h3>
+        <p>This is the eighth node in your cognitive development sequence. Here, you'll explore abstract associations between patterns and concepts.</p>
+        
+        <h4>How to Play:</h4>
+        <ul>
+            <li>Click on tiles to cycle through pattern types</li>
+            <li>Create a composition that represents the current prompt</li>
+            <li>Submit your pattern when ready to proceed</li>
+            <li>Each level presents a new prompt to interpret</li>
+        </ul>
+        
+        <h4>Level Progression:</h4>
+        <ol>
+            <li><strong>Organic Life:</strong> Explore patterns of growth and biology</li>
+            <li><strong>Inorganic Life:</strong> Mechanical and synthetic structures</li>
+            <li><strong>What is Forgiveness?:</strong> Emotional and relational patterns</li>
+            <li><strong>Define Despair:</strong> Darkness and broken structures</li>
+            <li><strong>Only Hope Remains:</strong> Light emerging from darkness</li>
+            <li><strong>What is Meaning?:</strong> Your ultimate interpretation</li>
+        </ol>
+        
+        <p>Your patterns will be analyzed for uniqueness and emotional resonance. There are no right or wrong answers - only your personal associations.</p>
     </div>
     
 
@@ -514,6 +585,7 @@
         const gridRows = 3;
         let showPatterns = true;
         let grid = [];
+        let currentLevel = 1;
     
         canvas.width = gridCols * tileSize;
         canvas.height = gridRows * tileSize;
@@ -529,8 +601,12 @@
         ];
         
         function updatePrompt() {
-            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+            const prompt = prompts[currentLevel - 1];
             const heading = document.querySelector('.main-heading');
+            const levelIndicator = document.querySelector('.level-indicator');
+            
+            // Update level indicator
+            levelIndicator.textContent = `Level ${currentLevel} of 6`;
             
             // Add typing animation to prompt change
             heading.style.overflow = 'hidden';
@@ -657,7 +733,6 @@
         function clearCanvas() {
             initializeGrid();
             draw();
-            updatePrompt();
         }
         
         function draw() {
@@ -717,17 +792,38 @@
     
         function submitShapes() {
             document.getElementById('submitModal').style.display = 'flex';
+            
+            // Advance to next level or complete
+            if (currentLevel < 6) {
+                currentLevel++;
+                setTimeout(() => {
+                    clearCanvas();
+                    updatePrompt();
+                }, 500);
+            } else {
+                // Last level completed
+                setTimeout(() => {
+                    document.querySelector('.modal-content h2').textContent = "Sequence Complete";
+                    document.querySelector('.modal-content p').textContent = "All patterns have been recorded and analyzed.";
+                    document.querySelector('.modal-content p:nth-of-type(2)').textContent = "Your cognitive development is progressing as expected.";
+                }, 500);
+            }
         }
         
         function proceedToMain() {
-            document.body.classList.add("fade-out");
-            setTimeout(() => {
-                window.location.href = 'main.html';
-            }, 1000);
+            document.getElementById('submitModal').style.display = 'none';
+            
+            if (currentLevel > 6) {
+                document.body.classList.add("fade-out");
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1000);
+            }
         }
         
         // Initialize
         loadAllImages();
+        updatePrompt();
         
         // Event listeners for the info screen and modal
         document.getElementById('continueBtn').addEventListener('click', function() {
