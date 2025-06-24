@@ -329,6 +329,8 @@
     </div>
 
     <script>
+        let typingInterval = null;
+let currentTypingElement = null;
         const CARDS = [
             { content: `Initializing historical sequence. Timeframe: Common Era, years 2020–2035.` },
             { content: `During this period, human activities led to significant environmental degradation, resulting in catastrophic climate events and widespread ecological collapse.` },
@@ -419,6 +421,13 @@
     
         function navigateToCard(index) {
             if (index < 0 || index >= CARDS.length) return;
+            
+            // Clear any existing typing animation
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+            currentTypingElement = null;
         
             // Hide previous card
             const prevCard = document.getElementById(`card-${currentCardIndex}`);
@@ -451,19 +460,56 @@
         }
         
         function typeText(element, text, delay = 30, callback = null) {
-            let i = 0;
+            // Clear any existing typing animation
+            if (typingInterval) {
+                clearInterval(typingInterval);
+            }
+            
+            currentTypingElement = element;
             element.textContent = '';
-            function type() {
+            let i = 0;
+            
+            typingInterval = setInterval(() => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
-                    setTimeout(type, delay);
-                } else if (callback) {
-                    callback();
+                } else {
+                    clearInterval(typingInterval);
+                    typingInterval = null;
+                    currentTypingElement = null;
+                    if (callback) callback();
                 }
-            }
-            type();
+            }, delay);
         }
+
+        // Add this click handler somewhere in your initialization (like in startPresentation())
+document.addEventListener('click', (e) => {
+    // Don't interfere with button clicks
+    if (e.target.closest('#return-button, #next-button, .arrow')) {
+        return;
+    }
+    
+    // If there's an active typing animation
+    if (typingInterval && currentTypingElement) {
+        clearInterval(typingInterval);
+        typingInterval = null;
+        
+        // Immediately show full text
+        currentTypingElement.textContent = CARDS[currentCardIndex].content;
+        
+        // Run the callback if needed (for the bars animation)
+        const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+        if (upperBars) {
+            upperBars.innerHTML = `
+                <div class="continuous-bar bar-1 w-70"></div>
+                <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+            `;
+        }
+        
+        currentTypingElement = null;
+    }
+});
         
         function updateNavigationButtons() {
             const returnBtn = document.getElementById('return-button');

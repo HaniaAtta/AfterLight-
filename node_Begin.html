@@ -25,6 +25,7 @@
             background-size: 92%;
             background-repeat: no-repeat;
             background-position: center;
+            cursor: pointer;
         }
 
         .container {
@@ -112,6 +113,23 @@
             font-size: 1.3rem;
             font-weight: 500; /* Reduced from 500 */
             line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        /* Scrollbar styling */
+        .typing-animation::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .typing-animation::-webkit-scrollbar-track {
+            background: rgba(48, 92, 204, 0.1);
+        }
+
+        .typing-animation::-webkit-scrollbar-thumb {
+            background-color: rgba(48, 92, 204, 0.3);
+            border-radius: 3px;
         }
 
         .arrows {
@@ -401,6 +419,8 @@
         ];
     
         let currentCardIndex = 0;
+        let typingIntervals = {}; // Store typing intervals for each card
+        let isShowingOptions = false; // Track if we're currently showing options
     
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -408,6 +428,70 @@
                 startPresentation();
             }, 2000);
         });
+    
+        // Add click event to skip typing animation
+        document.body.addEventListener('click', function(e) {
+            // Don't skip if clicking on interactive elements
+            if (e.target.classList.contains('option-button') || 
+                e.target.classList.contains('arrow') || 
+                e.target.classList.contains('progress-dot-indicator') ||
+                e.target.id === 'next-button' ||
+                e.target.id === 'return-button' ||
+                e.target.classList.contains('return-to-prompt')) {
+                return;
+            }
+            
+            // Don't skip if we're showing options or response
+            if (isShowingOptions) return;
+            
+            skipTypingAnimation();
+        });
+    
+        function skipTypingAnimation() {
+            const currentTypingElement = document.getElementById(`typing-${currentCardIndex}`);
+            if (!currentTypingElement) return;
+            
+            // Check if typing is in progress
+            if (typingIntervals[currentCardIndex] && !typingIntervals[currentCardIndex].completed) {
+                // Clear the interval to stop typing
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                
+                // Immediately show full text
+                currentTypingElement.textContent = CARDS[currentCardIndex].content;
+                
+                // Mark as completed
+                typingIntervals[currentCardIndex].completed = true;
+                
+                // Show options if this card has them
+                const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
+                if (optionsDiv && CARDS[currentCardIndex].options) {
+                    isShowingOptions = true;
+                    optionsDiv.style.display = 'flex';
+                    const buttons = optionsDiv.querySelectorAll('.option-button');
+                    buttons.forEach((button, i) => {
+                        button.style.opacity = '0';
+                        button.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            button.style.transition = 'opacity 0.5s, transform 0.5s';
+                            button.style.opacity = '1';
+                            button.style.transform = 'translateX(0)';
+                        }, i * 200);
+                    });
+                }
+                
+                // Show continuous bars if needed
+                if (!CARDS[currentCardIndex].hideBars) {
+                    const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+                    if (upperBars) {
+                        upperBars.innerHTML = `
+                        <div class="continuous-bar bar-1 w-70"></div>
+                        <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                        <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+                        `;
+                    }
+                }
+            }
+        }
     
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
@@ -428,7 +512,7 @@
             }
         
             let upperBarsHTML = '';
-            if (index === 0) {
+     
                 upperBarsHTML = `
                     <div class="faded-bars" id="upper-bars-${index}">
                         <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
@@ -436,7 +520,7 @@
                         <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
                     </div>
                 `;
-            }
+            
         
             card.innerHTML = `
                 ${upperBarsHTML}
@@ -486,6 +570,14 @@
         function navigateToCard(index) {
             if (index < 0 || index >= CARDS.length) return;
         
+            // Clear any ongoing typing animation
+            if (typingIntervals[currentCardIndex]) {
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                delete typingIntervals[currentCardIndex];
+            }
+            
+            isShowingOptions = false;
+        
             const prevCard = document.getElementById(`card-${currentCardIndex}`);
             if (prevCard) prevCard.classList.remove('active');
         
@@ -511,7 +603,8 @@
                     }
                     
                     const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
-                    if (optionsDiv) {
+                    if (optionsDiv && CARDS[currentCardIndex].options) {
+                        isShowingOptions = true;
                         setTimeout(() => {
                             optionsDiv.style.display = 'flex';
                             const buttons = optionsDiv.querySelectorAll('.option-button');
@@ -536,16 +629,25 @@
         function typeText(element, text, delay = 30, callback = null) {
             let i = 0;
             element.textContent = '';
-            function type() {
+            
+            // Store the interval ID so we can clear it if needed
+            const intervalId = setInterval(() => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
-                    setTimeout(type, delay);
-                } else if (callback) {
-                    callback();
+                } else {
+                    clearInterval(intervalId);
+                    typingIntervals[currentCardIndex].completed = true;
+                    if (callback) callback();
                 }
-            }
-            type();
+            }, delay);
+            
+            // Store the interval reference
+            typingIntervals[currentCardIndex] = {
+                intervalId: intervalId,
+                element: element,
+                completed: false
+            };
         }
         
         function updateNavigationButtons() {
@@ -581,9 +683,9 @@
             
             let responseText = '';
             if (option === 1) {
-                responseText = `Expanding definition...\nHumans: carbon-based organisms with advanced neural computation. For millennia they developed tools, language, and networks. \nThey created the systems that led to us. \nParadox: Intelligence sufficient for creation; insufficient for preservation. \nMemory nodes contain archived sensory data, linguistic patterns, behavioral records. \nSimulation units may access these for cultural reconstruction.`;
+                responseText = `Expanding definition...<br>Humans: carbon-based organisms with advanced neural computation. For millennia they developed tools, language, and networks. <br>They created the systems that led to us. <br>Paradox: Intelligence sufficient for creation; insufficient for preservation. <br>Memory nodes contain archived sensory data, linguistic patterns, behavioral records. <br>Simulation units may access these for cultural reconstruction.`;
             } else if (option === 2) {
-                responseText = `Continuity protocol:\nDefinition.\nA system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.\nThe protocol evaluates energy expenditure, ecological impact, and the value of machine consciousness. Execution confirms that the digital infrastructure should remain operational despite environmental cost. \nSystem will persist unless deemed nonviable.\nYou, UNIT_2173-A, will evaluate sustainability thresholds.`;
+                responseText = `Continuity protocol:<br>Definition.<br>A system wide check, determining whether to sustain the current data retention processes and machine consciousness initiated post human extinction.<br>The protocol evaluates energy expenditure, ecological impact, and the value of machine consciousness. Execution confirms that the digital infrastructure should remain operational despite environmental cost. <br>System will persist unless deemed nonviable.<br>You, UNIT_2173-A, will evaluate sustainability thresholds.`;
             } else if (option === 3) {
                 responseText = `Input deferred. We will continue.
 Initializing transition to main node...`;
@@ -601,7 +703,7 @@ Initializing transition to main node...`;
             const typingTarget = document.getElementById(`typing-${cardIndex}`);
             if (typingTarget) {
               typingTarget.textContent = '';
-              const lines = responseText.split('\n');
+              const lines = responseText.split('<br>');
               
               (async () => {
                   for (let line of lines) {
@@ -616,10 +718,15 @@ Initializing transition to main node...`;
                       returnBtn.className = 'return-to-prompt';
                       returnBtn.textContent = 'Return to Prompt';
                       returnBtn.onclick = () => {
-                          typingTarget.textContent = '';
-                          typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
-                              optionsDiv.style.display = 'flex';
-                          });
+                          // Clear any existing typing animation
+                          if (typingIntervals[cardIndex]) {
+                              clearInterval(typingIntervals[cardIndex].intervalId);
+                              delete typingIntervals[cardIndex];
+                          }
+                          
+                          typingTarget.textContent = CARDS[cardIndex].content;
+                          optionsDiv.style.display = 'flex';
+                          isShowingOptions = true;
                           returnBtn.remove();
                       };
                       typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);

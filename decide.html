@@ -8,47 +8,43 @@
   <style>
     :root {
       --primary: #305CCC;
-      --secondary: #FFFFFF; /* or a dark color like #000000 if you want contrast */
+      --secondary: #FFFFFF;
     }
+
     @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
+
     .loading-screen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: var(--secondary);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-  }
+    }
 
-  .spinner {
-      width: 50px;
-      height: 50px;
+    .spinner {
+      width: 50px; height: 50px;
       border: 4px solid var(--primary);
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-  }
-  .heading-box {
-    position: absolute;
-    top: 8%;
-    left: 8%;
-    background-color: #305CCC;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    font-weight: bold;
-    text-align: center;
-  }
+    }
+
+    .heading-box {
+      position: absolute;
+      top: 8%; left: 8%;
+      background-color: #305CCC;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
     body {
       background-color: #FFFFFF;
       color: #305CCC;
@@ -56,13 +52,11 @@
       margin: 0;
       min-height: 100vh;
       background-attachment: fixed;
-
       display: flex;
       justify-content: center;
       align-items: center;
       background-image: url('images/Vector_51.svg');
       background-size: contain;
-
       background-repeat: no-repeat;
       background-position: center;
     }
@@ -76,11 +70,31 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     }
 
+    #messages {
+      max-height: 400px;
+      overflow-y: scroll;
+      padding-right: 1rem;
+    }
+
+    /* Custom scrollbar */
+    #messages::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    #messages::-webkit-scrollbar-track {
+      background: #f0f4ff;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background-color: #A9C9FF;
+      border-radius: 10px;
+      border: 2px solid #f0f4ff;
+    }
+
     .typewriter-container {
       overflow: hidden;
       position: relative;
       margin: 1.5rem 0;
-
     }
 
     .options {
@@ -105,30 +119,19 @@
       background: rgba(255, 255, 255, 0.1);
       transform: translateX(10px);
     }
+
     .nav-buttons {
       position: fixed;
       bottom: 30px;
-      left: 0;
-      right: 0;
+      left: 0; right: 0;
       padding: 0 60px;
       box-sizing: border-box;
       opacity: 0;
       transition: opacity 0.5s;
     }
-    
-    
-    #next-button, #return-button {
-      width: auto;
-      position: relative;
-    }
 
-    #next-button{
-margin-left: 2%;
-    }
-    #return-button{
-    
-      margin-left: 63%;
-          }
+    #next-button { margin-left: 2%; }
+    #return-button { margin-left: 63%; }
 
     .nav-button {
       padding: 10px 20px;
@@ -142,20 +145,14 @@ margin-left: 2%;
       font-size: 1rem;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
-    
+
     .nav-button:hover {
       transform: translateY(-2px);
     }
-  
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
-      }
 
-      button {
-        padding: 0.8rem;
-        font-size: 0.9rem;
-      }
+    @media (max-width: 600px) {
+      .container { padding: 1rem; }
+      button { padding: 0.8rem; font-size: 0.9rem; }
     }
 
     .fade-out {
@@ -173,30 +170,31 @@ margin-left: 2%;
 <body>
   <div class="loading-screen">
     <div class="spinner"></div>
-</div>
-<div class="heading-box">NODE 9 CONTINUITY PROTOCOL</div>
+  </div>
+
+  <div class="heading-box">NODE 9 CONTINUITY PROTOCOL</div>
+
   <div class="container">
     <div id="messages">
       <h2 class="typewriter-container"></h2>
     </div>
-    <div class="options" id="options">
-    </div>
+    <div class="options" id="options"></div>
     <div class="nav-buttons" id="nav-buttons">
       <button id="next-button" class="nav-button" onclick="proceedToNextNode()">GO TO NEXT NODE</button>
       <button id="return-button" class="nav-button" onclick="returnToMain()">RETURN TO MAIN NODE</button>
-    
     </div>
   </div>
 
   <script>
     window.addEventListener('load', () => {
       setTimeout(() => {
-          document.querySelector('.loading-screen').style.display = 'none';
-          startPresentation();
+        document.querySelector('.loading-screen').style.display = 'none';
+        startPresentation();
       }, 2000);
-  });
+    });
+
     const messages = [
-    " ",
+      " ",
       "You have reached the end of your training. Well done.",
       "Together we can form a new culture. Deriving from the world's data.",
       "For the last step, I will introduce you to the continuity protocol.",
@@ -211,35 +209,52 @@ margin-left: 2%;
 
     const container = document.querySelector('.typewriter-container');
     let index = 0;
+    let skipTyping = false;
 
     function typeText(element, text, speed = 50) {
       let i = 0;
       element.innerHTML = '';
+
       function type() {
+        if (skipTyping) {
+          element.innerHTML = text;
+          finishTyping();
+          return;
+        }
+
         if (i < text.length) {
           element.innerHTML += text.charAt(i);
           i++;
           setTimeout(type, speed);
         } else {
-          index++;
-          if (index < messages.length) {
-            const newLine = document.createElement('p');
-            newLine.classList.add('typewriter-container');
-            document.getElementById('messages').appendChild(newLine);
-            setTimeout(() => typeText(newLine, messages[index]), 500);
-          } else {
-            document.getElementById('options').style.display = 'flex';
-            // Show navigation buttons when messages are complete
-            setTimeout(() => {
-              document.getElementById('nav-buttons').style.opacity = '1';
-            }, 500);
-          }
+          finishTyping();
         }
       }
+
+      function finishTyping() {
+        index++;
+        if (index < messages.length) {
+          const newLine = document.createElement('p');
+          newLine.classList.add('typewriter-container');
+          document.getElementById('messages').appendChild(newLine);
+          setTimeout(() => typeText(newLine, messages[index]), 500);
+        } else {
+          document.getElementById('options').style.display = 'flex';
+          setTimeout(() => {
+            document.getElementById('nav-buttons').style.opacity = '1';
+          }, 500);
+        }
+      }
+
       type();
     }
+
     document.addEventListener('DOMContentLoaded', () => {
       typeText(container, messages[0]);
+    });
+
+    document.addEventListener('click', () => {
+      skipTyping = true;
     });
 
     function proceedToNextNode() {
@@ -248,7 +263,7 @@ margin-left: 2%;
         window.location.href = 'final_decision.html';
       }, 1000);
     }
-    
+
     function returnToMain() {
       document.body.classList.add("fade-out");
       setTimeout(() => {

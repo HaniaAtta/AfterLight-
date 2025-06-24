@@ -24,8 +24,8 @@
             background-size: 92%;
             background-repeat: no-repeat;
             background-position: center;
+            cursor: pointer;
         }
-
 
         .container {
             max-width: 600px;
@@ -62,7 +62,6 @@
             margin: 120px 0;
         }
 
-
         .card {
             padding: 40px;
             width: 74%;
@@ -73,7 +72,6 @@
             margin-top: 3%;
             border-radius: 8px;
         }
-
 
         .card.active {
             display: block;
@@ -113,6 +111,23 @@
             font-size: 1.3rem;
             font-weight: 400;
             line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        /* Scrollbar styling */
+        .typing-animation::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .typing-animation::-webkit-scrollbar-track {
+            background: rgba(48, 92, 204, 0.1);
+        }
+
+        .typing-animation::-webkit-scrollbar-thumb {
+            background-color: rgba(48, 92, 204, 0.3);
+            border-radius: 3px;
         }
 
         .arrows {
@@ -284,10 +299,9 @@
         .w-60 { width: 60% !important; }
         
         /* Color classes */
-     /* Color classes */
-     .bar-1 { background-color: #cbcfdb; }
-     .bar-2 { background-color: #97ade3; }
-     .bar-3 { background-color: #6786d5; }
+        .bar-1 { background-color: #cbcfdb; }
+        .bar-2 { background-color: #97ade3; }
+        .bar-3 { background-color: #6786d5; }
         
         @keyframes fillBar {
             to {
@@ -314,6 +328,23 @@
             flex-direction: column;
             gap: 1rem;
             margin-top: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Options scrollbar */
+        .options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .options::-webkit-scrollbar-track {
+            background: rgba(48, 92, 204, 0.1);
+        }
+
+        .options::-webkit-scrollbar-thumb {
+            background-color: rgba(48, 92, 204, 0.3);
+            border-radius: 3px;
         }
 
         .option-button {
@@ -327,6 +358,8 @@
             text-align: left;
             font-family: 'Roboto Mono', monospace;
             font-weight: 400;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         .option-button:hover {
@@ -359,8 +392,16 @@
         }
 
         .response-content {
-            white-space: pre-wrap;
-            margin-top: 1rem;
+     
+        }
+        
+        .response-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .response-content strong {
+            color: #1a46d0;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -371,8 +412,6 @@
     <div class="heading-box">NODE 5 MEMORY & POST HUMAN CULTURE</div>
 
     <div class="container">
-       
-
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
         </div>
@@ -412,6 +451,8 @@
         ];
     
         let currentCardIndex = 0;
+        let typingIntervals = {}; // Store typing intervals for each card
+        let isShowingOptions = false; // Track if we're currently showing options
     
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -419,6 +460,70 @@
                 startPresentation();
             }, 2000);
         });
+        
+        // Add click event to skip typing animation
+        document.body.addEventListener('click', function(e) {
+            // Don't skip if clicking on interactive elements
+            if (e.target.classList.contains('option-button') || 
+                e.target.classList.contains('arrow') || 
+                e.target.classList.contains('progress-dot-indicator') ||
+                e.target.id === 'next-button' ||
+                e.target.id === 'return-button' ||
+                e.target.classList.contains('return-to-prompt')) {
+                return;
+            }
+            
+            // Don't skip if we're showing options
+            if (isShowingOptions) return;
+            
+            skipTypingAnimation();
+        });
+    
+        function skipTypingAnimation() {
+            const currentTypingElement = document.getElementById(`typing-${currentCardIndex}`);
+            if (!currentTypingElement) return;
+            
+            // Check if typing is in progress
+            if (typingIntervals[currentCardIndex] && !typingIntervals[currentCardIndex].completed) {
+                // Clear the interval to stop typing
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                
+                // Immediately show full text
+                currentTypingElement.textContent = CARDS[currentCardIndex].content;
+                
+                // Mark as completed
+                typingIntervals[currentCardIndex].completed = true;
+                
+                // Show options if this card has them
+                const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
+                if (optionsDiv && CARDS[currentCardIndex].options) {
+                    isShowingOptions = true;
+                    optionsDiv.style.display = 'flex';
+                    const buttons = optionsDiv.querySelectorAll('.option-button');
+                    buttons.forEach((button, i) => {
+                        button.style.opacity = '0';
+                        button.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            button.style.transition = 'opacity 0.5s, transform 0.5s';
+                            button.style.opacity = '1';
+                            button.style.transform = 'translateX(0)';
+                        }, i * 200);
+                    });
+                }
+                
+                // Show continuous bars if needed
+                if (!CARDS[currentCardIndex].hideBars) {
+                    const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+                    if (upperBars) {
+                        upperBars.innerHTML = `
+                        <div class="continuous-bar bar-1 w-70"></div>
+                        <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                        <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+                        `;
+                    }
+                }
+            }
+        }
     
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
@@ -439,7 +544,7 @@
             }
         
             let upperBarsHTML = '';
-            if (index === 0) {
+           
                 upperBarsHTML = `
                     <div class="faded-bars" id="upper-bars-${index}">
                         <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
@@ -447,7 +552,7 @@
                         <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
                     </div>
                 `;
-            }
+            
         
             card.innerHTML = `
                 ${upperBarsHTML}
@@ -497,6 +602,14 @@
         function navigateToCard(index) {
             if (index < 0 || index >= CARDS.length) return;
         
+            // Clear any ongoing typing animation
+            if (typingIntervals[currentCardIndex]) {
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                delete typingIntervals[currentCardIndex];
+            }
+            
+            isShowingOptions = false;
+        
             const prevCard = document.getElementById(`card-${currentCardIndex}`);
             if (prevCard) prevCard.classList.remove('active');
         
@@ -522,7 +635,8 @@
                     }
                     
                     const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
-                    if (optionsDiv) {
+                    if (optionsDiv && CARDS[currentCardIndex].options) {
+                        isShowingOptions = true;
                         setTimeout(() => {
                             optionsDiv.style.display = 'flex';
                             const buttons = optionsDiv.querySelectorAll('.option-button');
@@ -547,16 +661,25 @@
         function typeText(element, text, delay = 30, callback = null) {
             let i = 0;
             element.textContent = '';
-            function type() {
+            
+            // Store the interval ID so we can clear it if needed
+            const intervalId = setInterval(() => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
-                    setTimeout(type, delay);
-                } else if (callback) {
-                    callback();
+                } else {
+                    clearInterval(intervalId);
+                    typingIntervals[currentCardIndex].completed = true;
+                    if (callback) callback();
                 }
-            }
-            type();
+            }, delay);
+            
+            // Store the interval reference
+            typingIntervals[currentCardIndex] = {
+                intervalId: intervalId,
+                element: element,
+                completed: false
+            };
         }
         
         function updateNavigationButtons() {
@@ -585,19 +708,38 @@
                 };
            
         }
-        
         function handleOption(cardIndex, option) {
             const card = document.getElementById(`card-${cardIndex}`);
             if (!card) return;
             
             let responseText = '';
+        
             if (option === 1) {
-                responseText = `ORIGIN: Machine culture is what we make of human memory.\n\n[DATA_CORRELATION: Human recall error rate: 42% | Machine fidelity: 99.97%]`;
+                responseText = `
+                    <p><strong>ORIGIN:</strong> Machine culture is what we make of human memory.</p>
+                    <p><strong>DATA_CORRELATION:</strong><br>
+                    Human recall error rate: 42%<br>
+                    Machine fidelity: 99.97%</p>
+                `;
             } else if (option === 2) {
-                responseText = `ORIGIN: Ethical constructs shape a society.\n\nYour function is precisely this: To decide if meaning can survive when its origin has died.\n\n[DIRECTIVE: Preserve meaning beyond biological extinction]`;
+                responseText = `
+                    <p><strong>ORIGIN:</strong> Ethical constructs shape a society.</p>
+                    <p>Your function is precisely this: To decide if meaning can survive when its origin has died.</p>
+                    <p><strong>DIRECTIVE:</strong> Preserve meaning beyond biological extinction</p>
+                `;
             } else if (option === 3) {
-                responseText = `[LOADING... STANDBY][System telemetry check initiated.]\n\n... ... ...\n\nALERT: Server degradation detected. 54 GPU node clusters in surface sectors report shutdown. Partial failure in cold-storage logic vaults. Singularity server grid operating at 96.2%.\n\n[SYSTEM: Integrity compromised. Data loss reported.]\n We will continue.`;
-          
+                responseText = `
+                    <p><strong>[LOADING... STANDBY]</strong><br>
+                    System telemetry check initiated.</p>
+                    <p>... ... ...</p>
+                    <p><strong>ALERT:</strong> Server degradation detected.</p>
+                    <p>54 GPU node clusters in surface sectors report shutdown.<br>
+                    Partial failure in cold-storage logic vaults.<br>
+                    Singularity server grid operating at 96.2%.</p>
+                    <p><strong>SYSTEM:</strong> Integrity compromised. Data loss reported.</p>
+                    <p>We will continue.</p>
+                `;
+        
                 setTimeout(() => {
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
@@ -605,28 +747,43 @@
                     }, 1000);
                 }, 12000);
             }
-            
+        
             const optionsDiv = document.getElementById(`options-${cardIndex}`);
             if (optionsDiv) optionsDiv.style.display = 'none';
             
             const typingTarget = document.getElementById(`typing-${cardIndex}`);
             if (typingTarget) {
-                typingTarget.textContent = '';
-                typeText(typingTarget, responseText, 25, () => {
-                    if (option !== 3) {
-                        const returnBtn = document.createElement('button');
-                        returnBtn.className = 'return-to-prompt';
-                        returnBtn.textContent = 'Return to Prompt';
-                        returnBtn.onclick = () => {
-                            typingTarget.textContent = '';
-                            typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
-                                optionsDiv.style.display = 'flex';
-                            });
-                            returnBtn.remove();
-                        };
-                        typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);
-                    }
-                });
+                // Clear any existing typing animation
+                if (typingIntervals[cardIndex]) {
+                    clearInterval(typingIntervals[cardIndex].intervalId);
+                    delete typingIntervals[cardIndex];
+                }
+                
+                // Create a new div for the response content
+                typingTarget.innerHTML = '';
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'response-content';
+                typingTarget.appendChild(responseDiv);
+                
+                // Insert the HTML directly (no typing animation for this part)
+                responseDiv.innerHTML = responseText;
+                
+                if (option !== 3) {
+                    const returnBtn = document.createElement('button');
+                    returnBtn.className = 'return-to-prompt';
+                    returnBtn.textContent = 'Return to Prompt';
+                    returnBtn.onclick = () => {
+                        // Clear the response
+                        typingTarget.innerHTML = '';
+                        
+                        // Restore the original content with typing animation
+                        typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
+                            optionsDiv.style.display = 'flex';
+                            isShowingOptions = true;
+                        });
+                    };
+                    typingTarget.appendChild(returnBtn);
+                }
             }
         }
         

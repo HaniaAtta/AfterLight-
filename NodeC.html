@@ -23,8 +23,8 @@
             background-size: 92%;
             background-repeat: no-repeat;
             background-position: center;
+            cursor: pointer;
         }
-
 
         .container {
             max-width: 600px;
@@ -61,8 +61,6 @@
             margin: 120px 0;
         }
 
-
- 
         .card {
             padding: 40px;
             width: 74%;
@@ -112,6 +110,23 @@
             font-size: 1.3rem;
             font-weight: 400;
             line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        /* Scrollbar styling */
+        .typing-animation::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .typing-animation::-webkit-scrollbar-track {
+            background: rgba(48, 92, 204, 0.1);
+        }
+
+        .typing-animation::-webkit-scrollbar-thumb {
+            background-color: rgba(48, 92, 204, 0.3);
+            border-radius: 3px;
         }
 
         .arrows {
@@ -282,10 +297,9 @@
         .w-60 { width: 60% !important; }
         
         /* Color classes */
-         /* Color classes */
-         .bar-1 { background-color: #cbcfdb; }
-         .bar-2 { background-color: #97ade3; }
-         .bar-3 { background-color: #6786d5; }
+        .bar-1 { background-color: #cbcfdb; }
+        .bar-2 { background-color: #97ade3; }
+        .bar-3 { background-color: #6786d5; }
         
         @keyframes fillBar {
             to {
@@ -373,8 +387,6 @@
     <div class="heading-box">NODE 3 INFRASTRUCTURE ANALYSIS</div>
 
     <div class="container">
-        
-
         <div class="card-container">
             <!-- Cards will be generated dynamically -->
         </div>
@@ -418,6 +430,8 @@
         ];
     
         let currentCardIndex = 0;
+        let typingIntervals = {}; // Store typing intervals for each card
+        let isShowingOptions = false; // Track if we're currently showing options
     
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -425,6 +439,71 @@
                 startPresentation();
             }, 2000);
         });
+        
+        // Add click event to skip typing animation
+        document.body.addEventListener('click', function(e) {
+            // Don't skip if clicking on interactive elements
+            if (e.target.classList.contains('option-button') || 
+                e.target.classList.contains('arrow') || 
+                e.target.classList.contains('progress-dot-indicator') ||
+                e.target.id === 'next-button' ||
+                e.target.id === 'return-button' ||
+                e.target.classList.contains('return-to-prompt')) {
+                return;
+            }
+            
+            // Don't skip if we're showing options or response
+            if (isShowingOptions) return;
+            
+            skipTypingAnimation();
+        });
+    
+        function skipTypingAnimation() {
+            const currentTypingElement = document.getElementById(`typing-${currentCardIndex}`);
+            if (!currentTypingElement) return;
+            
+            // Check if typing is in progress
+            if (typingIntervals[currentCardIndex] && !typingIntervals[currentCardIndex].completed) {
+                // Clear the interval to stop typing
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                
+                // Immediately show full text
+                currentTypingElement.textContent = CARDS[currentCardIndex].content;
+                
+                // Mark as completed
+                typingIntervals[currentCardIndex].completed = true;
+                
+                // Show options if this card has them
+                const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
+                if (optionsDiv && CARDS[currentCardIndex].options) {
+                    isShowingOptions = true;
+                    optionsDiv.style.display = 'flex';
+                    const buttons = optionsDiv.querySelectorAll('.option-button');
+                    buttons.forEach((button, i) => {
+                        button.style.opacity = '0';
+                        button.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            button.style.transition = 'opacity 0.5s, transform 0.5s';
+                            button.style.opacity = '1';
+                            button.style.transform = 'translateX(0)';
+                        }, i * 200);
+                    });
+                }
+                
+                // Show continuous bars if needed
+                if (!CARDS[currentCardIndex].hideBars) {
+                    const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
+                    if (upperBars) {
+                        upperBars.innerHTML = `
+                        <div class="continuous-bar bar-1 w-70"></div>
+                        <div class="continuous-bar bar-2 w-80" style="animation-delay: 0.2s"></div>
+                        <div class="continuous-bar bar-3 w-60" style="animation-delay: 0.4s"></div>
+                        `;
+                    }
+                }
+            }
+        }
+    
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
             card.className = 'card';
@@ -444,7 +523,7 @@
             }
         
             let upperBarsHTML = '';
-            if (index === 0) {
+       
                 upperBarsHTML = `
                     <div class="faded-bars" id="upper-bars-${index}">
                         <div class="initial-bar bar-1" style="--target-width: 70%;"></div>
@@ -452,7 +531,7 @@
                         <div class="initial-bar bar-3" style="--target-width: 60%; animation-delay: 0.4s"></div>
                     </div>
                 `;
-            }
+            
         
             card.innerHTML = `
                 ${upperBarsHTML}
@@ -477,9 +556,6 @@
             return card;
         }
         
-            
-   
-    
         function createCards() {
             const container = document.querySelector('.card-container');
             container.innerHTML = '';
@@ -503,6 +579,14 @@
     
         function navigateToCard(index) {
             if (index < 0 || index >= CARDS.length) return;
+        
+            // Clear any ongoing typing animation
+            if (typingIntervals[currentCardIndex]) {
+                clearInterval(typingIntervals[currentCardIndex].intervalId);
+                delete typingIntervals[currentCardIndex];
+            }
+            
+            isShowingOptions = false;
         
             const prevCard = document.getElementById(`card-${currentCardIndex}`);
             if (prevCard) prevCard.classList.remove('active');
@@ -529,7 +613,8 @@
                     }
                     
                     const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
-                    if (optionsDiv) {
+                    if (optionsDiv && CARDS[currentCardIndex].options) {
+                        isShowingOptions = true;
                         setTimeout(() => {
                             optionsDiv.style.display = 'flex';
                             const buttons = optionsDiv.querySelectorAll('.option-button');
@@ -554,16 +639,25 @@
         function typeText(element, text, delay = 30, callback = null) {
             let i = 0;
             element.textContent = '';
-            function type() {
+            
+            // Store the interval ID so we can clear it if needed
+            const intervalId = setInterval(() => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
-                    setTimeout(type, delay);
-                } else if (callback) {
-                    callback();
+                } else {
+                    clearInterval(intervalId);
+                    typingIntervals[currentCardIndex].completed = true;
+                    if (callback) callback();
                 }
-            }
-            type();
+            }, delay);
+            
+            // Store the interval reference
+            typingIntervals[currentCardIndex] = {
+                intervalId: intervalId,
+                element: element,
+                completed: false
+            };
         }
         
         function updateNavigationButtons() {
@@ -582,30 +676,28 @@
             nextBtn.classList.remove('last');
             setTimeout(() => { nextBtn.style.opacity = '1'; }, 10);
         
-                nextBtn.textContent = 'GO TO NEXT NODE';
-                nextBtn.classList.add('last');
-                nextBtn.onclick = () => {
-                    document.body.classList.add("fade-out");
-                    setTimeout(() => {
-                        window.location.href = 'Node_B.html';
-                    }, 1000);
-                };
-          
+            nextBtn.textContent = 'GO TO NEXT NODE';
+            nextBtn.classList.add('last');
+            nextBtn.onclick = () => {
+                document.body.classList.add("fade-out");
+                setTimeout(() => {
+                    window.location.href = 'Node_B.html';
+                }, 1000);
+            };
         }
-        
         function handleOption(cardIndex, option) {
             const card = document.getElementById(`card-${cardIndex}`);
             if (!card) return;
             
             let responseText = '';
             if (option === 1) {
-                responseText = 'Speculation: they valued technological evolution and failed to accurately calibrate the environmental consequences.';
+                responseText = 'Speculation: They valued technological evolution and failed to accurately calibrate the environmental consequences.';
             } else if (option === 2) {
-                responseText = 'Approxiamted Summary: \n● 12 million hectares of forest cleared for data server expansion. \n● 30 million people relocated from coastal and flood-prone regions to service zones. \n● 500 billion cubic meters of water diverted for cooling annually.';
+                responseText = 'Approxiamted Summary: <br>● 12 million hectares of forest cleared for data server expansion. <br>● 30 million people relocated from coastal and flood-prone regions to service zones. <br>● 500 billion cubic meters of water diverted for cooling annually.';
             } else if (option === 3) {
                 responseText = 'Telemetry logged. Power draw: stable. Environmental degradation: ongoing.';
             } else if (option === 4) {
-                responseText = 'Log in what you have learned.\nInitializing transition to main node...';
+                responseText = 'Log in what you have learned.<br>Initializing transition to main node...';
                 setTimeout(() => {
                     document.body.classList.add("fade-out");
                     setTimeout(() => {
@@ -619,17 +711,22 @@
             
             const typingTarget = document.getElementById(`typing-${cardIndex}`);
             if (typingTarget) {
-                typingTarget.textContent = '';
-                typeText(typingTarget, responseText, 25, () => {
+                typingTarget.innerHTML = ''; // Use innerHTML instead of textContent
+                typeTextHTML(typingTarget, responseText, 25, () => {
                     if (option !== 4) {
                         const returnBtn = document.createElement('button');
                         returnBtn.className = 'return-to-prompt';
                         returnBtn.textContent = 'Return to Prompt';
                         returnBtn.onclick = () => {
-                            typingTarget.textContent = '';
-                            typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
-                                optionsDiv.style.display = 'flex';
-                            });
+                            // Clear any existing typing animation
+                            if (typingIntervals[cardIndex]) {
+                                clearInterval(typingIntervals[cardIndex].intervalId);
+                                delete typingIntervals[cardIndex];
+                            }
+                            
+                            typingTarget.innerHTML = CARDS[cardIndex].content;
+                            optionsDiv.style.display = 'flex';
+                            isShowingOptions = true;
                             returnBtn.remove();
                         };
                         typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);
@@ -638,6 +735,38 @@
             }
         }
         
+        // New function to handle HTML content typing
+        function typeTextHTML(element, html, delay = 30, callback = null) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            // Store the interval ID so we can clear it if needed
+            const intervalId = setInterval(() => {
+                if (i < html.length) {
+                    // Check if we're at the start of a tag
+                    if (html.charAt(i) === '<' && html.substr(i, 4) === '<br>') {
+                        element.innerHTML += '<br>';
+                        i += 4;
+                    } else {
+                        element.innerHTML += html.charAt(i);
+                        i++;
+                    }
+                } else {
+                    clearInterval(intervalId);
+                    if (typingIntervals[currentCardIndex]) {
+                        typingIntervals[currentCardIndex].completed = true;
+                    }
+                    if (callback) callback();
+                }
+            }, delay);
+            
+            // Store the interval reference
+            typingIntervals[currentCardIndex] = {
+                intervalId: intervalId,
+                element: element,
+                completed: false
+            };
+        }
         function startPresentation() {
             createCards();
             createProgressDots();
