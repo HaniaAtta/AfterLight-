@@ -440,15 +440,17 @@ let typingSoundBuffer;
 // Initialize audio context
 function initAudio() {
     try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        createClickSound();
-        createNavigationSound();
-        createTypingSound();
+        // Check if audio context is already created
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+        }
     } catch (e) {
         console.error('Web Audio API not supported', e);
     }
 }
-
 // Create crisp robotic click sound
 function createClickSound() {
     const bufferSize = audioContext.sampleRate * 0.02;
@@ -695,8 +697,14 @@ function animateOptionsWithSound(optionsDiv) {
                 </div>
             `;
         
-            card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
-            card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
+            card.querySelector('.arrow-up').addEventListener('click', () => {
+                playNavigationSound();
+                navigateToCard(currentCardIndex - 1);
+            });
+            card.querySelector('.arrow-down').addEventListener('click', () => {
+                playNavigationSound();
+                navigateToCard(currentCardIndex + 1);
+            });
         
             return card;
         }
@@ -717,7 +725,10 @@ function animateOptionsWithSound(optionsDiv) {
                 const dot = document.createElement('div');
                 dot.className = 'progress-dot-indicator';
                 if (index === currentCardIndex) dot.classList.add('active');
-                dot.addEventListener('click', () => navigateToCard(index));
+                dot.addEventListener('click', () => {
+                    playNavigationSound();
+                    navigateToCard(index);
+                });
                 dotsContainer.appendChild(dot);
             });
         }
@@ -836,8 +847,9 @@ function animateOptionsWithSound(optionsDiv) {
             };
         }
         function handleOption(cardIndex, option) {
+            // Play click sound when option is selected
             playClickSound();
-            playTypingSound();
+            
             const card = document.getElementById(`card-${cardIndex}`);
             if (!card) return;
             
@@ -859,23 +871,27 @@ function animateOptionsWithSound(optionsDiv) {
                 }, 3000);
             }
             
-            
             const optionsDiv = document.getElementById(`options-${cardIndex}`);
-            if (optionsDiv) optionsDiv.style.display = 'none';
+            if (optionsDiv) {
+                // Play navigation sound when hiding options
+                playNavigationSound();
+                optionsDiv.style.display = 'none';
+            }
             
             const typingTarget = document.getElementById(`typing-${cardIndex}`);
             if (typingTarget) {
-                typingTarget.innerHTML = ''; // Use innerHTML instead of textContent
-                // Play navigation sound when showing response
-                playNavigationSound();
-            playTypingSound();
-
+                typingTarget.innerHTML = '';
+                // Play typing sound when starting response
+                playTypingSound();
+                
                 typeTextHTML(typingTarget, responseText, 25, () => {
                     if (option !== 4) {
                         const returnBtn = document.createElement('button');
                         returnBtn.className = 'return-to-prompt';
                         returnBtn.textContent = 'Return to Prompt';
                         returnBtn.onclick = () => {
+                            playClickSound(); // Play sound when returning to prompt
+                            
                             // Clear any existing typing animation
                             if (typingIntervals[cardIndex]) {
                                 clearInterval(typingIntervals[cardIndex].intervalId);
@@ -886,7 +902,8 @@ function animateOptionsWithSound(optionsDiv) {
                             optionsDiv.style.display = 'flex';
                             isShowingOptions = true;
                             returnBtn.remove();
-                            // Play sound when returning to options
+                            
+                            // Play navigation sound when showing options again
                             playNavigationSound();
                         };
                         typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);
@@ -895,10 +912,7 @@ function animateOptionsWithSound(optionsDiv) {
             }
         }
         
-        // New function to handle HTML content typing
         function typeTextHTML(element, html, delay = 30, callback = null) {
-            playClickSound();
-
             let i = 0;
             element.innerHTML = '';
             
@@ -912,6 +926,11 @@ function animateOptionsWithSound(optionsDiv) {
                     } else {
                         element.innerHTML += html.charAt(i);
                         i++;
+                        
+                        // Play typing sound for non-space characters
+                        if (html.charAt(i-1) !== ' ' && html.charAt(i-1) !== '<') {
+                            playTypingSound();
+                        }
                     }
                 } else {
                     clearInterval(intervalId);

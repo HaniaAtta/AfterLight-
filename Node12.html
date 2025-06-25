@@ -153,11 +153,113 @@
   </div>
 
   <script>
-    // Text to display with fire animation
+    // Audio context and sound setup (same as your other nodes)
+    let audioContext;
+    let clickSoundBuffer;
+    let navigationSoundBuffer;
+    let typingSoundBuffer;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+        } catch (e) {
+            console.error('Web Audio API not supported', e);
+        }
+    }
+    
+    // Create crisp robotic click sound
+    function createClickSound() {
+        const bufferSize = audioContext.sampleRate * 0.02;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+            data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+        }
+        
+        clickSoundBuffer = buffer;
+    }
+    
+    // Create navigation sound (more robotic)
+    function createNavigationSound() {
+        const bufferSize = audioContext.sampleRate * 0.05;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const n = i / bufferSize;
+            data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+            data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+        }
+        
+        navigationSoundBuffer = buffer;
+    }
+    
+    // Create typing sound (short robotic blips)
+    function createTypingSound() {
+        const bufferSize = audioContext.sampleRate * 0.01;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+            data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+        }
+        
+        typingSoundBuffer = buffer;
+    }
+    
+    // Play sound function
+    function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+        if (!audioContext || !buffer) return;
+        
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = volume;
+        source.playbackRate.value = playbackRate;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        source.start(0);
+        return source;
+    }
+    
+    // Play click sound
+    function playClickSound() {
+        const playbackRate = 0.9 + Math.random() * 0.2;
+        playSound(clickSoundBuffer, 0.2, playbackRate);
+    }
+    
+    // Play navigation sound
+    function playNavigationSound() {
+        playSound(navigationSoundBuffer, 0.25);
+    }
+    
+    // Play typing sound
+    function playTypingSound() {
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    }
+
+    // Initialize audio when page loads
+    initAudio();
+
+    // Original page code with sound effects integrated
     const text = "YOU ARE NOT SUPPOSED TO BE HERE";
     const fireElement = document.getElementById('fire-text');
     let i = 0;
     let glitchActive = false;
+    let lastGlitchSoundTime = 0;
     
     function typeWriter() {
       if (i < text.length) {
@@ -166,6 +268,9 @@
           glitchActive = true;
           const glitchChars = "!@#$%^&*()_+-=[]{};':\"\\|,.<>/?";
           const glitchLength = Math.floor(Math.random() * 5) + 3; // 3-7 glitch chars
+          
+          // Play glitch sound
+          playClickSound();
           
           // Generate and insert permanent glitch characters
           for (let g = 0; g < glitchLength && i < text.length; g++) {
@@ -195,18 +300,31 @@
         fireElement.appendChild(charSpan);
         i++;
         
+        // Play typing sound for normal characters
+        if (text.charAt(i-1) !== ' ') {
+          playTypingSound();
+        }
+        
         // Random typing speed for more organic feel
         setTimeout(typeWriter, Math.random() * 100 + 50);
       } else {
         // After typing completes, start intense glitch effect
         const intenseGlitch = setInterval(() => {
           fireElement.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 5 - 2.5}px)`;
+          
+          // Play glitch sound occasionally during intense glitch
+          if (Math.random() > 0.7) {
+            playClickSound();
+          }
         }, 50);
         
         // Redirect after 2 seconds of intense glitching
         setTimeout(() => {
           clearInterval(intenseGlitch);
-          window.location.href = 'main.html';
+          playNavigationSound();
+          setTimeout(() => {
+            window.location.href = 'main.html';
+          }, 500); // Give time for sound to play
         }, 2000);
       }
     }
@@ -219,6 +337,14 @@
       const overlay = document.querySelector('.glitch-overlay');
       overlay.style.opacity = '0.3';
       overlay.style.backgroundPosition = `${Math.random() * 100}% ${Math.random() * 100}%`;
+      
+      // Play glitch sound (but limit frequency)
+      const now = Date.now();
+      if (now - lastGlitchSoundTime > 300) {
+        playClickSound();
+        lastGlitchSoundTime = now;
+      }
+      
       setTimeout(() => {
         overlay.style.opacity = '0';
       }, 100);
@@ -240,6 +366,11 @@
         triggerGlitch();
       }
     }, 1000);
+    
+    // Play sound on any click
+    document.addEventListener('click', () => {
+      playClickSound();
+    });
   </script>
 </body>
 </html>

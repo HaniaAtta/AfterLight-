@@ -1,5 +1,107 @@
 <canvas></canvas>
 <script>
+// Audio context and sound setup (same as your other nodes)
+let audioContext;
+let clickSoundBuffer;
+let navigationSoundBuffer;
+let typingSoundBuffer;
+
+// Initialize audio context
+function initAudio() {
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        createClickSound();
+        createNavigationSound();
+        createTypingSound();
+    } catch (e) {
+        console.error('Web Audio API not supported', e);
+    }
+}
+
+// Create crisp robotic click sound
+function createClickSound() {
+    const bufferSize = audioContext.sampleRate * 0.02;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+        data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+    }
+    
+    clickSoundBuffer = buffer;
+}
+
+// Create navigation sound (more robotic)
+function createNavigationSound() {
+    const bufferSize = audioContext.sampleRate * 0.05;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const n = i / bufferSize;
+        data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+        data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+    }
+    
+    navigationSoundBuffer = buffer;
+}
+
+// Create typing sound (short robotic blips)
+function createTypingSound() {
+    const bufferSize = audioContext.sampleRate * 0.01;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+        data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+    }
+    
+    typingSoundBuffer = buffer;
+}
+
+// Play sound function
+function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+    if (!audioContext || !buffer) return;
+    
+    const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
+    source.buffer = buffer;
+    gainNode.gain.value = volume;
+    source.playbackRate.value = playbackRate;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    source.start(0);
+    return source;
+}
+
+// Play click sound
+function playClickSound() {
+    const playbackRate = 0.9 + Math.random() * 0.2;
+    playSound(clickSoundBuffer, 0.2, playbackRate);
+}
+
+// Play navigation sound
+function playNavigationSound() {
+    playSound(navigationSoundBuffer, 0.25);
+}
+
+// Play typing sound
+function playTypingSound() {
+    const playbackRate = 0.8 + Math.random() * 0.4;
+    playSound(typingSoundBuffer, 0.15, playbackRate);
+}
+
+// Initialize audio when page loads
+initAudio();
+
+// Original glitch code with sound effects added
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const colors = [
@@ -13,6 +115,7 @@ const colors = [
 ];
 let glitchDuration = 3000; // 3 seconds of glitch effect
 let startTime = Date.now();
+let lastGlitchSound = 0;
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -22,7 +125,7 @@ function drawText() {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   
-  // Glitchy text effect
+  // Glitchy text effect with sound
   for (let i = 0; i < 3; i++) {
     ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
     ctx.fillText(
@@ -40,6 +143,13 @@ function drawText() {
 function glitch() {
   ctx.fillStyle = "#1a191c";
   ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+  // Play glitch sound randomly
+  const now = Date.now();
+  if (now - lastGlitchSound > 200) { // Every 200ms max
+    playClickSound();
+    lastGlitchSound = now;
+  }
 
   // Create 3-4 glitching boxes
   for (let i = 0; i < 4; i++) {
@@ -75,19 +185,28 @@ function glitch() {
     );
   }
   
-  // Check if time is up and redirect
+  // Check if time is up and redirect with navigation sound
   if (Date.now() - startTime > glitchDuration) {
-    window.location.href = "main.html";
+    playNavigationSound();
+    setTimeout(() => {
+      window.location.href = "main.html";
+    }, 500); // Give time for sound to play
     return;
   }
   
   requestAnimationFrame(glitch);
 }
 
+// Start the glitch effect
 glitch();
 
 window.addEventListener('resize', () => {
   canvas.width = innerWidth;
   canvas.height = innerHeight;
+});
+
+// Play sound on any click
+document.addEventListener('click', () => {
+  playClickSound();
 });
 </script>

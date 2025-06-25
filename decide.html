@@ -186,9 +186,116 @@
   </div>
 
   <script>
+    // Audio context and sound setup
+    let audioContext;
+    let clickSoundBuffer;
+    let navigationSoundBuffer;
+    let typingSoundBuffer;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+        } catch (e) {
+            console.error('Web Audio API not supported', e);
+        }
+    }
+    
+    // Create crisp robotic click sound
+    function createClickSound() {
+        const bufferSize = audioContext.sampleRate * 0.02;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Create a more robotic, digital click sound
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short burst of noise with a quick decay
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+            // Add some high frequency components
+            data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+        }
+        
+        clickSoundBuffer = buffer;
+    }
+    
+    // Create navigation sound (more robotic)
+    function createNavigationSound() {
+        const bufferSize = audioContext.sampleRate * 0.05;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const n = i / bufferSize;
+            // More robotic sound with higher frequency components
+            data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+            data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+        }
+        
+        navigationSoundBuffer = buffer;
+    }
+    
+    // Create typing sound (short robotic blips)
+    function createTypingSound() {
+        const bufferSize = audioContext.sampleRate * 0.01; // Very short sound
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short digital blip sound
+            data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+            // Add some noise for texture
+            data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+        }
+        
+        typingSoundBuffer = buffer;
+    }
+    
+    // Play sound function
+    function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+        if (!audioContext || !buffer) return;
+        
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = volume;
+        source.playbackRate.value = playbackRate;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        source.start(0);
+        return source;
+    }
+    
+    // Play click sound
+    function playClickSound() {
+        // Randomize pitch slightly for variety
+        const playbackRate = 0.9 + Math.random() * 0.2;
+        playSound(clickSoundBuffer, 0.2, playbackRate);
+    }
+    
+    // Play navigation sound
+    function playNavigationSound() {
+        playSound(navigationSoundBuffer, 0.25);
+    }
+    
+    // Play typing sound
+    function playTypingSound() {
+        // Randomize pitch slightly for each keypress
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    }
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.querySelector('.loading-screen').style.display = 'none';
+        initAudio(); // Initialize audio when page loads
         startPresentation();
       }, 2000);
     });
@@ -210,53 +317,72 @@
     const container = document.querySelector('.typewriter-container');
     let index = 0;
     let skipTyping = false;
+    let typingTimeout;
+// Replace your current click handler and typeText function with these:
 
-    function typeText(element, text, speed = 50) {
-      let i = 0;
-      element.innerHTML = '';
+let currentTypingElement = null;
+let currentTypingText = "";
+let typingInterval = null;
 
-      function type() {
-        if (skipTyping) {
-          element.innerHTML = text;
-          finishTyping();
-          return;
-        }
-
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        } else {
-          finishTyping();
-        }
+function typeText(element, text, speed = 50) {
+  currentTypingElement = element;
+  currentTypingText = text;
+  element.innerHTML = '';
+  let i = 0;
+  
+  // Clear any existing typing interval
+  if (typingInterval) {
+    clearInterval(typingInterval);
+  }
+  
+  typingInterval = setInterval(() => {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      // Play typing sound for non-space characters
+      if (text.charAt(i) !== ' ') {
+        playTypingSound();
       }
-
-      function finishTyping() {
-        index++;
-        if (index < messages.length) {
-          const newLine = document.createElement('p');
-          newLine.classList.add('typewriter-container');
-          document.getElementById('messages').appendChild(newLine);
-          setTimeout(() => typeText(newLine, messages[index]), 500);
-        } else {
-          document.getElementById('options').style.display = 'flex';
-          setTimeout(() => {
-            document.getElementById('nav-buttons').style.opacity = '1';
-          }, 500);
-        }
-      }
-
-      type();
+      i++;
+    } else {
+      clearInterval(typingInterval);
+      typingInterval = null;
+      finishTyping();
     }
+  }, speed);
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-      typeText(container, messages[0]);
-    });
+function finishTyping() {
+  index++;
+  if (index < messages.length) {
+    const newLine = document.createElement('p');
+    newLine.classList.add('typewriter-container');
+    document.getElementById('messages').appendChild(newLine);
+    setTimeout(() => typeText(newLine, messages[index]), 500);
+  } else {
+    document.getElementById('options').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('nav-buttons').style.opacity = '1';
+    }, 500);
+  }
+}
 
-    document.addEventListener('click', () => {
-      skipTyping = true;
-    });
-
+// Updated click handler to skip typing animation
+document.addEventListener('click', function(e) {
+  // Don't skip if clicking on buttons
+  if (e.target.tagName === 'BUTTON') {
+    playClickSound();
+    return;
+  }
+  
+  // Skip typing animation if in progress
+  if (typingInterval && currentTypingElement) {
+    playClickSound();
+    clearInterval(typingInterval);
+    typingInterval = null;
+    currentTypingElement.innerHTML = currentTypingText;
+    finishTyping();
+  }
+});
     function markVisited(nodeNumber) {
       let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
       if (!visited.includes(nodeNumber)) {
@@ -265,22 +391,30 @@
           return true;
       }
       return false;
-  }
+    }
+
     function proceedToNextNode() {
+      playClickSound();
       // Mark the next node as visited before navigating
-      const nextNodeNumber = "Node 10"; // Change this to the appropriate next node number
+      const nextNodeNumber = "Node 10";
       if (markVisited(nextNodeNumber)) {
           document.body.classList.add("fade-out");
           setTimeout(() => {
               window.location.href = 'final_decision.html';
           }, 1000);
       }
-  }
+    }
+
     function returnToMain() {
+      playClickSound();
       document.body.classList.add("fade-out");
       setTimeout(() => {
         window.location.href = 'main.html';
       }, 1000);
+    }
+
+    function startPresentation() {
+      typeText(container, messages[0]);
     }
   </script>
 </body>

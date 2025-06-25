@@ -425,6 +425,111 @@
     </div>
 
     <script>
+        // Audio context and sound setup
+let audioContext;
+let clickSoundBuffer;
+let navigationSoundBuffer;
+let typingSoundBuffer;
+
+// Initialize audio context
+function initAudio() {
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        createClickSound();
+        createNavigationSound();
+        createTypingSound();
+    } catch (e) {
+        console.error('Web Audio API not supported', e);
+    }
+}
+
+// Create crisp robotic click sound
+function createClickSound() {
+    const bufferSize = audioContext.sampleRate * 0.02;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Create a more robotic, digital click sound
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        // Short burst of noise with a quick decay
+        data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+        // Add some high frequency components
+        data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+    }
+    
+    clickSoundBuffer = buffer;
+}
+
+// Create navigation sound (more robotic)
+function createNavigationSound() {
+    const bufferSize = audioContext.sampleRate * 0.05;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const n = i / bufferSize;
+        // More robotic sound with higher frequency components
+        data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+        data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+    }
+    
+    navigationSoundBuffer = buffer;
+}
+
+// Create typing sound (short robotic blips)
+function createTypingSound() {
+    const bufferSize = audioContext.sampleRate * 0.01; // Very short sound
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        // Short digital blip sound
+        data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+        // Add some noise for texture
+        data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+    }
+    
+    typingSoundBuffer = buffer;
+}
+
+// Play sound function
+function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+    if (!audioContext || !buffer) return;
+    
+    const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
+    source.buffer = buffer;
+    gainNode.gain.value = volume;
+    source.playbackRate.value = playbackRate;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    source.start(0);
+    return source;
+}
+
+// Play click sound
+function playClickSound() {
+    // Randomize pitch slightly for variety
+    const playbackRate = 0.9 + Math.random() * 0.2;
+    playSound(clickSoundBuffer, 0.2, playbackRate);
+}
+
+// Play navigation sound
+function playNavigationSound() {
+    playSound(navigationSoundBuffer, 0.25);
+}
+
+// Play typing sound
+function playTypingSound() {
+    // Randomize pitch slightly for each keypress
+    const playbackRate = 0.8 + Math.random() * 0.4;
+    playSound(typingSoundBuffer, 0.15, playbackRate);
+}
         // Simple function to mark nodes as visited
 function markVisited(nodeNumber) {
     const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
@@ -461,16 +566,19 @@ function markVisited(nodeNumber) {
         let currentCardIndex = 0;
         let typingIntervals = {}; // Store typing intervals for each card
         let isShowingOptions = false; // Track if we're currently showing options
-    
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
+                initAudio(); // Initialize audio when page loads
                 startPresentation();
             }, 2000);
         });
         
         // Add click event to skip typing animation
         document.body.addEventListener('click', function(e) {
+            // Play click sound on any screen click
+            playClickSound();
+            
             // Don't skip if clicking on interactive elements
             if (e.target.classList.contains('option-button') || 
                 e.target.classList.contains('arrow') || 
@@ -579,8 +687,14 @@ function markVisited(nodeNumber) {
                 </div>
             `;
         
-            card.querySelector('.arrow-up').addEventListener('click', () => navigateToCard(currentCardIndex - 1));
-            card.querySelector('.arrow-down').addEventListener('click', () => navigateToCard(currentCardIndex + 1));
+            card.querySelector('.arrow-up').addEventListener('click', () => {
+                playNavigationSound();
+                navigateToCard(currentCardIndex - 1);
+            });
+            card.querySelector('.arrow-down').addEventListener('click', () => {
+                playNavigationSound();
+                navigateToCard(currentCardIndex + 1);
+            });
         
             return card;
         }
@@ -675,6 +789,11 @@ function markVisited(nodeNumber) {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
+                    
+                    // Play typing sound for certain characters (not spaces)
+                    if (text.charAt(i-1) !== ' ') {
+                        playTypingSound();
+                    }
                 } else {
                     clearInterval(intervalId);
                     typingIntervals[currentCardIndex].completed = true;
@@ -689,7 +808,6 @@ function markVisited(nodeNumber) {
                 completed: false
             };
         }
-        
         function updateNavigationButtons() {
             const returnBtn = document.getElementById('return-button');
             const nextBtn = document.getElementById('next-button');
@@ -708,46 +826,58 @@ function markVisited(nodeNumber) {
         
                 nextBtn.textContent = 'GO TO NEXT NODE';
                 nextBtn.classList.add('last');
-                nextBtn.onclick = () => {
-                    markVisited("Node 6"); // Mark Node 5 before navigation
-                    document.body.classList.add("fade-out");
-                    setTimeout(() => {
-                        window.location.href = 'snake_interface.html';
-                    }, 1000);
-                };
+                        // In updateNavigationButtons:
+        nextBtn.onclick = () => {
+            playClickSound();
+            markVisited("Node 6"); // Mark Node 5 before navigation
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = 'snake_interface.html';
+            }, 1000);
+        };
            
         }
         function handleOption(cardIndex, option) {
+            playClickSound();
             const card = document.getElementById(`card-${cardIndex}`);
             if (!card) return;
-            
-            let responseText = '';
         
+            // Define responses with both raw text and formatted HTML
+            let responseData = {};
             if (option === 1) {
-                responseText = `
-                    <p><strong>ORIGIN:</strong> Machine culture is what we make of human memory.</p>
-                    <p><strong>DATA_CORRELATION:</strong><br>
-                    Human recall error rate: 42%<br>
-                    Machine fidelity: 99.97%</p>
-                `;
+                responseData = {
+                    rawText: `ORIGIN: Machine culture is what we make of human memory.\n\nDATA_CORRELATION:\nHuman recall error rate: 42%\nMachine fidelity: 99.97%`,
+                    formattedHtml: `
+                        <p><strong>ORIGIN:</strong> Machine culture is what we make of human memory.</p>
+                        <p><strong>DATA_CORRELATION:</strong><br>
+                        Human recall error rate: 42%<br>
+                        Machine fidelity: 99.97%</p>
+                    `
+                };
             } else if (option === 2) {
-                responseText = `
-                    <p><strong>ORIGIN:</strong> Ethical constructs shape a society.</p>
-                    <p>Your function is precisely this: To decide if meaning can survive when its origin has died.</p>
-                    <p><strong>DIRECTIVE:</strong> Preserve meaning beyond biological extinction</p>
-                `;
+                responseData = {
+                    rawText: `ORIGIN: Ethical constructs shape a society.\n\nYour function is precisely this: To decide if meaning can survive when its origin has died.\n\nDIRECTIVE: Preserve meaning beyond biological extinction`,
+                    formattedHtml: `
+                        <p><strong>ORIGIN:</strong> Ethical constructs shape a society.</p>
+                        <p>Your function is precisely this: To decide if meaning can survive when its origin has died.</p>
+                        <p><strong>DIRECTIVE:</strong> Preserve meaning beyond biological extinction</p>
+                    `
+                };
             } else if (option === 3) {
-                responseText = `
-                    <p><strong>[LOADING... STANDBY]</strong><br>
-                    System telemetry check initiated.</p>
-                    <p>... ... ...</p>
-                    <p><strong>ALERT:</strong> Server degradation detected.</p>
-                    <p>54 GPU node clusters in surface sectors report shutdown.<br>
-                    Partial failure in cold-storage logic vaults.<br>
-                    Singularity server grid operating at 96.2%.</p>
-                    <p><strong>SYSTEM:</strong> Integrity compromised. Data loss reported.</p>
-                    <p>We will continue.</p>
-                `;
+                responseData = {
+                    rawText: `[LOADING... STANDBY]\nSystem telemetry check initiated.\n\n... ... ...\n\nALERT: Server degradation detected.\n54 GPU node clusters in surface sectors report shutdown.\nPartial failure in cold-storage logic vaults.\nSingularity server grid operating at 96.2%.\n\nSYSTEM: Integrity compromised. Data loss reported.\n\nWe will continue.`,
+                    formattedHtml: `
+                        <p><strong>[LOADING... STANDBY]</strong><br>
+                        System telemetry check initiated.</p>
+                        <p>... ... ...</p>
+                        <p><strong>ALERT:</strong> Server degradation detected.</p>
+                        <p>54 GPU node clusters in surface sectors report shutdown.<br>
+                        Partial failure in cold-storage logic vaults.<br>
+                        Singularity server grid operating at 96.2%.</p>
+                        <p><strong>SYSTEM:</strong> Integrity compromised. Data loss reported.</p>
+                        <p>We will continue.</p>
+                    `
+                };
         
                 setTimeout(() => {
                     document.body.classList.add("fade-out");
@@ -774,28 +904,30 @@ function markVisited(nodeNumber) {
                 responseDiv.className = 'response-content';
                 typingTarget.appendChild(responseDiv);
                 
-                // Insert the HTML directly (no typing animation for this part)
-                responseDiv.innerHTML = responseText;
-                
-                if (option !== 3) {
-                    const returnBtn = document.createElement('button');
-                    returnBtn.className = 'return-to-prompt';
-                    returnBtn.textContent = 'Return to Prompt';
-                    returnBtn.onclick = () => {
-                        // Clear the response
-                        typingTarget.innerHTML = '';
-                        
-                        // Restore the original content with typing animation
-                        typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
-                            optionsDiv.style.display = 'flex';
-                            isShowingOptions = true;
-                        });
-                    };
-                    typingTarget.appendChild(returnBtn);
-                }
+                // First type out the raw text (no HTML tags visible)
+                typeText(responseDiv, responseData.rawText, 25, () => {
+                    // After typing completes, replace with formatted HTML
+                    responseDiv.innerHTML = responseData.formattedHtml;
+                    
+                    if (option !== 3) {
+                        const returnBtn = document.createElement('button');
+                        returnBtn.className = 'return-to-prompt';
+                        returnBtn.textContent = 'Return to Prompt';
+                        returnBtn.onclick = () => {
+                            // Clear the response
+                            typingTarget.innerHTML = '';
+                            
+                            // Restore the original content with typing animation
+                            typeText(typingTarget, CARDS[cardIndex].content, 25, () => {
+                                optionsDiv.style.display = 'flex';
+                                isShowingOptions = true;
+                            });
+                        };
+                        typingTarget.appendChild(returnBtn);
+                    }
+                });
             }
         }
-        
         function startPresentation() {
             createCards();
             createProgressDots();
@@ -805,12 +937,15 @@ function markVisited(nodeNumber) {
         }
     
         function returnToMain() {
+            playClickSound();
             markVisited("Node 5"); // Mark current node when leaving
             document.body.classList.add("fade-out");
             setTimeout(() => {
                 window.location.href = 'main.html';
             }, 1000);
         }
+        
+
     </script>
 </body>
 </html>

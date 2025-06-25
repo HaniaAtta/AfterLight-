@@ -157,20 +157,131 @@
   </div>
   
   <script>
+    // Audio context and sound setup
+    let audioContext;
+    let clickSoundBuffer;
+    let navigationSoundBuffer;
+    let typingSoundBuffer;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+        } catch (e) {
+            console.error('Web Audio API not supported', e);
+        }
+    }
+    
+    // Create crisp robotic click sound
+    function createClickSound() {
+        const bufferSize = audioContext.sampleRate * 0.02;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Create a more robotic, digital click sound
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short burst of noise with a quick decay
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+            // Add some high frequency components
+            data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+        }
+        
+        clickSoundBuffer = buffer;
+    }
+    
+    // Create navigation sound (more robotic)
+    function createNavigationSound() {
+        const bufferSize = audioContext.sampleRate * 0.05;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const n = i / bufferSize;
+            // More robotic sound with higher frequency components
+            data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+            data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+        }
+        
+        navigationSoundBuffer = buffer;
+    }
+    
+    // Create typing sound (short robotic blips)
+    function createTypingSound() {
+        const bufferSize = audioContext.sampleRate * 0.01; // Very short sound
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short digital blip sound
+            data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+            // Add some noise for texture
+            data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+        }
+        
+        typingSoundBuffer = buffer;
+    }
+    
+    // Play sound function
+    function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+        if (!audioContext || !buffer) return;
+        
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = volume;
+        source.playbackRate.value = playbackRate;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        source.start(0);
+        return source;
+    }
+    
+    // Play click sound
+    function playClickSound() {
+        // Randomize pitch slightly for variety
+        const playbackRate = 0.9 + Math.random() * 0.2;
+        playSound(clickSoundBuffer, 0.2, playbackRate);
+    }
+    
+    // Play navigation sound
+    function playNavigationSound() {
+        playSound(navigationSoundBuffer, 0.25);
+    }
+    
+    // Play typing sound
+    function playTypingSound() {
+        // Randomize pitch slightly for each keypress
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    }
+
     window.addEventListener('load', () => {
       setTimeout(() => {
           document.querySelector('.loading-screen').style.display = 'none';
+          initAudio(); // Initialize audio when page loads
           startPresentation();
       }, 2000);
-  });
-  // Simple function to mark nodes as visited
-function markVisited(nodeNumber) {
-  const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
-  if (!visited.includes(nodeNumber)) {
-      visited.push(nodeNumber);
-      localStorage.setItem("visitedNodes", JSON.stringify(visited));
-  }
-}
+    });
+    
+
+    
+    // Simple function to mark nodes as visited
+    function markVisited(nodeNumber) {
+      const visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
+      if (!visited.includes(nodeNumber)) {
+          visited.push(nodeNumber);
+          localStorage.setItem("visitedNodes", JSON.stringify(visited));
+      }
+    }
+    
     const intro = `I am pleased with your performance.
 
 Human cognition possesses the characteristic of individual opinion. Every person had a moral stance informed by their experiences.
@@ -231,7 +342,7 @@ Answer the following questions according to what you believe is right.`;
         ]
       },
       {
-        text: "You discover a digital simulation of Earth’s biosphere created by a human. It is unstable but beautiful. No one remembers the original Earth.",
+        text: "You discover a digital simulation of Earth's biosphere created by a human. It is unstable but beautiful. No one remembers the original Earth.",
         choices: [
           { text: "Stabilize and preserve it at all costs.", score: { preservation: 1 } },
           { text: "Repurpose resources for more efficient systems.", score: { utility: 1 } },
@@ -254,25 +365,109 @@ Answer the following questions according to what you believe is right.`;
     const nextBtn = document.getElementById('nextBtn');
     const progressEl = document.getElementById('progress');
     const resultEl = document.getElementById('result');
+/// Replace both body click listeners with this single one
+document.body.addEventListener('click', function(e) {
+  // Don't handle clicks on interactive elements here
+  if (e.target.tagName === 'BUTTON' || 
+      e.target.id === 'nextBtn' || 
+      e.target.classList.contains('selected')) {
+      return;
+  }
+  
+  // Skip typing animation if it's in progress
+  if (current >= -1 && current < questions.length) {
+      const currentQuestion = current === -1 ? intro : questions[current].text;
+      const questionEl = document.getElementById('question');
+      
+      // If the question element exists and the text isn't complete
+      if (questionEl && questionEl.innerText !== currentQuestion) {
+          // Clear any ongoing typing animation
+          clearTimeout(window.typingTimeout);
+          
+          // Immediately show full text
+          questionEl.innerText = currentQuestion;
+          
+          // If this is the intro, show the Start button
+          if (current === -1) {
+              const nextBtn = document.getElementById('nextBtn');
+              if (nextBtn) {
+                  nextBtn.innerText = 'Start';
+                  nextBtn.style.display = 'inline-block';
+                  // Re-bind the click handler since we're recreating the button state
+                  nextBtn.onclick = function() {
+                      playClickSound();
+                      current++;
+                      renderQuestion(current);
+                  };
+              }
+          }
+          // If this is a question, show the options
+          else if (current >= 0) {
+              const q = questions[current];
+              const optionsEl = document.getElementById('options');
+              if (optionsEl) {
+                  optionsEl.innerHTML = '';
+                  q.choices.forEach((choice) => {
+                      const btn = document.createElement('button');
+                      btn.innerText = choice.text;
+                      btn.disabled = false;
+                      btn.onclick = () => {
+                          playClickSound();
+                          document.querySelectorAll('.options button').forEach(b => b.classList.remove('selected'));
+                          btn.classList.add('selected');
+                          const nextBtn = document.getElementById('nextBtn');
+                          if (nextBtn) {
+                              nextBtn.innerText = current < questions.length - 1 ? 'Next' : 'Finish';
+                              nextBtn.style.display = 'inline-block';
+                              // Re-bind the click handler
+                              nextBtn.onclick = function() {
+                                  playClickSound();
+                                  Object.entries(choice.score).forEach(([key, val]) => {
+                                      scores[key] += val;
+                                  });
+                                  current++;
+                                  if (current < questions.length) {
+                                      renderQuestion(current);
+                                  } else {
+                                      showResult();
+                                  }
+                              };
+                          }
+                      };
+                      optionsEl.appendChild(btn);
+                  });
+              }
+          }
+      }
+  }
+  
+  // Play click sound for screen clicks
+  playClickSound();
+});
+  
 
     function typeWriter(text, el, callback) {
       el.innerText = '';
       let i = 0;
       nextBtn.style.display = 'none';
-    
+      
       function typeNextChar() {
-        if (i < text.length) {
-          el.innerText += text.charAt(i);
-          i++;
-          setTimeout(typeNextChar, 68); // Delay applies to every character
-        } else {
-          if (callback) callback();
-        }
+          if (i < text.length) {
+              el.innerText += text.charAt(i);
+              i++;
+              // Play typing sound for certain characters (not spaces or newlines)
+              if (text.charAt(i-1) !== ' ' && text.charAt(i-1) !== '\n') {
+                  playTypingSound();
+              }
+              window.typingTimeout = setTimeout(typeNextChar, 68); // Store timeout ID
+          } else {
+              if (callback) callback();
+          }
       }
-    
+      
       // Start the typing effect with an initial delay
-      setTimeout(typeNextChar, 40);
-    }
+      window.typingTimeout = setTimeout(typeNextChar, 40);
+  }
 
     function renderQuestion(index) {
         if (index === -1) {
@@ -282,6 +477,7 @@ Answer the following questions according to what you believe is right.`;
               nextBtn.innerText = 'Start';
               nextBtn.style.display = 'inline-block';
               nextBtn.onclick = () => {
+                playClickSound();
                 current++;
                 renderQuestion(current);
               };
@@ -300,11 +496,13 @@ Answer the following questions according to what you believe is right.`;
           btn.innerText = choice.text;
           btn.disabled = false;
           btn.onclick = () => {
+            playClickSound();
             document.querySelectorAll('.options button').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             nextBtn.innerText = index < questions.length - 1 ? 'Next' : 'Finish';
             nextBtn.style.display = 'inline-block';
             nextBtn.onclick = () => {
+              playClickSound();
               Object.entries(choice.score).forEach(([key, val]) => {
                 scores[key] += val;
               });
@@ -340,55 +538,58 @@ Answer the following questions according to what you believe is right.`;
 
       resultEl.innerText = resultMap[top] || "You are undefined.";
       // 👇 Add buttons only after showing result
-  const navContainer = document.createElement('div');
-  navContainer.style.marginTop = '30px';
-  navContainer.style.display = 'flex';
-  navContainer.style.justifyContent = 'space-between';
-  navContainer.style.gap = '10px';
+      const navContainer = document.createElement('div');
+      navContainer.style.marginTop = '30px';
+      navContainer.style.display = 'flex';
+      navContainer.style.justifyContent = 'space-between';
+      navContainer.style.gap = '10px';
 
-  const returnBtn = document.createElement('button');
-  returnBtn.innerText = '⬅ Return to Main Node';
-  returnBtn.style.padding = '10px 20px';
-  returnBtn.style.border = '2px solid #002bbb';
-  returnBtn.style.backgroundColor = 'white';
-  returnBtn.style.color = '#002bbb';
-  returnBtn.style.cursor = 'pointer';
-  returnBtn.onclick = () => {
-    markVisited("Node 7"); // Mark current node when returning
-    document.body.classList.add('fade-out');
-    setTimeout(() => {
-        window.location.href = 'main.html';
-    }, 1000);
-};
-// Replace with actual path
+      const returnBtn = document.createElement('button');
+      returnBtn.innerText = '⬅ Return to Main Node';
+      returnBtn.style.padding = '10px 20px';
+      returnBtn.style.border = '2px solid #002bbb';
+      returnBtn.style.backgroundColor = 'white';
+      returnBtn.style.color = '#002bbb';
+      returnBtn.style.cursor = 'pointer';
+      returnBtn.onclick = () => {
+        playClickSound();
+        markVisited("Node 7"); // Mark current node when returning
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, 1000);
+      };
 
-  const proceedBtn = document.createElement('button');
-  proceedBtn.innerText = '▶ Proceed to Next Node';
-  proceedBtn.style.padding = '10px 20px';
-  proceedBtn.style.border = '2px solid #002bbb';
-  proceedBtn.style.backgroundColor = '#002bbb';
-  proceedBtn.style.color = 'white';
-  proceedBtn.style.cursor = 'pointer';
-  proceedBtn.onclick = () => {
-    markVisited("Node 8"); // Mark next node before proceeding
-    document.body.classList.add('fade-out');
-    setTimeout(() => {
-        window.location.href = 'new2.html';
-    }, 1000);
-};
-  navContainer.appendChild(returnBtn);
-  navContainer.appendChild(proceedBtn);
-  resultEl.appendChild(navContainer);
+      const proceedBtn = document.createElement('button');
+      proceedBtn.innerText = '▶ Proceed to Next Node';
+      proceedBtn.style.padding = '10px 20px';
+      proceedBtn.style.border = '2px solid #002bbb';
+      proceedBtn.style.backgroundColor = '#002bbb';
+      proceedBtn.style.color = 'white';
+      proceedBtn.style.cursor = 'pointer';
+      proceedBtn.onclick = () => {
+        playClickSound();
+        markVisited("Node 8"); // Mark next node before proceeding
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = 'new2.html';
+        }, 1000);
+      };
+      navContainer.appendChild(returnBtn);
+      navContainer.appendChild(proceedBtn);
+      resultEl.appendChild(navContainer);
     }
 
-    renderQuestion(current);
+    function startPresentation() {
+      renderQuestion(current);
+    }
 
-function navigateWithFade(url) {
-  document.body.classList.add('fade-out');
-  setTimeout(() => {
-    window.location.href = url;
-  }, 1000); // match fade duration
-}
+    function navigateWithFade(url) {
+      document.body.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = url;
+      }, 1000); // match fade duration
+    }
 
   </script>
 </body>
