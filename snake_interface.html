@@ -235,14 +235,162 @@
     </div>
 
     <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loading-screen').style.display = 'none';
-                document.getElementById('start-screen').style.display = 'flex';
-            }, 2000);
-        });
+    // Audio context and sound setup
+    let audioContext;
+    let clickSoundBuffer;
+    let navigationSoundBuffer;
+    let typingSoundBuffer;
+    let collectSoundBuffer;
+    let gameOverSoundBuffer;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+            createCollectSound();
+            createGameOverSound();
+        } catch (e) {
+            console.error('Web Audio API not supported', e);
+        }
+    }
+    
+    // Create crisp robotic click sound
+    function createClickSound() {
+        const bufferSize = audioContext.sampleRate * 0.02;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+            data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+        }
+        
+        clickSoundBuffer = buffer;
+    }
+    
+    // Create navigation sound (more robotic)
+    function createNavigationSound() {
+        const bufferSize = audioContext.sampleRate * 0.05;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const n = i / bufferSize;
+            data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+            data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+        }
+        
+        navigationSoundBuffer = buffer;
+    }
+    
+    // Create typing sound (short robotic blips)
+    function createTypingSound() {
+        const bufferSize = audioContext.sampleRate * 0.01;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+            data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+        }
+        
+        typingSoundBuffer = buffer;
+    }
+    
+    // Create word collection sound
+    function createCollectSound() {
+        const bufferSize = audioContext.sampleRate * 0.1;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.sin(t * Math.PI * 15) * Math.pow(1 - t, 3);
+            data[i] += 0.5 * Math.sin(t * Math.PI * 30) * (1 - t);
+        }
+        
+        collectSoundBuffer = buffer;
+    }
+    
+    // Create game over sound
+    function createGameOverSound() {
+        const bufferSize = audioContext.sampleRate * 0.3;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 2);
+            data[i] += 0.7 * Math.sin(t * Math.PI * 10);
+            data[i] += 0.3 * Math.sin(t * Math.PI * 25);
+        }
+        
+        gameOverSoundBuffer = buffer;
+    }
+    
+    // Play sound function
+    function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+        if (!audioContext || !buffer) return;
+        
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = volume;
+        source.playbackRate.value = playbackRate;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        source.start(0);
+        return source;
+    }
+    
+    // Play click sound
+    function playClickSound() {
+        const playbackRate = 0.9 + Math.random() * 0.2;
+        playSound(clickSoundBuffer, 0.2, playbackRate);
+    }
+    
+    // Play navigation sound
+    function playNavigationSound() {
+        playSound(navigationSoundBuffer, 0.25);
+    }
+    
+    // Play typing sound
+    function playTypingSound() {
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    }
+    
+    // Play collect sound
+    function playCollectSound() {
+        const playbackRate = 0.7 + Math.random() * 0.6;
+        playSound(collectSoundBuffer, 0.4, playbackRate);
+    }
+    
+    // Play game over sound
+    function playGameOverSound() {
+        playSound(gameOverSoundBuffer, 0.5);
+    }
+
+    // Initialize audio when page loads
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.querySelector('.loading-screen').style.display = 'none';
+            initAudio(); // Initialize audio system
+            document.getElementById('start-screen').style.display = 'flex';
+        }, 2000);
+    });
+
         function handleStartScreen(event) {
             if ([37, 38, 39, 40].includes(event.keyCode)) { // Arrow keys
+                playClickSound();
                 document.getElementById('start-screen').style.display = 'none';
                 startGame();
                 window.removeEventListener('keydown', handleStartScreen);
@@ -250,6 +398,13 @@
         }
 
         window.addEventListener('keydown', handleStartScreen);
+       
+            // Add sound to button clicks
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function() {
+            playClickSound();
+        });
+    });
         let scl = 80;
         let cols = 10;
         let rows = 7;
@@ -475,6 +630,11 @@
         }
         
         function startGame() {
+            // Initialize audio if not already done
+            if (!audioContext) {
+                initAudio();
+            }
+            
             document.getElementById('game-container').style.display = 'flex';
             currentPromptIndex = 0;
             currentLevel = 0;
@@ -491,8 +651,14 @@
             promptDisplay.textContent = " " + prompts[currentPromptIndex].question;
             promptDisplay.className = 'prompt-heading typing-effect';
             
+               // Play typing sound for the prompt
+        const typingInterval = setInterval(() => {
+            playTypingSound();
+        }, 100);
+
             // Remove typing effect after animation completes
             setTimeout(() => {
+                clearInterval(typingInterval);
                 promptDisplay.className = 'prompt-heading';
             }, 2000);
         }
@@ -517,6 +683,7 @@
         }
         
         function showLevelComplete() {
+            playNavigationSound();
             if (currentPromptIndex < prompts.length - 1) {
                 // Move to next prompt
                 currentPromptIndex++;
@@ -532,6 +699,7 @@
         }
 
         function showGameComplete() {
+            playNavigationSound();
             const gameOverDiv = document.getElementById('game-over');
             const wordsList = document.getElementById('collected-words-list');
             const currentPrompt = document.getElementById('current-prompt');
@@ -546,6 +714,7 @@
         }
 
         function showGameOver() {
+            playGameOverSound();
             const gameOverDiv = document.getElementById('game-over');
             const wordsList = document.getElementById('collected-words-list');
             const currentPrompt = document.getElementById('current-prompt');
@@ -621,6 +790,11 @@
                         this.grow();
                         collectedWords.push(f.label);
                         foods.splice(i, 1);
+                        // Ensure audio context is running (required for Chrome autoplay policy)
+                        if (audioContext && audioContext.state === 'suspended') {
+                            audioContext.resume();
+                        }
+                        playCollectSound(); 
                         return true;
                     }
                 }
@@ -632,7 +806,10 @@
                 if (this.body.length <= 3) return false;
                 
                 for (let i = 0; i < this.body.length - 1; i++) {
-                    if (head.equals(this.body[i])) return true;
+                    if (head.equals(this.body[i])) {
+                        playGameOverSound(); // Play sound when game over
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -687,11 +864,13 @@
         }
 
         function returnToMain() {
+            playNavigationSound();
             document.body.classList.add("fade-out");
             setTimeout(() => {
                 window.location.href = 'main.html';
             }, 1000);
         }
+    
 
         window.resetGame = resetGame;
         window.returnToMain = returnToMain;

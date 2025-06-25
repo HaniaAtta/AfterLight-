@@ -381,12 +381,150 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
     </div>
 
     <script>
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.querySelector('.loading-screen').style.display = 'none';
-        }, 1000);
-      });
-      
+      // Audio context and sound setup
+let audioContext;
+let clickSoundBuffer;
+let navigationSoundBuffer;
+let typingSoundBuffer;
+let submitSoundBuffer;
+let errorSoundBuffer;
+
+// Initialize audio context
+function initAudio() {
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        createClickSound();
+        createNavigationSound();
+        createTypingSound();
+        createSubmitSound();
+        createErrorSound();
+    } catch (e) {
+        console.error('Web Audio API not supported', e);
+    }
+}
+
+// Sound creation functions
+function createClickSound() {
+    const bufferSize = audioContext.sampleRate * 0.02;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+        data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+    }
+    
+    clickSoundBuffer = buffer;
+}
+
+function createNavigationSound() {
+    const bufferSize = audioContext.sampleRate * 0.05;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const n = i / bufferSize;
+        data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+        data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+    }
+    
+    navigationSoundBuffer = buffer;
+}
+
+function createTypingSound() {
+    const bufferSize = audioContext.sampleRate * 0.01;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+        data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+    }
+    
+    typingSoundBuffer = buffer;
+}
+
+function createSubmitSound() {
+    const bufferSize = audioContext.sampleRate * 0.2;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = Math.sin(t * Math.PI * 15) * (1 - t) * 0.5;
+        data[i] += 0.3 * Math.sin(t * Math.PI * 30) * (1 - t);
+    }
+    
+    submitSoundBuffer = buffer;
+}
+
+function createErrorSound() {
+    const bufferSize = audioContext.sampleRate * 0.1;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2);
+        data[i] += 0.5 * Math.sin(t * Math.PI * 10) * (1 - t);
+    }
+    
+    errorSoundBuffer = buffer;
+}
+
+// Play sound function
+function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+    if (!audioContext || !buffer) return;
+    
+    // Resume audio context if suspended
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    
+    const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
+    source.buffer = buffer;
+    gainNode.gain.value = volume;
+    source.playbackRate.value = playbackRate;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    source.start(0);
+    return source;
+}
+
+// Specific sound play functions
+function playClickSound() {
+    const playbackRate = 0.9 + Math.random() * 0.2;
+    playSound(clickSoundBuffer, 0.2, playbackRate);
+}
+
+function playNavigationSound() {
+    playSound(navigationSoundBuffer, 0.25);
+}
+
+function playTypingSound() {
+    const playbackRate = 0.8 + Math.random() * 0.4;
+    playSound(typingSoundBuffer, 0.15, playbackRate);
+}
+
+function playSubmitSound() {
+    playSound(submitSoundBuffer, 0.4);
+}
+
+function playErrorSound() {
+    playSound(errorSoundBuffer, 0.3);
+}
+window.addEventListener('load', () => {
+  setTimeout(() => {
+      document.querySelector('.loading-screen').style.display = 'none';
+      initAudio(); // Initialize audio system
+  }, 1000);
+});
       // Handle start button
       document.getElementById('startBtn').addEventListener('click', function() {
           document.getElementById('infoContainer').style.display = 'none';
@@ -423,18 +561,35 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
       ];
       
       function updatePrompt() {
-          const prompt = prompts[currentLevel - 1];
-          const heading = document.querySelector('.main-heading');
-          const levelIndicator = document.querySelector('.level-indicator');
-          
-          // Update level indicator
-          levelIndicator.textContent = `Level ${currentLevel} of 6`;
-          
-          // Update heading directly without animation
-          heading.textContent = prompt;
-          
-          return prompt;
-      }
+        const prompt = prompts[currentLevel - 1];
+        const heading = document.querySelector('.main-heading');
+        const levelIndicator = document.querySelector('.level-indicator');
+        
+        // Clear any existing intervals
+        if (window.typingInterval) clearInterval(window.typingInterval);
+        if (window.typingEffect) clearInterval(window.typingEffect);
+        
+        // Play typing sound for the prompt
+        window.typingInterval = setInterval(() => {
+            playTypingSound();
+        }, 100);
+        
+        // Update level indicator
+        levelIndicator.textContent = `Level ${currentLevel} of 6`;
+        
+        // Update heading with typing effect
+        heading.textContent = "";
+        let i = 0;
+        window.typingEffect = setInterval(() => {
+            if (i < prompt.length) {
+                heading.textContent = prompt.substring(0, i + 1); // Use substring instead of +=
+                i++;
+            } else {
+                clearInterval(window.typingEffect);
+                clearInterval(window.typingInterval);
+            }
+        }, 100); // Slower interval to prevent doubling
+    }
       
       // Tile types
       const TILE_TYPES = {
@@ -535,9 +690,10 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
       }
       
       function clearCanvas() {
-          initializeGrid();
-          draw();
-      }
+        playNavigationSound();
+        initializeGrid();
+        draw();
+    }
       
       function draw() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -567,8 +723,17 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
               });
           });
       }
+      // Handle start button
+document.getElementById('startBtn').addEventListener('click', function() {
+  playClickSound();
+  document.getElementById('infoContainer').style.display = 'none';
+  document.getElementById('gameContainer').style.display = 'block';
+  initializeGame();
+});
+
   
       canvas.addEventListener('click', (e) => {
+        playClickSound();
           const rect = canvas.getBoundingClientRect();
           const x = Math.floor((e.clientX - rect.left) / tileSize);
           const y = Math.floor((e.clientY - rect.top) / tileSize);
@@ -590,11 +755,13 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
       });
       
       function toggleMode() {
+        playClickSound();
           showPatterns = !showPatterns;
           draw();
       }
   
       function submitShapes() {
+        playSubmitSound();
           document.getElementById('submitModal').style.display = 'flex';
           
           // Advance to next level or complete
@@ -620,7 +787,8 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
                   `;
                   // Reattach event listener to close button
                   document.getElementById('closeModal').addEventListener('click', function() {
-                      document.getElementById('submitModal').style.display = 'none';
+                    playClickSound(); 
+                    document.getElementById('submitModal').style.display = 'none';
                   });
                   
                   // Add event listener for final continue button
@@ -630,12 +798,13 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
       }
 
       function proceedToMain() {
-          document.getElementById('submitModal').style.display = 'none';
-          document.body.classList.add("fade-out");
-          setTimeout(() => {
-              window.location.href = 'main.html';
-          }, 1000);
-      }
+        playNavigationSound();
+        document.getElementById('submitModal').style.display = 'none';
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, 1000);
+    }
 
       // Event listeners for the modal
       document.getElementById('closeModal').addEventListener('click', function() {
@@ -643,7 +812,8 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
       });
       
       document.getElementById('continueBtn').addEventListener('click', function() {
-          document.getElementById('submitModal').style.display = 'none';
+        playNavigationSound(); 
+        document.getElementById('submitModal').style.display = 'none';
           if (currentLevel < 6) {
               currentLevel++;
               clearCanvas();
@@ -660,6 +830,10 @@ Your patterns will be analyzed for uniqueness and emotional resonance. There are
           
           btn.addEventListener('mouseleave', function() {
               this.style.transform = 'translateY(0)';
+          });
+          
+          btn.addEventListener('click', function() {
+              playClickSound();
           });
       });
     </script>
