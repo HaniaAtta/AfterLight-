@@ -198,12 +198,119 @@ margin-left: 2%;
   </div>
 
   <script>
+    // Audio context and sound setup
+    let audioContext;
+    let clickSoundBuffer;
+    let navigationSoundBuffer;
+    let typingSoundBuffer;
+    
+    // Initialize audio context
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            createClickSound();
+            createNavigationSound();
+            createTypingSound();
+        } catch (e) {
+            console.error('Web Audio API not supported', e);
+        }
+    }
+    
+    // Create crisp robotic click sound
+    function createClickSound() {
+        const bufferSize = audioContext.sampleRate * 0.02;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Create a more robotic, digital click sound
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short burst of noise with a quick decay
+            data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+            // Add some high frequency components
+            data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+        }
+        
+        clickSoundBuffer = buffer;
+    }
+    
+    // Create navigation sound (more robotic)
+    function createNavigationSound() {
+        const bufferSize = audioContext.sampleRate * 0.05;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const n = i / bufferSize;
+            // More robotic sound with higher frequency components
+            data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+            data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+        }
+        
+        navigationSoundBuffer = buffer;
+    }
+    
+    // Create typing sound (short robotic blips)
+    function createTypingSound() {
+        const bufferSize = audioContext.sampleRate * 0.01; // Very short sound
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        for (let i = 0; i < bufferSize; i++) {
+            const t = i / bufferSize;
+            // Short digital blip sound
+            data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+            // Add some noise for texture
+            data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+        }
+        
+        typingSoundBuffer = buffer;
+    }
+    
+    // Play sound function
+    function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+        if (!audioContext || !buffer) return;
+        
+        const source = audioContext.createBufferSource();
+        const gainNode = audioContext.createGain();
+        
+        source.buffer = buffer;
+        gainNode.gain.value = volume;
+        source.playbackRate.value = playbackRate;
+        
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        source.start(0);
+        return source;
+    }
+    
+    // Play click sound
+    function playClickSound() {
+        // Randomize pitch slightly for variety
+        const playbackRate = 0.9 + Math.random() * 0.2;
+        playSound(clickSoundBuffer, 0.2, playbackRate);
+    }
+    
+    // Play navigation sound
+    function playNavigationSound() {
+        playSound(navigationSoundBuffer, 0.25);
+    }
+    
+    // Play typing sound
+    function playTypingSound() {
+        // Randomize pitch slightly for each keypress
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    }
+
     window.addEventListener('load', () => {
       setTimeout(() => {
           document.querySelector('.loading-screen').style.display = 'none';
+          initAudio(); // Initialize audio when page loads
           startPresentation();
       }, 2000);
-  });
+    });
   
     const messages = [
       "Node name: Awaken",
@@ -223,6 +330,10 @@ margin-left: 2%;
       function type() {
         if (i < text.length) {
           element.innerHTML += text.charAt(i);
+          // Play typing sound for non-space characters
+          if (text.charAt(i) !== ' ') {
+            playTypingSound();
+          }
           i++;
           setTimeout(type, speed);
         } else {
@@ -243,9 +354,17 @@ margin-left: 2%;
       }
       type();
     }
+
+    // Add click sound to all buttons
     document.addEventListener('DOMContentLoaded', () => {
+      // Add click sound to all buttons
+      document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', playClickSound);
+      });
+      
       typeText(container, messages[0]);
     });
+
     function markVisited(nodeNumber) {
       let visited = JSON.parse(localStorage.getItem("visitedNodes") || "[]");
       if (!visited.includes(nodeNumber)) {
@@ -254,23 +373,30 @@ margin-left: 2%;
           return true;
       }
       return false;
-  }
-function proceedToNextNode() {
-    // Mark the next node as visited before navigating
-    const nextNodeNumber = "Node 2"; // Change this to the appropriate next node number
-    if (markVisited(nextNodeNumber)) {
-        document.body.classList.add("fade-out");
-        setTimeout(() => {
-            window.location.href = 'node_Begin.html';
-        }, 1000);
     }
-}
+
+    function proceedToNextNode() {
+      playNavigationSound();
+      // Mark the next node as visited before navigating
+      const nextNodeNumber = "Node 2"; // Change this to the appropriate next node number
+      if (markVisited(nextNodeNumber)) {
+          document.body.classList.add("fade-out");
+          setTimeout(() => {
+              window.location.href = 'node_Begin.html';
+          }, 1000);
+      }
+    }
     
     function returnToMain() {
+      playNavigationSound();
       document.body.classList.add("fade-out");
       setTimeout(() => {
         window.location.href = 'main.html';
       }, 1000);
+    }
+
+    function startPresentation() {
+      // Presentation already starts with the typeText function
     }
   </script>
 </body>

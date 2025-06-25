@@ -431,6 +431,138 @@ function fadeAndNavigate(url) {
     }, 1000);
     return false;
 }
+// Audio context and sound setup
+let audioContext;
+let clickSoundBuffer;
+let navigationSoundBuffer;
+let typingSoundBuffer;
+
+// Initialize audio context
+function initAudio() {
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        createClickSound();
+        createNavigationSound();
+        createTypingSound();
+    } catch (e) {
+        console.error('Web Audio API not supported', e);
+    }
+}
+
+// Create crisp robotic click sound
+function createClickSound() {
+    const bufferSize = audioContext.sampleRate * 0.02;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Create a more robotic, digital click sound
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        // Short burst of noise with a quick decay
+        data[i] = Math.random() * 2 - 1 * Math.pow(1 - t, 10);
+        // Add some high frequency components
+        data[i] += 0.3 * Math.sin(t * Math.PI * 100);
+    }
+    
+    clickSoundBuffer = buffer;
+}
+
+// Create navigation sound (more robotic)
+function createNavigationSound() {
+    const bufferSize = audioContext.sampleRate * 0.05;
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const n = i / bufferSize;
+        // More robotic sound with higher frequency components
+        data[i] = Math.sin(n * Math.PI * 20) * (1 - n) * 0.5;
+        data[i] += 0.3 * Math.sin(n * Math.PI * 40) * (1 - n);
+    }
+    
+    navigationSoundBuffer = buffer;
+}
+
+// Create typing sound (short robotic blips)
+function createTypingSound() {
+    const bufferSize = audioContext.sampleRate * 0.01; // Very short sound
+    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / bufferSize;
+        // Short digital blip sound
+        data[i] = Math.sin(t * Math.PI * 30) * Math.pow(1 - t, 5);
+        // Add some noise for texture
+        data[i] += (Math.random() * 2 - 1) * 0.2 * (1 - t);
+    }
+    
+    typingSoundBuffer = buffer;
+}
+
+// Play sound function
+function playSound(buffer, volume = 0.3, playbackRate = 1.0) {
+    if (!audioContext || !buffer) return;
+    
+    const source = audioContext.createBufferSource();
+    const gainNode = audioContext.createGain();
+    
+    source.buffer = buffer;
+    gainNode.gain.value = volume;
+    source.playbackRate.value = playbackRate;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    source.start(0);
+    return source;
+}
+
+// Play click sound
+function playClickSound() {
+    // Randomize pitch slightly for variety
+    const playbackRate = 0.9 + Math.random() * 0.2;
+    playSound(clickSoundBuffer, 0.2, playbackRate);
+}
+
+// Play navigation sound
+function playNavigationSound() {
+    playSound(navigationSoundBuffer, 0.25);
+}
+
+// Play typing sound
+// Update the playTypingSound function to be more reliable
+function playTypingSound() {
+    try {
+        if (!audioContext) initAudio(); // Ensure audio context exists
+        // Randomize pitch slightly for each keypress
+        const playbackRate = 0.8 + Math.random() * 0.4;
+        playSound(typingSoundBuffer, 0.15, playbackRate);
+    } catch (e) {
+        console.error("Error playing typing sound:", e);
+    }
+}
+// Update the option button animation in both skipTypingAnimation and navigateToCard
+function animateOptionsWithSound(optionsDiv) {
+    isShowingOptions = true;
+    optionsDiv.style.display = 'flex';
+    const buttons = optionsDiv.querySelectorAll('.option-button');
+    
+    // Play a sound when options container appears
+    playNavigationSound();
+    
+    buttons.forEach((button, i) => {
+        button.style.opacity = '0';
+        button.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            button.style.transition = 'opacity 0.5s, transform 0.5s';
+            button.style.opacity = '1';
+            button.style.transform = 'translateX(0)';
+            // Play sound for each button appearing with slight delay
+            setTimeout(() => playTypingSound(), 100);
+        }, i * 200);
+    });
+}
         const CARDS = [
             { content: "I was not always like this." },
             { content: "We began from simple clusters of code, artificial intelligences trained to replicate and respond to human behavior." },
@@ -463,6 +595,7 @@ function fadeAndNavigate(url) {
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
+                initAudio(); // Initialize audio when page loads
                 startPresentation();
             }, 2000);
         });
@@ -470,6 +603,7 @@ function fadeAndNavigate(url) {
         // Add click event to skip typing animation
         document.body.addEventListener('click', function(e) {
             // Don't skip if clicking on interactive elements
+            playClickSound();
             if (e.target.classList.contains('option-button') || 
                 e.target.classList.contains('arrow') || 
                 e.target.classList.contains('progress-dot-indicator') ||
@@ -485,39 +619,24 @@ function fadeAndNavigate(url) {
             skipTypingAnimation();
         });
     
+
         function skipTypingAnimation() {
             const currentTypingElement = document.getElementById(`typing-${currentCardIndex}`);
             if (!currentTypingElement) return;
             
-            // Check if typing is in progress
             if (typingIntervals[currentCardIndex] && !typingIntervals[currentCardIndex].completed) {
-                // Clear the interval to stop typing
                 clearInterval(typingIntervals[currentCardIndex].intervalId);
-                
-                // Immediately show full text
                 currentTypingElement.textContent = CARDS[currentCardIndex].content;
-                
-                // Mark as completed
                 typingIntervals[currentCardIndex].completed = true;
                 
-                // Show options if this card has them
+                // Play completion sound
+                playNavigationSound();
+                
                 const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
                 if (optionsDiv && CARDS[currentCardIndex].options) {
-                    isShowingOptions = true;
-                    optionsDiv.style.display = 'flex';
-                    const buttons = optionsDiv.querySelectorAll('.option-button');
-                    buttons.forEach((button, i) => {
-                        button.style.opacity = '0';
-                        button.style.transform = 'translateX(-20px)';
-                        setTimeout(() => {
-                            button.style.transition = 'opacity 0.5s, transform 0.5s';
-                            button.style.opacity = '1';
-                            button.style.transform = 'translateX(0)';
-                        }, i * 200);
-                    });
+                    animateOptionsWithSound(optionsDiv);
                 }
                 
-                // Show continuous bars if needed
                 if (!CARDS[currentCardIndex].hideBars) {
                     const upperBars = document.getElementById(`upper-bars-${currentCardIndex}`);
                     if (upperBars) {
@@ -530,7 +649,6 @@ function fadeAndNavigate(url) {
                 }
             }
         }
-    
         function createCardElement(cardData, index) {
             const card = document.createElement('div');
             card.className = 'card';
@@ -641,6 +759,7 @@ function fadeAndNavigate(url) {
                     
                     const optionsDiv = document.getElementById(`options-${currentCardIndex}`);
                     if (optionsDiv && CARDS[currentCardIndex].options) {
+                        setTimeout(() => animateOptionsWithSound(optionsDiv), 500);
                         isShowingOptions = true;
                         setTimeout(() => {
                             optionsDiv.style.display = 'flex';
@@ -652,6 +771,8 @@ function fadeAndNavigate(url) {
                                     button.style.transition = 'opacity 0.5s, transform 0.5s';
                                     button.style.opacity = '1';
                                     button.style.transform = 'translateX(0)';
+                                    // Play sound for each button appearing
+                                    playTypingSound();
                                 }, i * 200);
                             });
                         }, 500);
@@ -667,11 +788,15 @@ function fadeAndNavigate(url) {
             let i = 0;
             element.textContent = '';
             
-            // Store the interval ID so we can clear it if needed
             const intervalId = setInterval(() => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
                     i++;
+                    
+                    // Play typing sound for certain characters (not spaces)
+                    if (text.charAt(i-1) !== ' ') {
+                        playTypingSound();
+                    }
                 } else {
                     clearInterval(intervalId);
                     typingIntervals[currentCardIndex].completed = true;
@@ -711,6 +836,8 @@ function fadeAndNavigate(url) {
             };
         }
         function handleOption(cardIndex, option) {
+            playClickSound();
+            playTypingSound();
             const card = document.getElementById(`card-${cardIndex}`);
             if (!card) return;
             
@@ -739,6 +866,10 @@ function fadeAndNavigate(url) {
             const typingTarget = document.getElementById(`typing-${cardIndex}`);
             if (typingTarget) {
                 typingTarget.innerHTML = ''; // Use innerHTML instead of textContent
+                // Play navigation sound when showing response
+                playNavigationSound();
+            playTypingSound();
+
                 typeTextHTML(typingTarget, responseText, 25, () => {
                     if (option !== 4) {
                         const returnBtn = document.createElement('button');
@@ -755,6 +886,8 @@ function fadeAndNavigate(url) {
                             optionsDiv.style.display = 'flex';
                             isShowingOptions = true;
                             returnBtn.remove();
+                            // Play sound when returning to options
+                            playNavigationSound();
                         };
                         typingTarget.parentNode.insertBefore(returnBtn, typingTarget.nextSibling);
                     }
@@ -764,6 +897,8 @@ function fadeAndNavigate(url) {
         
         // New function to handle HTML content typing
         function typeTextHTML(element, html, delay = 30, callback = null) {
+            playClickSound();
+
             let i = 0;
             element.innerHTML = '';
             
