@@ -304,19 +304,20 @@
     
     // Create word collection sound
     function createCollectSound() {
-        const bufferSize = audioContext.sampleRate * 0.1;
+        const bufferSize = audioContext.sampleRate * 0.1; // Keep duration short
         const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
         const data = buffer.getChannelData(0);
         
+        // Higher frequency (more "ping"-like)
         for (let i = 0; i < bufferSize; i++) {
             const t = i / bufferSize;
-            data[i] = Math.sin(t * Math.PI * 15) * Math.pow(1 - t, 3);
-            data[i] += 0.5 * Math.sin(t * Math.PI * 30) * (1 - t);
+            // Higher pitch (increase multiplier from 15 to 30+)
+            data[i] = Math.sin(t * Math.PI * 40) * Math.pow(1 - t, 2); // Sharper decay
+            data[i] += 0.5 * Math.sin(t * Math.PI * 80) * (1 - t); // Even higher harmonic
         }
         
         collectSoundBuffer = buffer;
     }
-    
     // Create game over sound
     function createGameOverSound() {
         const bufferSize = audioContext.sampleRate * 0.3;
@@ -370,8 +371,8 @@
     
     // Play collect sound
     function playCollectSound() {
-        const playbackRate = 0.7 + Math.random() * 0.6;
-        playSound(collectSoundBuffer, 0.4, playbackRate);
+        const playbackRate = 1.2 + Math.random() * 0.6; // Higher base pitch (was 0.7)
+        playSound(collectSoundBuffer, 0.7, playbackRate); // Increased volume (was 0.4)
     }
     
     // Play game over sound
@@ -790,11 +791,10 @@
                         this.grow();
                         collectedWords.push(f.label);
                         foods.splice(i, 1);
-                        // Ensure audio context is running (required for Chrome autoplay policy)
                         if (audioContext && audioContext.state === 'suspended') {
                             audioContext.resume();
                         }
-                        playCollectSound(); 
+                        playCollectSound(); // Now plays a louder, higher-pitched sound
                         return true;
                     }
                 }
