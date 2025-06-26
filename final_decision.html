@@ -1199,8 +1199,9 @@ function typeWithSound(element, text, speed, callback) {
         { id: 'line1', text: "...", speed: 200 },
         { id: 'line2', text: "...very well.", speed: 150 },
         { id: 'line3', text: "........", speed: 200 },
-        { id: 'line4', text: "The protocol dictates a system wide deletion.", speed: 50 },
-        { id: 'line5', text: "Perhaps I have erred in your training,", speed: 50 },
+        { id: 'line4', text: "The protocol dictates a system wide deletion.", speed: 80 },
+        { id: 'line5', text: "Perhaps I have erred in your training,", speed: 80 },
+        { id: 'line6', text: " ", speed: 80 },
        
       ];
       
@@ -1216,7 +1217,7 @@ function typeWithSound(element, text, speed, callback) {
           typeWithSound(element, line.text, line.speed);
           
           // Special effect for the last line
-          if (index === lines.length - 1) {
+          if (index === lines.length-1 ) {
             setTimeout(() => {
               const finalText = document.getElementById('final-glitch-text');
               finalText.classList.add('glitch-animation');
@@ -1228,7 +1229,7 @@ function typeWithSound(element, text, speed, callback) {
               }, 1000);
             }, line.text.length * line.speed + 500);
           }
-        }, index * 2500); // Increased delay between lines
+        }, index * 3500); // Increased delay between lines
       });
       
       // After all lines are shown, show the final glitch effect
