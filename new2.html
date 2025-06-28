@@ -281,13 +281,34 @@ margin-top: 3.8%;
       }
 
       .info-content {
+        position: relative;
         line-height: 1.6;
         margin-bottom: 20px;
         max-height: 400px;
-        overflow-y: scroll;
+        overflow-y: scroll;  /* Forces scrollbar even if not scrolling */
+        scroll-behavior: auto;
         white-space: pre-wrap;
-        
+      
+        /* For Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
       }
+      
+      /* For Chrome, Edge, Safari (WebKit-based) */
+      .info-content::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      .info-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      
+      .info-content::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+      }
+      
+      
 
       .start-btn {
         border: 2px solid #305CCC;
